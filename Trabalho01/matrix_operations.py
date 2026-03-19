@@ -44,6 +44,14 @@ def mat_translacao(tx, ty, tz):
         0.0, 0.0, 0.0, 1.0,
     ], np.float32)
 
+def mat_escala(sx, sy, sz):
+    return np.array([
+        sx, 0.0, 0.0,  0.0,
+        0.0, sy, 0.0,  0.0,
+        0.0, 0.0, sz,  0.0,
+        0.0, 0.0, 0.0, 1.0,
+    ], np.float32)
+
 def mat_identidade():
     return np.eye(4, dtype=np.float32).reshape(1, 16)
 
