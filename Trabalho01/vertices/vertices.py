@@ -79,6 +79,12 @@ def get_semi_sphere_vertices():
 def get_cilinder_vertices():
     return load_vertices_from_file("cilindro.vertices")
 
+def get_ring_vertices():
+    return load_vertices_from_file("ring.vertices")
+
+def get_disk_vertices():
+    return load_vertices_from_file("disk.vertices")
+
 
 def main():
     import sys

@@ -9,6 +9,7 @@ from vertices.vertices import *
 from matrix_operations import *
 import random
 from objects.roblox import create_roblox
+from objects.pokeball import create_pokeball
 
 def create_window():
     # cria janela
@@ -63,7 +64,7 @@ def draw_scene():
     # carrega vértices de cada objeto
     raw_vertices = []
 
-    # Adiciona um cubo / retangulo
+    # Adiciona um cubo / retangulo /semiesfera
     raw_vertices += get_cube_vertices()
     objects_dict["cube"] = {'ini_index': 0, 
                             'end_index': len(raw_vertices), 
@@ -75,7 +76,21 @@ def draw_scene():
     objects_dict['cilinder'] = {'ini_index': objects_dict["cube"]['end_index'], 
                                 'end_index': len(raw_vertices),
                                 'centroid': get_centroid(raw_vertices, objects_dict["cube"]['end_index'], len(raw_vertices) - objects_dict["cube"]['end_index'])}
+    
+    raw_vertices += get_semi_sphere_vertices()
+    objects_dict['semi_sphere'] = {'ini_index': objects_dict["cilinder"]['end_index'],
+                                'end_index': len(raw_vertices),
+                                'centroid': get_centroid(raw_vertices, objects_dict["cilinder"]['end_index'], len(raw_vertices) - objects_dict["cilinder"]['end_index'])}
 
+    raw_vertices += get_ring_vertices()
+    objects_dict['ring'] = {'ini_index': objects_dict["semi_sphere"]['end_index'],
+                            'end_index': len(raw_vertices),
+                            'centroid': get_centroid(raw_vertices, objects_dict["semi_sphere"]['end_index'], len(raw_vertices) - objects_dict["semi_sphere"]['end_index'])}
+
+    raw_vertices += get_disk_vertices()
+    objects_dict['disk'] = {'ini_index': objects_dict["ring"]['end_index'],
+                            'end_index': len(raw_vertices),
+                            'centroid': get_centroid(raw_vertices, objects_dict["ring"]['end_index'], len(raw_vertices) - objects_dict["ring"]['end_index'])}
 
 
     # Aloca espaço na GPU para todos os vértices criados
@@ -97,6 +112,10 @@ def draw_scene():
         create_roblox(loc_color, loc_mat_transform, objects_dict, angulo_rotacao_roblox, pos=[-0.8, -0.8, 0.0], scale=0.5)
 
         create_roblox(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.3, 0.3, 0.0], scale=1)
+
+        #Pokebola
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.4)
+
 
         glfw.swap_buffers(window)
         glfw.poll_events() 
