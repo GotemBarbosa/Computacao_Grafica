@@ -109,13 +109,27 @@ def draw_scene():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
 
-        create_roblox(loc_color, loc_mat_transform, objects_dict, angulo_rotacao_roblox, pos=[-0.8, -0.8, 0.0], scale=0.5)
+        #create_roblox(loc_color, loc_mat_transform, objects_dict, angulo_rotacao_roblox, pos=[-0.8, -0.8, 0.0], scale=0.5)
 
-        create_roblox(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.3, 0.3, 0.0], scale=1)
+        #create_roblox(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.3, 0.3, 0.0], scale=1)
 
         #Pokebola
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.4)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[1.5, 0.9, 0.0], scale=0.2)
 
+        #Pokebola 2
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.2)
+
+        #Pokebola 3
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, -0.9, 0.0], scale=0.2)
+
+        #Pokebola 4
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, 0.9, 0.0], scale=0.2)
+
+        #Pokebola 5
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, -0.9, 0.0], scale=0.2)
+
+        #Pokebola 6
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.4, -0.4, 0.0], scale=0.2)
 
         glfw.swap_buffers(window)
         glfw.poll_events() 
