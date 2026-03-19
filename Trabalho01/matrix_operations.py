@@ -53,7 +53,12 @@ def mat_escala(sx, sy, sz):
     ], np.float32)
 
 def mat_identidade():
-    return np.eye(4, dtype=np.float32).reshape(1, 16)
+    return np.array([
+        1.0, 0.0, 0.0,  0.0,
+        0.0, 1.0, 0.0,  0.0,
+        0.0, 0.0, 1.0,  0.0,
+        0.0, 0.0, 0.0, 1.0,
+    ], np.float32)
 
 def get_centroid(vertices_list, ini, qtde):
     x_sum = 0
