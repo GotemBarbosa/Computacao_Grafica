@@ -140,22 +140,22 @@ def draw_scene():
 
 
         #Pokebola
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[1.5, 0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["normal"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, 0.9, 0.0], scale=0.1, colors_dict=pokeball_colors["normal"])
 
         #Pokebola 2
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.2, colors_dict=pokeball_colors["light"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, -0.9, 0.0], scale=0.1, colors_dict=pokeball_colors["light"])
 
         #Pokebola 3
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, -0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["green"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, -0.9, 0.0], scale=0.1, colors_dict=pokeball_colors["green"])
 
         #Pokebola 4
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, 0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["light"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, 0.9, 0.0], scale=0.1, colors_dict=pokeball_colors["light"])
 
         #Pokebola 5
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, -0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["normal"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0, 0, 0.0], scale=0.3, colors_dict=pokeball_colors["normal"])
 
         #Pokebola 6
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.4, -0.4, 0.0], scale=0.2, colors_dict=pokeball_colors["green"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.4, -0.4, 0.0], scale=0.1, colors_dict=pokeball_colors["green"])
 
         glfw.swap_buffers(window)
         glfw.poll_events() 

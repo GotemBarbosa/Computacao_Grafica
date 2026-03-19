@@ -36,12 +36,15 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     '''
 
     mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2])) # leva para a posição final
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo)) # girar em torno do eixo y
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0.05*scale, 0)) # transladada levemente para CIMA
     mat_transform = multiplica_matriz(mat_transform, mat_escala(scale, scale, scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90 - base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
 
     color_vector = [colors_dict["upBall"]] * ((end_semisphere - ini_semisphere) // 3)
+    
     draw_generic_object(ini_semisphere, end_semisphere, loc_color, loc_mat_transform, mat_transform, color_vector)
 
 
@@ -52,12 +55,15 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     ===========================================
     '''
     mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, -0.05*scale, 0)) # transladada levemente para BAIXO
     mat_transform = multiplica_matriz(mat_transform, mat_escala(scale, scale, scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-math.radians(90 + base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-math.radians(90)))
 
     color_vector = [colors_dict["downBall"]] * ((end_semisphere - ini_semisphere) // 3)
+    
     draw_generic_object(ini_semisphere, end_semisphere, loc_color, loc_mat_transform, mat_transform, color_vector)
 
 
@@ -67,14 +73,15 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     ===========================================
     '''
 
-    ring_scale = 0.5  # ajusta o raio do anel ao raio da semiesfera
+    ring_scale = 0.98  # ajusta o raio do anel ao raio da semiesfera
     mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
     mat_transform = multiplica_matriz(mat_transform, mat_escala(ring_scale*scale, ring_scale*scale, ring_scale*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-math.radians(base_rotation)))
 
     color_vector = [colors_dict["ring"]] * ((end_ring - ini_ring) // 3)
+    
     draw_generic_object(ini_ring, end_ring, loc_color, loc_mat_transform, mat_transform, color_vector)
 
     '''
@@ -82,12 +89,14 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     DESENHANDO O DISCO PRETO
     ===========================================
     '''
+    disk_scale = 0.25
     mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0.00*scale, -0.12*scale, -0.49*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.15*scale, 0.15*scale, 0.15*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-math.radians(base_rotation+90)))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0, -scale))  # traz para frente da pokebola
+    mat_transform = multiplica_matriz(mat_transform, mat_escala(disk_scale*scale, disk_scale*scale, disk_scale*scale))  # ajusta para um tamanho proporcional
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
 
     color_vector = [colors_dict["outerDisk"]] * ((end_disk - ini_disk) // 3)
     draw_generic_object(ini_disk, end_disk, loc_color, loc_mat_transform, mat_transform, color_vector)
@@ -99,12 +108,14 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     DESENHANDO O DISCO BRANCO
     ===========================================
     '''
+    white_disk_scale = disk_scale*0.65
     mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0.00*scale, -0.12*scale, -0.50*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.08*scale, 0.08*scale, 0.08*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-math.radians(base_rotation+90)))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0, -scale-0.005)) # traz para a frente da pokebola e poucos pixels a frente do disco preto
+    mat_transform = multiplica_matriz(mat_transform, mat_escala(white_disk_scale*scale, white_disk_scale*scale, white_disk_scale*scale))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
 
     color_vector = [colors_dict["innerdisk"]] * ((end_disk - ini_disk) // 3)
     draw_generic_object(ini_disk, end_disk, loc_color, loc_mat_transform, mat_transform, color_vector)

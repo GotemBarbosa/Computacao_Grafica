@@ -47,6 +47,31 @@ def normalize(vertices):
 
     return normalized
 
+def normalize_semisphere(vertices):
+    # separa por eixo
+    xs = [v[0] for v in vertices]
+    ys = [v[1] for v in vertices]
+    zs = [v[2] for v in vertices]
+
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+    min_z, max_z = min(zs), max(zs)
+
+    # evita divisão por zero
+    range_x = max_x - min_x if max_x != min_x else 1.0
+    range_y = max_y - min_y if max_y != min_y else 1.0
+    range_z = max_z - min_z if max_z != min_z else 1.0
+
+    normalized = []
+    for x, y, z in vertices:
+        nx = (2 * (x - min_x) / range_x) - 1
+        ny = (2 * (y - min_y) / range_y) - 1
+        nz = ((z - min_z) / range_z) - 1
+
+        normalized.append((nx, ny, nz))
+
+    return normalized
+
 def save_vertices(filename, normalized):
     path = os.path.join(BASE_DIR, filename)
 
@@ -95,7 +120,10 @@ def main():
 
     filename = sys.argv[1]
     vertices = load_vertices_from_file(filename)
-    normalized = normalize(vertices)
+
+    if filename == 'semiesfera.vertices': normalized = normalize_semisphere(vertices)
+    else: normalized = normalize(vertices)
+    
     save_vertices(filename, normalized)
 
     print(f"Arquivo '{filename}' normalizado com sucesso.")
