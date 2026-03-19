@@ -37,26 +37,26 @@ def allocate_vertices_on_gpu(raw_vertices, loc_position):
 
     return vertices
 
-def draw_cube(ini_vertice, loc_color, loc_mat_transform, mat_transform):
-    glUniform4f(loc_color, 0.5, 0.5, 0.5, 1.0)
+def draw_cube(ini_vertice, loc_color, loc_mat_transform, mat_transform, color_vector):
+
     glUniformMatrix4fv(loc_mat_transform, 1, GL_TRUE, mat_transform) 
 
-    glUniform4f(loc_color, 1, 0, 0, 1.0) ### vermelho    
+    glUniform4f(loc_color, *color_vector[0])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice, 4)
     
-    glUniform4f(loc_color, 0, 0, 1, 1.0) ### azul
+    glUniform4f(loc_color, *color_vector[1])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice+4, 4)
     
-    glUniform4f(loc_color, 0, 1, 0, 1.0) ### verde
+    glUniform4f(loc_color, *color_vector[2])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice+8, 4)
     
-    glUniform4f(loc_color, 1, 1, 0, 1.0) ### amarela
+    glUniform4f(loc_color, *color_vector[3])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice+12, 4)
     
-    glUniform4f(loc_color, 0.5, 0.5, 0.5, 1.0) ### cinza
+    glUniform4f(loc_color, *color_vector[4])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice+16, 4)
     
-    glUniform4f(loc_color, 0.5, 0, 0, 1.0) ### marrom
+    glUniform4f(loc_color, *color_vector[5])
     glDrawArrays(GL_TRIANGLE_STRIP, ini_vertice+20, 4)
 
 
@@ -109,7 +109,7 @@ def draw_scene():
     while not glfw.window_should_close(window):
         angulo_esfera += 0.01
         angulo_abertura += 0.05
-        angulo_rotacao_cubo -= 0.01 # modifica o angulo de rotacao em cada iteracao
+        angulo_rotacao_cubo -= 0.02 # modifica o angulo de rotacao em cada iteracao
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
@@ -125,7 +125,16 @@ def draw_scene():
         mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo_rotacao_cubo))
         mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(angulo_rotacao_cubo))
         mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-        draw_cube(0, loc_color, loc_mat_transform, mat_transform)
+
+        color_vector = [[1] * 4 for _ in range(6)]
+        color_vector[0] = [1, 0, 0, 1.0] # cor da face 1 --> VERMELHO
+        color_vector[1] = [0, 0, 1, 1.0] # cor da face 2 --> AZUL
+        color_vector[2] = [0, 1, 0, 1.0] # cor da face 3 --> VERDE
+        color_vector[3] = [1, 1, 0, 1.0] # cor da face 4 --> AMARELA
+        color_vector[4] = [0.5, 0.5, 0.5, 1.0] # cor da face 5 --> CINZA
+        color_vector[5] = [0.5, 0, 0, 1.0] # cor da face 6 --> MARROM
+
+        draw_cube(0, loc_color, loc_mat_transform, mat_transform, color_vector)
 
 
 
