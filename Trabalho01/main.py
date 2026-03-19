@@ -14,6 +14,13 @@ def create_window():
     # cria janela
     glfw.init()
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
+
+    #para funcionamento em outros OS (CASO 330)
+    #glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    #glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+    #glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
+    #glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
+
     window = glfw.create_window(700, 700, "Programa", None, None)
 
     if (window == None):
