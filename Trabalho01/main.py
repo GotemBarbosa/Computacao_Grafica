@@ -113,23 +113,49 @@ def draw_scene():
 
         #create_roblox(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.3, 0.3, 0.0], scale=1)
 
+        pokeball_colors = {}
+
+        pokeball_colors = {}
+        pokeball_colors["normal"] = {}
+        pokeball_colors["normal"]["upBall"] = [1.0, 0.0, 0.0, 1.0]
+        pokeball_colors["normal"]["downBall"] = [1.0, 1.0, 1.0, 1.0]
+        pokeball_colors["normal"]["ring"] = [0.0, 0.0, 0.0, 1.0]
+        pokeball_colors["normal"]["outerDisk"] = pokeball_colors["normal"]["ring"]
+        pokeball_colors["normal"]["innerdisk"] = [1.0, 1.0, 1.0, 1.0]
+
+        pokeball_colors["light"] = {}
+        pokeball_colors["light"]["upBall"] = [1.0, 1.0, 1.0, 1.0]
+        pokeball_colors["light"]["downBall"] = [1.0, 1.0, 1.0, 1.0]
+        pokeball_colors["light"]["ring"] = [1.0, 0.0, 0.0, 1.0]
+        pokeball_colors["light"]["outerDisk"] = pokeball_colors["light"]["ring"]
+        pokeball_colors["light"]["innerdisk"] = [1.0, 1.0, 1.0, 1.0]
+
+
+        pokeball_colors["green"] = {}
+        pokeball_colors["green"]["upBall"] = [98/255, 211/255, 179/255, 1.0]
+        pokeball_colors["green"]["downBall"] = [98/255, 211/255, 179/255, 1.0]
+        pokeball_colors["green"]["ring"] = [18/255, 120/255, 122/255, 1.0]
+        pokeball_colors["green"]["outerDisk"] = pokeball_colors["green"]["ring"]
+        pokeball_colors["green"]["innerdisk"] = [1.0, 1.0, 1.0, 1.0]
+
+
         #Pokebola
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[1.5, 0.9, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[1.5, 0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["normal"])
 
         #Pokebola 2
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.0, 0.0, 0.0], scale=0.2, colors_dict=pokeball_colors["light"])
 
         #Pokebola 3
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, -0.9, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, -0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["green"])
 
         #Pokebola 4
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, 0.9, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.9, 0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["light"])
 
         #Pokebola 5
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, -0.9, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.9, -0.9, 0.0], scale=0.2, colors_dict=pokeball_colors["normal"])
 
         #Pokebola 6
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.4, -0.4, 0.0], scale=0.2)
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.4, -0.4, 0.0], scale=0.2, colors_dict=pokeball_colors["green"])
 
         glfw.swap_buffers(window)
         glfw.poll_events() 
