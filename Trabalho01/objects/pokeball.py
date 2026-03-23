@@ -18,7 +18,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     end_disk = objects_dict["disk"]["end_index"]
     disk_centroid = objects_dict["disk"]["centroid"]
 
-    base_rotation = 15
+    base_rotation = 8.59
 
     if colors_dict is None:
         colors_dict = {
