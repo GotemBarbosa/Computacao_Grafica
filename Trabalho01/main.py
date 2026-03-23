@@ -151,25 +151,25 @@ def draw_scene():
         }
 
         #Pokebola 1
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[pokeballs_pos["x"][0], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["normal"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+1, pos=[pokeballs_pos["x"][0], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["normal"])
         #create_diglett(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0, 0, 0], scale=0.4)
 
         #Pokebola 2
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[pokeballs_pos["x"][1], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["light"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+3.2, pos=[pokeballs_pos["x"][1], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["light"])
         #create_diglett(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[0.8, 0.8, 0], scale=0.05)
 
         #Pokebola 3
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[pokeballs_pos["x"][2], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["green"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+0.9, pos=[pokeballs_pos["x"][2], pokeballs_pos["y"][0], pokeballs_pos["z"][0]], scale=0.1, colors_dict=pokeball_colors["green"])
         #create_diglett(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox, pos=[-0.8, -0.8, 0], scale=0.05)
 
         #Pokebola 4
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox,  pos=[pokeballs_pos["x"][0]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["light"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+2.2,  pos=[pokeballs_pos["x"][0]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["light"])
 
         #Pokebola 5
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox,  pos=[pokeballs_pos["x"][1]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["normal"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+0.2,  pos=[pokeballs_pos["x"][1]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["normal"])
 
         #Pokebola 6
-        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox,  pos=[pokeballs_pos["x"][2]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["green"])
+        create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+2.5,  pos=[pokeballs_pos["x"][2]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["green"])
 
         #OBJETO: Healer
         create_healer(loc_color, loc_mat_transform, objects_dict, 0.15 , pos=[0, -0.2, 0], scale=0.3)
