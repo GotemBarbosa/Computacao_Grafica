@@ -171,6 +171,18 @@ def draw_scene():
         #Pokebola 6
         create_pokeball(loc_color, loc_mat_transform, objects_dict, -angulo_rotacao_roblox+2.5,  pos=[pokeballs_pos["x"][2]-0.15, pokeballs_pos["y"][1], pokeballs_pos["z"][1]], scale=0.1, colors_dict=pokeball_colors["green"])
 
+
+        pokeball_positions = [
+            [pokeballs_pos["x"][0],       pokeballs_pos["y"][0]+0.006, pokeballs_pos["z"][0]],
+            [pokeballs_pos["x"][1],       pokeballs_pos["y"][0]+0.006, pokeballs_pos["z"][0]],
+            [pokeballs_pos["x"][2],       pokeballs_pos["y"][0]+0.006, pokeballs_pos["z"][0]],
+            [pokeballs_pos["x"][0]-0.15,  pokeballs_pos["y"][1], pokeballs_pos["z"][1]],
+            [pokeballs_pos["x"][1]-0.15,  pokeballs_pos["y"][1], pokeballs_pos["z"][1]],
+            [pokeballs_pos["x"][2]-0.15,  pokeballs_pos["y"][1], pokeballs_pos["z"][1]],
+        ]
+
+        create_healer(loc_color, loc_mat_transform, objects_dict, 0.15, pos=[0, -0.2, 0], scale=0.3, pokeball_positions=pokeball_positions)
+
         #OBJETO: Healer
         create_healer(loc_color, loc_mat_transform, objects_dict, 0.15 , pos=[0, -0.2, 0], scale=0.3)
 

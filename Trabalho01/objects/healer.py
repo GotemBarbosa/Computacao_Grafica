@@ -1,7 +1,8 @@
 from matrix_operations import *
 from .utils import *
 
-def create_healer(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0], scale=1.0):
+def create_healer(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0], scale=1.0, pokeball_positions=[]):
+
     ini_cube =objects_dict["cube"]["ini_index"]
 
     '''
@@ -86,3 +87,20 @@ def create_healer(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0
     mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0.10*scale, 0))  # sobe pra cima da base
     mat_transform = multiplica_matriz(mat_transform, mat_escala(1.8*scale, 0.05*scale, 2.8*scale))
     draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, blue_color)
+
+    '''
+    ===========================================
+    DISCOS NAS POSIÇÕES DAS POKEBOLAS (SOMBRA FAKE)
+    ===========================================
+    '''
+    ini_disk = objects_dict["disk"]["ini_index"]
+    end_disk = objects_dict["disk"]["end_index"]
+    disk_color = [[0.05, 0.1, 0.5, 1.0]] * ((end_disk - ini_disk) // 3)
+
+    for pb_pos in pokeball_positions:
+        mat_transform = mat_identidade()
+        mat_transform = multiplica_matriz(mat_transform, mat_translacao(pb_pos[0], pb_pos[1]-0.08, pb_pos[2]))
+        mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
+        mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+        mat_transform = multiplica_matriz(mat_transform, mat_escala(0.09, 0.09, 0.09))
+        draw_generic_object(ini_disk, end_disk, loc_color, loc_mat_transform, mat_transform, disk_color)
