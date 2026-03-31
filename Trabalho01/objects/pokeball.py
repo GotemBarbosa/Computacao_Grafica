@@ -4,7 +4,7 @@ import random
 from matrix_operations import *
 from .utils import *
 
-def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0], scale=1.0, colors_dict=None):
+def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0], scale=1.0, colors_dict=None, open=False):
     #primitivas utilizadas:
     semisphere_centroid = objects_dict["semi_sphere"]["centroid"]
     
@@ -29,6 +29,9 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
             "innerdisk": [1.0, 1.0, 1.0, 1.0],
         }
 
+    if not isinstance(open, bool):
+        raise TypeError("O parametro 'open' deve ser bool.")
+
     '''
     ===========================================
     DESENHANDO A PARTE DE CIMA DA POKEBOLA
@@ -51,7 +54,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
 
     '''
     ===========================================
-    DESENHANDO A PARTE DE BAIXO DA POKEBOLA
+    DESENHANDO A PARTE DE BAIXO DAS POKEBOLA
     ===========================================
     '''
     mat_transform = mat_identidade()
