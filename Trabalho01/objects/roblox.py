@@ -6,40 +6,38 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from matrix_operations import *
 import random
 from .utils import *
+import state
 
 
-def create_roblox(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0, 0, 0], scale=1.0):
-    cube_centroid = objects_dict['cube']['centroid']
-    cilinder_centroid = objects_dict['cilinder']['centroid']
+def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
 
-    ini_cube = objects_dict['cube']['ini_index']
-    end_cube = objects_dict['cube']['end_index']
+    roblox = state.properties['roblox']
+    x_angle = roblox['x_angle']
+    y_angle = roblox['y_angle']
+    z_angle = roblox['z_angle']
+    scale = roblox['scale']
+    pos = roblox['position']
+
+
+    ini_cube = state.objects_dict['cube']['ini_index']
+    end_cube = state.objects_dict['cube']['end_index']
     
-    ini_cilinder = objects_dict['cilinder']['ini_index']
-    end_cilinder = objects_dict['cilinder']['end_index']
+    ini_cilinder = state.objects_dict['cilinder']['ini_index']
+    end_cilinder = state.objects_dict['cilinder']['end_index']
 
     '''
     ===========================================
     DESENHANDO PERNA ESQUERDA
     ===========================================
     '''
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-0.11*scale, -0.2*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.1*scale, 0.2*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-    #color_vector = [[1] * 4 for _ in range(6)]
-    color_vector = [[3/255, 161/255, 8/255, 1.0] for _ in range(6)]
-    #color_vector[0] = [1, 0, 0, 1.0] # cor da face 1 --> VERMELHO
-    #color_vector[1] = [0, 0, 1, 1.0] # cor da face 2 --> AZUL
-    #color_vector[2] = [3/255, 161/255, 8/255, 1.0] # cor da face 3 --> VERDE
-    #color_vector[3] = [1, 1, 0, 1.0] # cor da face 4 --> AMARELA
-    #color_vector[4] = [0.5, 0.5, 0.5, 1.0] # cor da face 5 --> CINZA
-    #color_vector[5] = [0.5, 0, 0, 1.0] # cor da face 6 --> MARROM
-
-    draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, color_vector)
+    left_leg = {
+        "scale": [0.1*scale, 0.2*scale, 0.08*scale],
+        "part_position": [-0.11*scale, -0.2*scale, 0.0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['left_leg'] for _ in range(6)]
+    draw_cube(final_matrix(left_leg), color_vector)
 
 
     '''
@@ -47,89 +45,102 @@ def create_roblox(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0, 0,
     DESENHANDO PERNA DIREITA
     ===========================================
     '''
-    color_vector[2] = [3/255, 161/255, 8/255, 1.0] 
+    right_leg = {
+        "scale": [0.1*scale, 0.2*scale, 0.08*scale],
+        "part_position": [0.11*scale, -0.2*scale, 0.0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['right_leg'] for _ in range(6)]
+    draw_cube(final_matrix(right_leg), color_vector)
     
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0.11*scale, -0.2*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.1*scale, 0.2*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-    draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, color_vector)
-
-
     '''
     ===========================================
     DESENHANDO TRONCO
     ===========================================
     '''
-    #color_vector[2] = [3/255, 140/255, 252/255, 1.0] 
-    color_vector = [[3/255, 140/255, 252/255, 1.0] for _ in range(6)]
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0*scale, 0.21*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.21*scale, 0.2*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-    draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, color_vector)
+    chest = {
+        "scale": [0.21*scale, 0.2*scale, 0.1*scale],
+        "part_position": [0, 0.2*scale, 0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['chest'] for _ in range(6)]
+    draw_cube(final_matrix(chest), color_vector)
 
     '''
     ===========================================
     DESENHANDO O BRAÇO DIREITO
     ===========================================
     '''
-    #color_vector[2] = [1, 1, 0, 1.0] 
-    color_vector = [[1, 1, 0, 1.0] for _ in range(6)]
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0.32*scale, 0.21*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.1*scale, 0.2*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-    draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, color_vector)
+    right_arm = {
+        "scale": [0.08*scale, 0.2*scale, 0.08*scale],
+        "part_position": [-0.29*scale, 0.2*scale, 0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['arm'] for _ in range(6)]
+    draw_cube(final_matrix(right_arm), color_vector)
 
     '''
     ===========================================
     DESENHANDO O BRAÇO ESQUERDO
     ===========================================
     '''
-    #color_vector[2] = [1, 1, 0, 1.0] 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-0.32*scale, 0.21*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.1*scale, 0.2*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cube_centroid[0], -cube_centroid[1], -cube_centroid[2]))
-    draw_cube(ini_cube, loc_color, loc_mat_transform, mat_transform, color_vector)
+    left_arm = {
+        "scale": [0.08*scale, 0.2*scale, 0.08*scale],
+        "part_position": [0.29*scale, 0.2*scale, 0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    draw_cube(final_matrix(left_arm), color_vector)
+
 
     '''
     ===========================================
     DESENHANDO A CABEÇA
     ===========================================
     '''
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]*scale, pos[1]*scale, pos[2]*scale))
-    # apenas para ele rotacionar em torno dele mesmo
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0*scale, 0.52*scale, 0.0*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(0.1*scale, 0.1*scale, 0.1*scale))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(-cilinder_centroid[0], -cilinder_centroid[1], -cilinder_centroid[2]))
-    color_vector = []
-
-    for triangle in range(ini_cilinder, end_cilinder,3):
-        random.seed( triangle )
-        R = random.random()
-        G = random.random()
-        B = random.random()  
-        color_vector.append([R, G, B, 1.0])
-
-    draw_generic_object(ini_cilinder, end_cilinder, loc_color, loc_mat_transform, mat_transform, color_vector)
+    head = {
+        "scale": [0.1*scale, 0.1*scale, 0.1*scale],
+        "part_position": [0, 0.5*scale, 0],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_before_moving": [90, 0, 0],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['head'] for _ in range((end_cilinder - ini_cilinder)//3)]
+    draw_generic_object(ini_cilinder, end_cilinder, final_matrix(head), color_vector)
 
 
+    '''
+    ===========================================
+    DESENHANDO OLHO DIREITO
+    ===========================================
+    '''
+    right_eye = {
+        "scale": [0.01*scale, 0.02*scale, 0.05*scale],
+        "part_position": [-0.03*scale, 0.55*scale, -0.05*scale],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_before_moving": [0, 0, 0],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['eye'] for _ in range((end_cilinder - ini_cilinder)//3)]
+    draw_generic_object(ini_cilinder, end_cilinder, final_matrix(right_eye), color_vector)
+
+
+
+    '''
+    ===========================================
+    DESENHANDO OLHO ESQUERDO
+    ===========================================
+    '''
+    left_eye = {
+        "scale": [0.01*scale, 0.02*scale, 0.05*scale],
+        "part_position": [0.03*scale, 0.55*scale, -0.05*scale],
+        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_before_moving": [0, 0, 0],
+        "final_translation": [pos[0], pos[1], pos[2]]
+    }
+    color_vector = [roblox['colors']['eye'] for _ in range((end_cilinder - ini_cilinder)//3)]
+    draw_generic_object(ini_cilinder, end_cilinder, final_matrix(left_eye), color_vector)
 

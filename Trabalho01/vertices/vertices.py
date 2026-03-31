@@ -110,6 +110,9 @@ def get_ring_vertices():
 def get_disk_vertices():
     return load_vertices_from_file("disk.vertices")
 
+def get_square_vertices():
+    return load_vertices_from_file('square.vertices')
+
 
 def main():
     import sys

@@ -73,3 +73,41 @@ def get_centroid(vertices_list, ini, qtde):
     c = [x_sum/qtde, y_sum/qtde, z_sum/qtde]
 
     return c
+
+'''
+Espera um dicionário no formato:
+{
+'angle_after_moving': [x_angle, y_angle, z_angle],
+'angle_before_moving': [x_angle, y_angle, z_angle],
+'scale': [x_scale, y_scale, z_scale],
+'final_translation': [x_pos, y_pos, z_pos], --> Destino final da parte do objeto (onde ele ficará na cena)
+'part_position': [x_pos, y_pos, z_pos], --> Destino relativo a posição do objeto total (por exemplo, a posição do braço em relação ao corpo total)
+'centroid': [x_pos, y_pos, z_pos] --> Caso o objeto não esteja centralizado e seja necessário jogar ele para a origem antes de realizar as operações, utilizando o centroid
+}
+'''
+def final_matrix(d: dict):
+    mat_transform = mat_identidade()
+    if 'final_translation' in d:
+        mat_transform = multiplica_matriz(mat_transform, mat_translacao(d['final_translation'][0], d['final_translation'][1], d['final_translation'][2]))        
+    if 'angle_after_moving' in d:
+        if d['angle_after_moving'][2]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_z(math.radians(d['angle_after_moving'][2])))
+        if d['angle_after_moving'][1]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(math.radians(d['angle_after_moving'][1])))
+        if d['angle_after_moving'][0]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(d['angle_after_moving'][0])))
+    if 'part_position' in d:
+        if d['part_position'] != [0, 0, 0]:
+            mat_transform = multiplica_matriz(mat_transform, mat_translacao(d['part_position'][0], d['part_position'][1], d['part_position'][2]))
+    if 'angle_before_moving' in d:
+        if d['angle_before_moving'][2]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_z(math.radians(d['angle_before_moving'][2])))
+        if d['angle_before_moving'][1]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(math.radians(d['angle_before_moving'][1])))
+        if d['angle_before_moving'][0]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(d['angle_before_moving'][0])))
+    if 'scale' in d:
+        mat_transform = multiplica_matriz(mat_transform, mat_escala(d['scale'][0], d['scale'][1], d['scale'][2]))
+    if 'angle_before_scale' in d:
+        if d['angle_before_scale'][2]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_z(math.radians(d['angle_before_scale'][2])))
+        if d['angle_before_scale'][1]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(math.radians(d['angle_before_scale'][1])))
+        if d['angle_before_scale'][0]: mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(d['angle_before_scale'][0])))
+
+    if 'centroid' in d:
+        mat_transform = multiplica_matriz(mat_transform, mat_translacao(-d['centroid'][0], -d['centroid'][1], -d['centroid'][2]))                
+    
+    return mat_transform
