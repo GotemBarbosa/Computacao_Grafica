@@ -39,7 +39,7 @@ def draw_scene():
         #create_healer(loc_color, loc_mat_transform, objects_dict, 0.15, pos=[0, -0.2, 0], scale=0.3, pokeball_positions=pokeball_positions)
 
         #OBJETO: Healer
-        #create_healer(loc_color, loc_mat_transform, objects_dict, 0.15 , pos=[0, -0.2, 0], scale=0.3)
+        create_healer()
 
         glfw.swap_buffers(state.window)
         glfw.poll_events() 
