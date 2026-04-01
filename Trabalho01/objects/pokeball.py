@@ -1,24 +1,31 @@
-
-import random
-
 from matrix_operations import *
 from .utils import *
+import state
 
-def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0,0], scale=1.0, colors_dict=None, open=False):
-    #primitivas utilizadas:
-    semisphere_centroid = objects_dict["semi_sphere"]["centroid"]
-    
-    ini_semisphere = objects_dict["semi_sphere"]["ini_index"]
-    end_semisphere = objects_dict["semi_sphere"]["end_index"]
+def create_pokeball(angulo=None, pos=None, scale=None, colors_dict=None, open=None):
+    pokeball = state.properties["pokeball"]
 
-    ini_ring = objects_dict["ring"]["ini_index"]
-    end_ring = objects_dict["ring"]["end_index"]
+    if angulo is None:
+        angulo = pokeball["angle"]
+    if pos is None:
+        pos = pokeball["position"]
+    if scale is None:
+        scale = pokeball["scale"]
+    if colors_dict is None:
+        colors_dict = pokeball["colors"]
+    if open is None:
+        open = pokeball.get("open", False)
 
-    ini_disk = objects_dict["disk"]["ini_index"]
-    end_disk = objects_dict["disk"]["end_index"]
-    disk_centroid = objects_dict["disk"]["centroid"]
+    ini_semisphere = state.objects_dict["semi_sphere"]["ini_index"]
+    end_semisphere = state.objects_dict["semi_sphere"]["end_index"]
 
-    base_rotation = 8.59
+    ini_ring = state.objects_dict["ring"]["ini_index"]
+    end_ring = state.objects_dict["ring"]["end_index"]
+
+    ini_disk = state.objects_dict["disk"]["ini_index"]
+    end_disk = state.objects_dict["disk"]["end_index"]
+
+    base_rotation = pokeball.get("base_rotation", 8.59)
 
     if colors_dict is None:
         colors_dict = {
@@ -48,7 +55,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
 
     color_vector = [colors_dict["upBall"]] * ((end_semisphere - ini_semisphere) // 3)
     
-    draw_generic_object(ini_semisphere, end_semisphere, loc_color, loc_mat_transform, mat_transform, color_vector)
+    draw_generic_object(ini_semisphere, end_semisphere, mat_transform, color_vector)
 
 
 
@@ -67,7 +74,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
 
     color_vector = [colors_dict["downBall"]] * ((end_semisphere - ini_semisphere) // 3)
     
-    draw_generic_object(ini_semisphere, end_semisphere, loc_color, loc_mat_transform, mat_transform, color_vector)
+    draw_generic_object(ini_semisphere, end_semisphere, mat_transform, color_vector)
 
 
     '''
@@ -85,7 +92,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
 
     color_vector = [colors_dict["ring"]] * ((end_ring - ini_ring) // 3)
     
-    draw_generic_object(ini_ring, end_ring, loc_color, loc_mat_transform, mat_transform, color_vector)
+    draw_generic_object(ini_ring, end_ring, mat_transform, color_vector)
 
     '''
     ===========================================
@@ -102,7 +109,7 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
 
     color_vector = [colors_dict["outerDisk"]] * ((end_disk - ini_disk) // 3)
-    draw_generic_object(ini_disk, end_disk, loc_color, loc_mat_transform, mat_transform, color_vector)
+    draw_generic_object(ini_disk, end_disk, mat_transform, color_vector)
 
 
 
@@ -121,4 +128,4 @@ def create_pokeball(loc_color, loc_mat_transform, objects_dict, angulo, pos=[0,0
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
 
     color_vector = [colors_dict["innerdisk"]] * ((end_disk - ini_disk) // 3)
-    draw_generic_object(ini_disk, end_disk, loc_color, loc_mat_transform, mat_transform, color_vector)
+    draw_generic_object(ini_disk, end_disk, mat_transform, color_vector)
