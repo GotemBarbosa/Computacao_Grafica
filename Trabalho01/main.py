@@ -33,7 +33,8 @@ def draw_scene():
         #create_diglett(angulo=angle, pos=position,scale=scale)
 
         #OBJETO POKEBOLA:
-        create_pokeball()
+        state.properties["pokeball"]["angle"] += 0.01
+        create_pokeball(opening_angle=45)
 
         #create_healer(loc_color, loc_mat_transform, objects_dict, 0.15, pos=[0, -0.2, 0], scale=0.3, pokeball_positions=pokeball_positions)
 

@@ -2,7 +2,24 @@ from matrix_operations import *
 from .utils import *
 import state
 
-def create_pokeball(angulo=None, pos=None, scale=None, colors_dict=None, open=None):
+def base_pokeball_transform(pos, angulo, base_rotation):
+    mat_transform = mat_identidade()
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
+    return mat_transform
+
+def apply_opening_rotation(mat_transform, opening_angle,scale):
+    hinge_y = 0.0
+    hinge_z = 0.9 * scale
+
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, hinge_y, hinge_z))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(opening_angle)))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, -hinge_y, -hinge_z))
+
+    return mat_transform
+
+def create_pokeball(angulo=None, pos=None, scale=None, colors_dict=None, open=None, opening_angle=None):
     pokeball = state.properties["pokeball"]
 
     if angulo is None:
@@ -15,6 +32,8 @@ def create_pokeball(angulo=None, pos=None, scale=None, colors_dict=None, open=No
         colors_dict = pokeball["colors"]
     if open is None:
         open = pokeball.get("open", False)
+    if opening_angle is None:
+        opening_angle = 0
 
     ini_semisphere = state.objects_dict["semi_sphere"]["ini_index"]
     end_semisphere = state.objects_dict["semi_sphere"]["end_index"]
@@ -45,13 +64,12 @@ def create_pokeball(angulo=None, pos=None, scale=None, colors_dict=None, open=No
     ===========================================
     '''
 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2])) # leva para a posição final
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo)) # girar em torno do eixo y
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(base_rotation)))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0.05*scale, 0)) # transladada levemente para CIMA
+    mat_transform = base_pokeball_transform(pos, angulo, base_rotation)
+    mat_transform = apply_opening_rotation(mat_transform, opening_angle, scale)
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0.05*scale, 0))
     mat_transform = multiplica_matriz(mat_transform, mat_escala(scale, scale, scale))
     mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(math.radians(90)))
+
 
     color_vector = [colors_dict["upBall"]] * ((end_semisphere - ini_semisphere) // 3)
     
