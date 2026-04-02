@@ -8,7 +8,7 @@ import random
 from .utils import *
 import state
 
-def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
+def create_diglett(angulos=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
 
     diglett = state.properties['diglett']
     ini_cilinder = state.objects_dict['cilinder']['ini_index']
@@ -29,7 +29,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     body = {
         "scale": [1*scale, 1.5*scale, 1*scale],
         "part_position": [0, 1.5*scale, 0],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_scale": [90, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -45,7 +45,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     head = {
         "scale": [1*scale, 1*scale, 1*scale],
         "part_position": [0, 3*scale, 0],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_moving": [90, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -63,7 +63,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     nose = {
         "scale": [altura_nariz*2, altura_nariz, altura_nariz/8],
         "part_position": [0, 2.75*scale, -scale],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -82,7 +82,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     left_eye = {
         "scale": [altura_do_olho/3, altura_do_olho, altura_do_olho/4],
         "part_position": [distancia_olhos/2, scale*(1.8+altura_do_olho+1.5), -scale*0.85],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -97,7 +97,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     right_eye = {
         "scale": [altura_do_olho/3, altura_do_olho, altura_do_olho/4],
         "part_position": [-distancia_olhos/2, scale*(1.8+altura_do_olho+1.5), -scale*0.85],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -113,7 +113,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     ground = {
         "scale": [scale*2, scale/2, scale*2],
         "part_position": [0, scale* (-1  + 1.5) - 0.01, 0],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_scale": [90, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -128,7 +128,7 @@ def create_diglett(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     shadow = {
         "scale": [scale*1.2, scale/2, scale*1.2],
         "part_position": [0, scale*(-1*0.5 + 1.5) - 0.009, 0],
-        "angle_after_moving": [angulo[0], angulo[1], angulo[2]],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }

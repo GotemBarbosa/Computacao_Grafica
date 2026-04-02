@@ -9,14 +9,9 @@ from .utils import *
 import state
 
 
-def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
+def create_roblox(angulos=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
 
     roblox = state.properties['roblox']
-    x_angle = roblox['x_angle']
-    y_angle = roblox['y_angle']
-    z_angle = roblox['z_angle']
-    scale = roblox['scale']
-    pos = roblox['position']
 
 
     ini_cube = state.objects_dict['cube']['ini_index']
@@ -33,7 +28,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     left_leg = {
         "scale": [0.1*scale, 0.2*scale, 0.08*scale],
         "part_position": [-0.11*scale, -0.2*scale, 0.0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     color_vector = [roblox['colors']['left_leg'] for _ in range(6)]
@@ -48,7 +43,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     right_leg = {
         "scale": [0.1*scale, 0.2*scale, 0.08*scale],
         "part_position": [0.11*scale, -0.2*scale, 0.0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     color_vector = [roblox['colors']['right_leg'] for _ in range(6)]
@@ -62,7 +57,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     chest = {
         "scale": [0.21*scale, 0.2*scale, 0.1*scale],
         "part_position": [0, 0.2*scale, 0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     color_vector = [roblox['colors']['chest'] for _ in range(6)]
@@ -76,7 +71,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     right_arm = {
         "scale": [0.08*scale, 0.2*scale, 0.08*scale],
         "part_position": [-0.29*scale, 0.2*scale, 0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     color_vector = [roblox['colors']['arm'] for _ in range(6)]
@@ -90,7 +85,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     left_arm = {
         "scale": [0.08*scale, 0.2*scale, 0.08*scale],
         "part_position": [0.29*scale, 0.2*scale, 0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     draw_cube(final_matrix(left_arm), color_vector)
@@ -104,7 +99,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     head = {
         "scale": [0.1*scale, 0.1*scale, 0.1*scale],
         "part_position": [0, 0.5*scale, 0],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "angle_before_moving": [90, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -120,7 +115,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     right_eye = {
         "scale": [0.01*scale, 0.02*scale, 0.05*scale],
         "part_position": [-0.03*scale, 0.55*scale, -0.05*scale],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }
@@ -137,7 +132,7 @@ def create_roblox(angulo=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     left_eye = {
         "scale": [0.01*scale, 0.02*scale, 0.05*scale],
         "part_position": [0.03*scale, 0.55*scale, -0.05*scale],
-        "angle_after_moving": [x_angle, y_angle, z_angle],
+        "angle_after_moving": angulos,
         "angle_before_moving": [0, 0, 0],
         "final_translation": [pos[0], pos[1], pos[2]]
     }

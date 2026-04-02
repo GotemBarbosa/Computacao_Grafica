@@ -20,26 +20,42 @@ def read_json_file(filename):
 
 properties_path = "./objects/properties.json"
 properties = read_json_file(properties_path)
-
+scene_angles = [0, 0, 0]
+scene_scale = 0.5
 
 
 def key_event(window,key,scancode,action,mods):
     global properties
-    
-    #if key == 265: s_y += 0.01 #cima
-    #if key == 264: s_y -= 0.01 #baixo
+    global scene_angles
+    global scene_scale
 
     # KEYBOARD PARA ROTACIONAR E ESCALAR O EEVEE (VAMOS MUDAR PARA O QUE QUISERMOS DEPOIS)
-    if key == 263: properties['diglett']['angles'][1] += 5 # flecha esquerda
-    if key == 262: properties['diglett']['angles'][1] -= 5 # flecha direita
-    if key == 81: properties['diglett']['scale'] -= 0.05 # Q
-    if key == 69: properties['diglett']['scale'] += 0.05 # E
-    if key == 87: properties['diglett']['position'][1] += 0.05 # W
-    if key == 83: properties['diglett']['position'][1] -= 0.05 # S
-    if key == 65: properties['diglett']['position'][0] -= 0.05 # A
-    if key == 68: properties['diglett']['position'][0] += 0.05 # D
-    if key == 88: properties['diglett']['angles'][0] += 0.5 # X
-    if key == 90: properties['diglett']['angles'][0] -= 0.5 # X
+    if key == 263: # esquerda
+        scene_angles[1] += 1
+    if key == 262: # direita
+        scene_angles[1] -= 1
+    if key == 265: # cima
+        scene_angles[2] += 5
+    if key == 264: # baixo
+        scene_angles[2] -= 5
+    if key == 81:  # Q
+        scene_scale -= 0.05
+    if key == 69: # E
+        scene_scale += 0.05
+    if key == 87: 
+        properties['pokeball']['position'][1] += 0.05 # W
+    if key == 83: 
+        properties['pokeball']['position'][1] -= 0.05 # S
+    if key == 65: # A
+        scene_angles[0] -= 1
+        #properties['pokeball']['position'][0] -= 0.05 
+    if key == 68: # D
+        scene_angles[0] += 1
+        #properties['pokeball']['position'][0] += 0.05 
+    if key == 88: 
+        properties['pokeball']['angles'][0] += 0.5 # X
+    if key == 90: 
+        properties['pokeball']['angles'][0] -= 0.5 # X
 
 
 
