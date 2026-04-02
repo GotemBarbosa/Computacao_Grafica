@@ -49,9 +49,12 @@ def draw_scene():
                      angulos=[s_angles[0]-15, s_angles[1]-20, s_angles[2]], 
                      scale=eevee_scale)
         
-        create_diglett(pos=[0.6, -0.7, 0.0],
-                       angulos=[s_angles[0]-15, s_angles[1]+50, s_angles[2]],
-                       scale=diglett_scale)
+
+        diglett_height = 3.5 * diglett_scale  # altura total: do disco até o topo da cabeça
+        diglett_offset = max(-diglett_height, min(diglett_height, state.diglett_y_offset))
+        create_diglett(pos=[0.6, -0.7 + diglett_offset, 0.0],
+                    angulos=[s_angles[0]-15, s_angles[1]+50, s_angles[2]],
+                    scale=diglett_scale)
         
 
         '''
@@ -73,10 +76,10 @@ def draw_scene():
         ===========================
         '''
         colors = ["light", "green", "normal", "green", "light", "normal"]
-        create_pokeball(angulos=[s_angles[0]+rr[5], s_angles[1], s_angles[2]], 
-                        pos=[pokeball_positions[5][0], pokeball_positions[5][1], pokeball_positions[5][2]], 
-                        open=True, 
-                        opening_angle=45, 
+        create_pokeball(angulos=[s_angles[0]+rr[5], s_angles[1], s_angles[2]],
+                        pos=[pokeball_positions[5][0], pokeball_positions[5][1], pokeball_positions[5][2]],
+                        open=True,
+                        opening_angle=state.pokeball_opening_angle,
                         color_name=colors[5], 
                         scale=pokeball_scale,
                         rotation_angle=rot_angle)

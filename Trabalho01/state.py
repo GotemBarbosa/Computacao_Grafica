@@ -22,12 +22,16 @@ properties_path = "./objects/properties.json"
 properties = read_json_file(properties_path)
 scene_angles = [0, 0, 0]
 scene_scale = 0.5
+diglett_y_offset = 0.0
+pokeball_opening_angle = 45
 
 
 def key_event(window,key,scancode,action,mods):
     global properties
     global scene_angles
     global scene_scale
+    global pokeball_opening_angle
+    global diglett_y_offset
 
     # KEYBOARD PARA ROTACIONAR E ESCALAR O EEVEE (VAMOS MUDAR PARA O QUE QUISERMOS DEPOIS)
     if key == 263: # esquerda
@@ -35,14 +39,14 @@ def key_event(window,key,scancode,action,mods):
     if key == 262: # direita
         scene_angles[1] -= 1
     if key == 265: # cima
-        scene_angles[2] += 5
+        diglett_y_offset += 0.05
     if key == 264: # baixo
-        scene_angles[2] -= 5
+        diglett_y_offset -= 0.01
     if key == 81:  # Q
         scene_scale -= 0.05
     if key == 69: # E
         scene_scale += 0.05
-    if key == 87: 
+    if key == 87:
         properties['pokeball']['position'][1] += 0.05 # W
     if key == 83: 
         properties['pokeball']['position'][1] -= 0.05 # S
@@ -54,8 +58,12 @@ def key_event(window,key,scancode,action,mods):
         #properties['pokeball']['position'][0] += 0.05 
     if key == 88: 
         properties['pokeball']['angles'][0] += 0.5 # X
-    if key == 90: 
+    if key == 90:
         properties['pokeball']['angles'][0] -= 0.5 # X
+    if key == 80:  # P - abre a pokebola
+        pokeball_opening_angle = min(pokeball_opening_angle + 5, 180)
+    if key == 79:  # O - fecha a pokebola
+        pokeball_opening_angle = max(pokeball_opening_angle - 5, 0)
 
 
 
