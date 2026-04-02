@@ -20,6 +20,8 @@ def draw_scene():
     #glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
     # while loop --> Lógica de renderização
     while not glfw.window_should_close(state.window):
+        poligonos = state.poligonos
+        glPolygonMode(GL_FRONT_AND_BACK,poligonos)
 
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -39,6 +41,9 @@ def draw_scene():
         roblox_scale = s_scale*1.5
         diglett_scale = s_scale*0.2
 
+        enterrado = state.enterrado
+        diglett_pos = state.diglett_pos
+
         create_scenario()
 
         create_roblox(pos=[0.2, -0.15, +0.5],
@@ -50,11 +55,10 @@ def draw_scene():
                      scale=eevee_scale)
         
 
-        diglett_height = 3.5 * diglett_scale  # altura total: do disco até o topo da cabeça
-        diglett_offset = max(-diglett_height, min(diglett_height, state.diglett_y_offset))
-        create_diglett(pos=[0.6, -0.7 + diglett_offset, 0.0],
+        create_diglett(pos=[0.6+diglett_pos[0], -0.7+diglett_pos[1], +0.2],
                     angulos=[s_angles[0]-15, s_angles[1]+50, s_angles[2]],
-                    scale=diglett_scale)
+                    scale=diglett_scale,
+                       enterrado=enterrado)
         
 
         '''
