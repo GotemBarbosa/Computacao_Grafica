@@ -31,10 +31,10 @@
             "eye": [0.0, 0.0, 0.0, 1.0]
         },
         "x_angle": 0,
-        "y_angle": -20,
+        "y_angle": -45,
         "z_angle": 0,
-        "scale": 0.8,
-        "position": [-0.65, -0.35, 0.25]
+        "scale": 1.0,
+        "position": [-0.7, 0.0, 0.6]
     },
     "pokeball": {
         "colors": {
@@ -53,7 +53,7 @@
     "healer": {
         "angle": 0.15,
         "position": [0.0, -0.2, 0.0],
-        "scale": 0.3,
+        "scale": 0.299,
         "pokeball_positions": [],
         "colors": {
             "upper_base": [

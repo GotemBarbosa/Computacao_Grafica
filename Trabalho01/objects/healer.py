@@ -2,6 +2,17 @@ from matrix_operations import *
 from .utils import *
 import state
 
+
+def healer_transform(pos, angulo, local_pos, local_scale):
+    mat_transform = mat_identidade()
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
+    mat_transform = multiplica_matriz(mat_transform, mat_translacao(local_pos[0], local_pos[1], local_pos[2]))
+    mat_transform = multiplica_matriz(mat_transform, mat_escala(local_scale[0], local_scale[1], local_scale[2]))
+    return mat_transform
+
+
 def create_healer(angulo=None, pos=None, scale=None, pokeball_positions=None):
     healer = state.properties["healer"]
 
@@ -25,32 +36,20 @@ def create_healer(angulo=None, pos=None, scale=None, pokeball_positions=None):
     #base superior
     healer_color = healer["colors"]["upper_base"]
 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1], pos[2]))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(2.0*scale, 0.4*scale, 3.0*scale))
+    mat_transform = healer_transform(pos, angulo, [0.0, 0.0, 0.0], [2.0*scale, 0.4*scale, 3.0*scale])
     draw_cube(mat_transform, healer_color)
 
 
     #base central
     healer_color = healer["colors"]["middle_base"]
 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0]+0.01, pos[1]-0.14, pos[2]))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(1.95*scale, 0.1*scale, 2.90*scale))
+    mat_transform = healer_transform(pos, angulo, [0.03*scale, -0.5*scale, 0.0], [1.95*scale, 0.1*scale, 2.90*scale])
     draw_cube(mat_transform, healer_color)
 
     #base inferior
     healer_color = healer["colors"]["lower_base"]
 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1]-0.30, pos[2]))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(2.0*scale, 0.4*scale, 3.0*scale))
+    mat_transform = healer_transform(pos, angulo, [0.0, -0.9*scale, 0.0], [2.0*scale, 0.4*scale, 3.0*scale])
     draw_cube(mat_transform, healer_color)
 
 
@@ -64,12 +63,7 @@ def create_healer(angulo=None, pos=None, scale=None, pokeball_positions=None):
     # Placa azul em cima
     blue_color = healer["colors"]["top_plate"]
 
-    mat_transform = mat_identidade()
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(pos[0], pos[1]+0.10, pos[2]))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_x(-angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_rotacao_y(angulo))
-    mat_transform = multiplica_matriz(mat_transform, mat_translacao(0, 0.10*scale, 0))  # sobe pra cima da base
-    mat_transform = multiplica_matriz(mat_transform, mat_escala(1.8*scale, 0.05*scale, 2.8*scale))
+    mat_transform = healer_transform(pos, angulo, [0.0, 0.43*scale, 0.0], [1.8*scale, 0.05*scale, 2.8*scale])
     draw_cube(mat_transform, blue_color)
 
     '''
