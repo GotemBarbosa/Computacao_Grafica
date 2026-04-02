@@ -94,7 +94,7 @@ def create_eevee(angulos=state.properties['eevee']['angles'],
     left_eye = {
         'angle_after_moving': angulos,
         'scale': [bs*0.8, bs*1.25, 1.0],
-        'part_position': [1.2*bs, bs*3.9, -bs*5 - 0.01],
+        'part_position': [1.2*bs, bs*3.9, -bs*5 - 0.0001],
         'final_translation': [pos[0], pos[1], pos[2]]
     }
     draw_generic_object(state.objects_dict['square']['ini_index'], state.objects_dict['square']['end_index'], final_matrix(left_eye), color_vector, flag=GL_TRIANGLE_STRIP)
@@ -104,7 +104,7 @@ def create_eevee(angulos=state.properties['eevee']['angles'],
     left_dot = {
         'angle_after_moving': angulos,
         'scale': [bs*0.4, bs*0.4, 1.0],
-        'part_position': [1.15*bs, bs*4.3, -bs*5 - 0.02],
+        'part_position': [1.15*bs, bs*4.3, -bs*5 - 0.0002],
         'final_translation': [pos[0], pos[1], pos[2]]
     }
     draw_generic_object(state.objects_dict['square']['ini_index'], state.objects_dict['square']['end_index'], final_matrix(left_dot), color_vector, flag=GL_TRIANGLE_STRIP)
@@ -115,7 +115,7 @@ def create_eevee(angulos=state.properties['eevee']['angles'],
     right_eye = {
         'angle_after_moving': angulos,
         'scale': [bs*0.8, bs*1.25, 1.0],
-        'part_position': [-1.2*bs, bs*3.9, -bs*5 - 0.01],
+        'part_position': [-1.2*bs, bs*3.9, -bs*5 - 0.0001],
         'final_translation': [pos[0], pos[1], pos[2]]
     }
     draw_generic_object(state.objects_dict['square']['ini_index'], state.objects_dict['square']['end_index'], final_matrix(right_eye), color_vector, flag=GL_TRIANGLE_STRIP)
@@ -124,7 +124,7 @@ def create_eevee(angulos=state.properties['eevee']['angles'],
     left_dot = {
         'angle_after_moving': angulos,
         'scale': [bs*0.4, bs*0.4, 1.0],
-        'part_position': [-1.15*bs, bs*4.3, -bs*5 - 0.02],
+        'part_position': [-1.15*bs, bs*4.3, -bs*5 - 0.0002],
         'final_translation': [pos[0], pos[1], pos[2]]
     }
     draw_generic_object(state.objects_dict['square']['ini_index'], state.objects_dict['square']['end_index'], final_matrix(left_dot), color_vector, flag=GL_TRIANGLE_STRIP)

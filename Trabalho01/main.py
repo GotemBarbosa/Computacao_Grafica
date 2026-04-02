@@ -89,6 +89,24 @@ def draw_scene():
                             color_name=colors[i], 
                             scale=pokeball_scale,
                             rotation_angle=rot_angle)
+            
+
+        '''
+        ===========================
+        POKEBOLAS DENTRO DA POKEBOLA
+        ===========================
+        '''
+        pokemon_scale = pokeball_scale * 0.8  # Nova escala do pokemon
+
+        create_eevee(
+        pos=[
+            pokeball_positions[5][0],
+            pokeball_positions[5][1],  # desce para ficar na metade inferior
+            pokeball_positions[5][2]
+        ],
+        angulos=[s_angles[0] + rr[5], s_angles[1] + rot_angle, s_angles[2]],
+        scale=pokemon_scale
+)
         
         glfw.swap_buffers(state.window)
         glfw.poll_events() 
