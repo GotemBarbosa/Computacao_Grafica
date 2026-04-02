@@ -24,6 +24,8 @@ scene_angles = [0, 0, 0]
 scene_scale = 0.5
 diglett_y_offset = 0.0
 pokeball_opening_angle = 45
+pokeball_rot_offset = [0, 0]  # [eixo X (W/S), eixo Y (A/D)]
+pokemon_scale_factor = 0.8
 
 
 def key_event(window,key,scancode,action,mods):
@@ -32,34 +34,34 @@ def key_event(window,key,scancode,action,mods):
     global scene_scale
     global pokeball_opening_angle
     global diglett_y_offset
+    global pokeball_rot_offset
+    global pokemon_scale_factor
 
     # KEYBOARD PARA ROTACIONAR E ESCALAR O EEVEE (VAMOS MUDAR PARA O QUE QUISERMOS DEPOIS)
     if key == 263: # esquerda
-        scene_angles[1] += 1
+        scene_angles[1] += 5
     if key == 262: # direita
-        scene_angles[1] -= 1
+        scene_angles[1] -= 5
     if key == 265: # cima
         diglett_y_offset += 0.05
     if key == 264: # baixo
         diglett_y_offset -= 0.01
     if key == 81:  # Q
-        scene_scale -= 0.05
-    if key == 69: # E
-        scene_scale += 0.05
-    if key == 87:
-        properties['pokeball']['position'][1] += 0.05 # W
-    if key == 83: 
-        properties['pokeball']['position'][1] -= 0.05 # S
-    if key == 65: # A
-        scene_angles[0] -= 1
-        #properties['pokeball']['position'][0] -= 0.05 
-    if key == 68: # D
-        scene_angles[0] += 1
-        #properties['pokeball']['position'][0] += 0.05 
-    if key == 88: 
-        properties['pokeball']['angles'][0] += 0.5 # X
-    if key == 90:
-        properties['pokeball']['angles'][0] -= 0.5 # X
+        pokemon_scale_factor = max(0.1, pokemon_scale_factor - 0.1)
+    if key == 69:  # E
+        pokemon_scale_factor += 0.1
+    if key == 87:  # W - inclina pra frente (eixo X)
+        pokeball_rot_offset[0] += 10
+    if key == 83:  # S - inclina pra trás (eixo X)
+        pokeball_rot_offset[0] -= 10
+    if key == 65:  # A - gira para esquerda (eixo Y)
+        pokeball_rot_offset[1] += 10
+    if key == 68:  # D - gira para direita (eixo Y)
+        pokeball_rot_offset[1] -= 10
+    if key == 88:  # X
+        scene_angles[1] += 5
+    if key == 90:  # Z
+        scene_angles[1] -= 5
     if key == 80:  # P - abre a pokebola
         pokeball_opening_angle = min(pokeball_opening_angle + 5, 180)
     if key == 79:  # O - fecha a pokebola

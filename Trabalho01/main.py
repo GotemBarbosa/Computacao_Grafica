@@ -75,21 +75,24 @@ def draw_scene():
         POKEBOLAS EM CIMA DO HEALER
         ===========================
         '''
+        pb_rx = state.pokeball_rot_offset[0]
+        pb_ry = state.pokeball_rot_offset[1]
+
         colors = ["light", "green", "normal", "green", "light", "normal"]
-        create_pokeball(angulos=[s_angles[0]+rr[5], s_angles[1], s_angles[2]],
+        create_pokeball(angulos=[s_angles[0]+rr[5]+pb_rx, s_angles[1]+pb_ry, s_angles[2]],
                         pos=[pokeball_positions[5][0], pokeball_positions[5][1], pokeball_positions[5][2]],
                         open=True,
                         opening_angle=state.pokeball_opening_angle,
-                        color_name=colors[5], 
+                        color_name=colors[5],
                         scale=pokeball_scale,
                         rotation_angle=rot_angle)
 
         for i in range(5):
-            create_pokeball(angulos=[s_angles[0]+rr[i], s_angles[1], s_angles[2]], 
-                            pos=[pokeball_positions[i][0], pokeball_positions[i][1], pokeball_positions[i][2]], 
-                            open=False, 
-                            opening_angle=0, 
-                            color_name=colors[i], 
+            create_pokeball(angulos=[s_angles[0]+rr[i]+pb_rx, s_angles[1]+pb_ry, s_angles[2]],
+                            pos=[pokeball_positions[i][0], pokeball_positions[i][1], pokeball_positions[i][2]],
+                            open=False,
+                            opening_angle=0,
+                            color_name=colors[i],
                             scale=pokeball_scale,
                             rotation_angle=rot_angle)
             
@@ -99,7 +102,7 @@ def draw_scene():
         POKEBOLAS DENTRO DA POKEBOLA
         ===========================
         '''
-        pokemon_scale = pokeball_scale * 0.8  # Nova escala do pokemon
+        pokemon_scale = pokeball_scale * state.pokemon_scale_factor
 
         create_eevee(
         pos=[
