@@ -37,6 +37,10 @@ diglett_y_offset = 0.0
 pokeball_opening_angle = 45
 pokeball_rot_offset = [0, 0]  # [eixo X (W/S), eixo Y (A/D)]
 pokemon_scale_factor = 0.8
+diglett_pos = [0, 0, 0]
+enterrado = 0
+
+poligonos = GL_FILL
 
 
 def key_event(window,key,scancode,action,mods):
@@ -51,16 +55,25 @@ def key_event(window,key,scancode,action,mods):
     global diglett_y_offset
     global pokeball_rot_offset
     global pokemon_scale_factor
+    global diglett_pos
+    global enterrado
+    global poligonos
 
     # KEYBOARD PARA ROTACIONAR E ESCALAR
     if key == 263: # esquerda
-        scene_angles[1] += 5
+        diglett_pos[0] -= 0.02
     if key == 262: # direita
-        scene_angles[1] -= 5
+        diglett_pos[0] += 0.02
     if key == 265: # cima
-        diglett_y_offset += 0.05
+        diglett_pos[1] += 0.02
     if key == 264: # baixo
-        diglett_y_offset -= 0.01
+        diglett_pos[1] -= 0.02
+    if key == 82: # desenterrar
+        enterrado += 0.1
+        enterrado = min(enterrado, 1)
+    if key == 70: # enterrar
+        enterrado -= 0.1
+        enterrado = max(enterrado, -3)
     if key == 81:  # Q
         pokemon_scale_factor = max(0.1, pokemon_scale_factor - 0.1)
     if key == 69:  # E
@@ -81,6 +94,10 @@ def key_event(window,key,scancode,action,mods):
         pokeball_opening_angle = min(pokeball_opening_angle + 5, 180)
     if key == 79:  # O - fecha a pokebola
         pokeball_opening_angle = max(pokeball_opening_angle - 5, 0)
+    if key == 84:
+        poligonos = GL_LINE
+    if key == 71:
+        poligonos = GL_FILL
 
 
 
