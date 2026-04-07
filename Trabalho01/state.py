@@ -73,7 +73,7 @@ def key_event(window,key,scancode,action,mods):
         enterrado = min(enterrado, 1)
     if key == 70: # enterrar
         enterrado -= 0.1
-        enterrado = max(enterrado, -3)
+        enterrado = max(enterrado, -3.1)
     if key == 81:  # Q
         pokemon_scale_factor = max(0.1, pokemon_scale_factor - 0.1)
     if key == 69:  # E
@@ -90,14 +90,15 @@ def key_event(window,key,scancode,action,mods):
         scene_angles[1] += 5
     if key == 90:  # Z
         scene_angles[1] -= 5
-    if key == 80:  # P - abre a pokebola
+    if key == 76:  # L - abre a pokebola
         pokeball_opening_angle = min(pokeball_opening_angle + 5, 180)
-    if key == 79:  # O - fecha a pokebola
+    if key == 75:  # K - fecha a pokebola
         pokeball_opening_angle = max(pokeball_opening_angle - 5, 0)
-    if key == 84:
-        poligonos = GL_LINE
-    if key == 71:
-        poligonos = GL_FILL
+    if key == 80 and action == glfw.PRESS:
+        if poligonos == GL_LINE:
+            poligonos = GL_FILL 
+        else:
+            poligonos = GL_LINE
 
 
 

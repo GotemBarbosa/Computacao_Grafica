@@ -62,10 +62,10 @@ def draw_scene():
         diglett_height = 3.5 * diglett_scale  # altura total: do disco até o topo da cabeça
         # Limita o movimento vertical do Diglett para que ele não “saia” demais do chão.
         diglett_offset = max(-diglett_height, min(diglett_height, state.diglett_y_offset))
-        create_diglett(pos=[0.6, -0.7 + diglett_offset, 0.0],
+        create_diglett(pos=[0.6+diglett_pos[0], -0.7+diglett_pos[1], -0.2],
                     angulos=[s_angles[0]-15, s_angles[1]+50, s_angles[2]],
                     scale=diglett_scale,
-                       enterrado=enterrado)
+                    enterrado=enterrado)
         
 
         '''
