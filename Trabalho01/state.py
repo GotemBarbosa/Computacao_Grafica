@@ -1,3 +1,5 @@
+# Centraliza o estado global, a inicialização do OpenGL e o carregamento das geometrias base.
+
 import glfw
 from OpenGL.GL import *
 import numpy as np
@@ -5,6 +7,13 @@ from shaders.shaders import Shader
 from vertices.vertices import *
 from matrix_operations import *
 import json
+
+# Este módulo centraliza o estado global da aplicação:
+# - parâmetros interativos da cena
+# - janela/contexto OpenGL
+# - shaders e localização de atributos/uniforms
+# - geometria base já carregada na GPU
+
 
 def read_json_file(filename):
     try:
@@ -18,7 +27,9 @@ def read_json_file(filename):
         print(f"Error: Could not decode JSON from the file '{filename}'. Check the file format.")
         return None
 
-properties_path = "./objects/properties.json"
+# Estado global da cena, atualizado por eventos de teclado
+# e consumido pelas funções de desenho.
+properties_path = "./objects/properties.json" 
 properties = read_json_file(properties_path)
 scene_angles = [0, 0, 0]
 scene_scale = 0.5
@@ -29,6 +40,10 @@ pokemon_scale_factor = 0.8
 
 
 def key_event(window,key,scancode,action,mods):
+    """
+    Atualiza o estado global da cena a partir da entrada do teclado.
+    Cada tecla altera parâmetros usados no próximo frame renderizado.
+    """
     global properties
     global scene_angles
     global scene_scale
@@ -37,7 +52,7 @@ def key_event(window,key,scancode,action,mods):
     global pokeball_rot_offset
     global pokemon_scale_factor
 
-    # KEYBOARD PARA ROTACIONAR E ESCALAR O EEVEE (VAMOS MUDAR PARA O QUE QUISERMOS DEPOIS)
+    # KEYBOARD PARA ROTACIONAR E ESCALAR
     if key == 263: # esquerda
         scene_angles[1] += 5
     if key == 262: # direita

@@ -1,3 +1,5 @@
+# Monta e desenha o healer, além de calcular as posições das pokebolas sobre ele.
+
 from matrix_operations import *
 from .utils import *
 import state

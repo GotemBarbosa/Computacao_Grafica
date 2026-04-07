@@ -1,3 +1,5 @@
+# Carrega, normaliza, salva e expõe as geometrias base usadas pelos objetos.
+
 import os 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

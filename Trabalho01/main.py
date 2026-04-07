@@ -1,4 +1,6 @@
 
+# Coordena o loop principal de renderização e monta a cena a cada frame.
+
 import glfw
 from OpenGL.GL import *
 from shaders.shaders import Shader
@@ -26,7 +28,9 @@ def draw_scene():
         #glClearColor(0.15, 0.15, 0.2, 1.0)
         glClearColor(0.56, 0.75, 0.87, 1.0)
 
-        rot_angle += 1.5
+        rot_angle += 0 #angulo de rotação padrao para alguns objetos (usado caso queira uma rotacao base)
+
+        #ajuste base de rotação para cada pokebola no healer
         rr = [15.0, 20.0, -10.0, 10.0, -15.0, 12.0]
 
 
@@ -51,6 +55,7 @@ def draw_scene():
         
 
         diglett_height = 3.5 * diglett_scale  # altura total: do disco até o topo da cabeça
+        # Limita o movimento vertical do Diglett para que ele não “saia” demais do chão.
         diglett_offset = max(-diglett_height, min(diglett_height, state.diglett_y_offset))
         create_diglett(pos=[0.6, -0.7 + diglett_offset, 0.0],
                     angulos=[s_angles[0]-15, s_angles[1]+50, s_angles[2]],
@@ -63,6 +68,7 @@ def draw_scene():
              --> pokeball_positions = [pos1, pos2, pos3, pos4, pos5, pos6]
              --> pos_n = [x, y, z]
         '''
+        # as posicoes retornadas sao usadas para indicar posicionamento das pokebolas
         pokeball_positions = create_healer(angulo=[s_angles[0]-15, s_angles[1]-110, s_angles[2]], 
                                            pos=[-0.2, -0.3, 0.3],
                                            scale=healer_scale)
@@ -79,6 +85,7 @@ def draw_scene():
         pb_ry = state.pokeball_rot_offset[1]
 
         colors = ["light", "green", "normal", "green", "light", "normal"]
+        #uma pokebola tem ativado a opção de abrir
         create_pokeball(angulos=[s_angles[0]+rr[5]+pb_rx, s_angles[1]+pb_ry, s_angles[2]],
                         pos=[pokeball_positions[5][0], pokeball_positions[5][1], pokeball_positions[5][2]],
                         open=True,
@@ -105,7 +112,7 @@ def draw_scene():
         pokemon_scale = pokeball_scale * state.pokemon_scale_factor
 
         create_eevee(
-        pos=[
+        pos=[ #coloca o eevee em uma pokebola especifica
             pokeball_positions[5][0],
             pokeball_positions[5][1],  # desce para ficar na metade inferior
             pokeball_positions[5][2]

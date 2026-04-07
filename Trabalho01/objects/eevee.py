@@ -1,4 +1,6 @@
 
+# Monta e desenha o modelo do Eevee a partir de primitivas geométricas.
+
 from .utils import *
 from matrix_operations import *
 import state
@@ -263,4 +265,3 @@ def create_eevee(angulos=state.properties['eevee']['angles'],
         'final_translation': [pos[0], pos[1], pos[2]]
     }
     draw_cube(final_matrix(back_cloud), color_vector)  
-

@@ -1,3 +1,5 @@
+# Gera e salva os vértices de um disco plano para uso como malha base.
+
 import math
 
 def generate_disk(num_points=36, radius=1.0, y=0.0):

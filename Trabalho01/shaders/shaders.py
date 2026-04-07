@@ -1,3 +1,5 @@
+# Carrega, compila e gerencia os shaders OpenGL usados pelo projeto.
+
 from OpenGL.GL import *
 
 # CRÉDITOS À: https://learnopengl.com/

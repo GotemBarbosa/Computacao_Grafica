@@ -1,3 +1,5 @@
+# Define operações de matrizes e compõe transformações geométricas usadas na cena.
+
 import numpy as np
 import math
 

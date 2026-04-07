@@ -1,3 +1,5 @@
+# Monta e desenha o personagem estilo Roblox usando primitivas geométricas.
+
 import sys
 import os
 
@@ -138,4 +140,3 @@ def create_roblox(angulos=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
     }
     color_vector = [roblox['colors']['eye'] for _ in range((end_cilinder - ini_cilinder)//3)]
     draw_generic_object(ini_cilinder, end_cilinder, final_matrix(left_eye), color_vector)
-

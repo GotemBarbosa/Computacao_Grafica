@@ -1,3 +1,5 @@
+# Monta e desenha a pokebola, incluindo abertura, rotação e detalhes frontais.
+
 from matrix_operations import *
 from .utils import *
 import state

@@ -1,3 +1,5 @@
+# Gera e salva os vértices de um anel cilíndrico para uso como malha base.
+
 import math
 
 def generate_ring(num_points=36, radius=1.0, y_top=0.1, y_bottom=-0.1):

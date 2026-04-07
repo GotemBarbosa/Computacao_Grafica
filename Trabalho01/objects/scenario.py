@@ -1,3 +1,5 @@
+# Desenha o cenário base da cena a partir das propriedades globais.
+
 from matrix_operations import *
 from .utils import *
 import state

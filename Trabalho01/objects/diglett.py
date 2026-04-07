@@ -1,3 +1,5 @@
+# Monta e desenha o Diglett com corpo, rosto, chão e sombra.
+
 import sys
 import os
 
@@ -133,4 +135,3 @@ def create_diglett(angulos=[0, 0, 0], pos=[0, 0, 0], scale=1.0):
         "final_translation": [pos[0], pos[1], pos[2]]
     }
     draw_generic_object(ini_disk, end_disk, final_matrix(shadow), color_vector)
-

@@ -1,3 +1,5 @@
+# Reúne funções auxiliares de desenho para cubos e objetos genéricos no OpenGL.
+
 from OpenGL.GL import *
 import state
 
