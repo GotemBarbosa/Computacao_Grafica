@@ -1,58 +1,15 @@
-"""Utilities to load scene geometry from OBJ files."""
+import glm
+import numpy as np
+from OpenGL.GL import *
+import state
 
 
-def load_model_from_file(filename):
-    vertices = []
-    texture_coords = []
-    faces = []
+def desenha_caixa(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, texture_id):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
 
-    for line in open(filename, "r"):
-        if line.startswith("#"):
-            continue
-        values = line.split()
-        if not values:
-            continue
+    glBindTexture(GL_TEXTURE_2D, texture_id)
 
-        if values[0] == "v":
-            vertices.append([float(values[1]), float(values[2]), float(values[3])])
-
-        elif values[0] == "vt":
-            texture_coords.append([float(values[1]), float(values[2])])
-
-        elif values[0] == "f":
-            face_v = []
-            face_t = []
-            for item in values[1:]:
-                w = item.split("/")
-                face_v.append(int(w[0]))
-                face_t.append(int(w[1]) if len(w) > 1 and w[1] else 0)
-            faces.append((face_v, face_t))
-
-    return {"vertices": vertices, "texture": texture_coords, "faces": faces}
-
-
-def _triangulate_indices(indices):
-    tris = []
-    for i in range(1, len(indices) - 1):
-        tris.append([indices[0], indices[i], indices[i + 1]])
-    return tris
-
-
-def load_box_geometry(obj_path):
-    model = load_model_from_file(obj_path)
-    raw_vertices = []
-    raw_texcoords = []
-
-    for face_v, face_t in model["faces"]:
-        tris_v = _triangulate_indices(face_v)
-        tris_t = _triangulate_indices(face_t)
-
-        for tri in tris_v:
-            for vid in tri:
-                raw_vertices.append(model["vertices"][vid - 1])
-
-        for tri in tris_t:
-            for tid in tri:
-                raw_texcoords.append(model["texture"][tid - 1])
-
-    return raw_vertices, raw_texcoords
+    ini = state.objects_dict["caixa"]["ini_index"]
+    fim = state.objects_dict["caixa"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
