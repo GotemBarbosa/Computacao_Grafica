@@ -25,6 +25,9 @@ obj_angle = 0.0
 cameraPos = glm.vec3(0.0, 0.0, 0.0)
 cameraFront = glm.vec3(0.0, 0.0, -1.0)
 cameraUp = glm.vec3(0.0, 1.0, 0.0)
+cameraMoveFront = glm.vec3(0.0, 0.0, -1.0)
+
+flyMode = False
 
 
 # Estado do mouse para controle
@@ -62,10 +65,14 @@ def projection():
     return np.array(p, dtype=np.float32)
 
 
-
+keys = {} # Mantém o estado de quais teclas estão sendo pressionadas, permite a movimentação na diagonal e deixa o movimento mais fluido
 
 def key_event(window,key,scancode,action,mods):
-    global cameraPos, cameraFront, cameraUp, obj_angle
+    global cameraPos, cameraFront, cameraUp, obj_angle, cameraMoveFront, flyMode, keys
+    if action == glfw.PRESS:
+        keys[key] = True
+    elif action == glfw.RELEASE:
+        keys[key] = False
 
     # Aceita só tecla pressionada ou repetida
     if action not in (glfw.PRESS, glfw.REPEAT):
@@ -77,18 +84,27 @@ def key_event(window,key,scancode,action,mods):
 
     # Movimento da câmera baseado em deltaTime
     camera_speed = 10 * deltaTime
-
     right = glm.normalize(glm.cross(cameraFront, cameraUp))
 
-    # WASD: navegação da câmera
-    if key == glfw.KEY_W:
-        cameraPos += camera_speed * cameraFront
-    if key == glfw.KEY_S:
-        cameraPos -= camera_speed * cameraFront
-    if key == glfw.KEY_A:
+    if keys.get(glfw.KEY_W, False):
+        if flyMode:
+            cameraPos += camera_speed * cameraFront
+        else:
+            cameraPos += camera_speed * cameraMoveFront
+
+    if keys.get(glfw.KEY_S, False):
+        if flyMode:
+            cameraPos -= camera_speed * cameraFront
+        else:
+            cameraPos -= camera_speed * cameraMoveFront
+
+    if keys.get(glfw.KEY_A, False):
         cameraPos -= camera_speed * right
-    if key == glfw.KEY_D:
+
+    if keys.get(glfw.KEY_D, False):
         cameraPos += camera_speed * right
+    if key == glfw.KEY_F and action == glfw.PRESS:
+        flyMode = not flyMode
 
     # Q/E: rotação da caixa
     if key == glfw.KEY_Q:
@@ -139,6 +155,16 @@ def scroll_event(window, xoffset, yoffset):
     fov -= yoffset
     if fov < 1.0: fov = 1.0
     if fov > 90.0: fov = 90.0
+
+def update_move_front_camera():
+    global cameraFront, cameraUp, cameraMoveFront
+    cameraMoveFront.x = cameraFront.x
+    cameraMoveFront.y = 0
+    cameraMoveFront.z = cameraFront.z
+    if (cameraMoveFront.x == 0 and cameraMoveFront.z == 0):
+        cameraMoveFront = (-1) * cameraUp 
+    cameraMoveFront = glm.normalize(cameraMoveFront)
+    return
 
 
 

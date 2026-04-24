@@ -12,6 +12,8 @@ def draw_scene():
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
 
+        state.update_move_front_camera()
+
     
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
