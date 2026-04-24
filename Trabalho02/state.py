@@ -38,6 +38,13 @@ lastX = 350.0
 lastY = 350.0
 fov = 45.0
 
+# parametros de fisica
+velocityY = 0.0
+gravity = -20.0
+jumpForce = 12.0
+isOnGround = True
+groundHeight = 0.0
+
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
     # Matriz model (T * R * S) para transformar o objeto no mundo
@@ -67,50 +74,25 @@ def projection():
 
 keys = {} # Mantém o estado de quais teclas estão sendo pressionadas, permite a movimentação na diagonal e deixa o movimento mais fluido
 
-def key_event(window,key,scancode,action,mods):
-    global cameraPos, cameraFront, cameraUp, obj_angle, cameraMoveFront, flyMode, keys
+def key_event(window, key, scancode, action, mods):
+    global keys, flyMode, velocityY, isOnGround
+
     if action == glfw.PRESS:
         keys[key] = True
     elif action == glfw.RELEASE:
         keys[key] = False
 
-    # Aceita só tecla pressionada ou repetida
-    if action not in (glfw.PRESS, glfw.REPEAT):
-        return
-
-    # Encerra aplicação
-    if key == glfw.KEY_ESCAPE:
+    if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
         glfw.set_window_should_close(window, True)
 
-    # Movimento da câmera baseado em deltaTime
-    camera_speed = 10 * deltaTime
-    right = glm.normalize(glm.cross(cameraFront, cameraUp))
-
-    if keys.get(glfw.KEY_W, False):
-        if flyMode:
-            cameraPos += camera_speed * cameraFront
-        else:
-            cameraPos += camera_speed * cameraMoveFront
-
-    if keys.get(glfw.KEY_S, False):
-        if flyMode:
-            cameraPos -= camera_speed * cameraFront
-        else:
-            cameraPos -= camera_speed * cameraMoveFront
-
-    if keys.get(glfw.KEY_A, False):
-        cameraPos -= camera_speed * right
-
-    if keys.get(glfw.KEY_D, False):
-        cameraPos += camera_speed * right
     if key == glfw.KEY_F and action == glfw.PRESS:
         flyMode = not flyMode
 
-    # Q/E: rotação da caixa
-    if key == glfw.KEY_Q:
-        obj_angle += 5.0
-    if key == glfw.KEY_E:
-        obj_angle -= 5.0
+    # Pulo → evento único (isso pode ficar aqui)
+    if key == glfw.KEY_SPACE and action == glfw.PRESS:
+        if isOnGround:
+            velocityY = jumpForce
+            isOnGround = False
 
 
 

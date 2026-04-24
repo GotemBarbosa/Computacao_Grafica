@@ -5,9 +5,43 @@ import numpy as np
 import glm
 from scene_objects import desenha_caixa
 
+def movement():
+    state.camera_speed = 10 * state.deltaTime
+    right = glm.normalize(glm.cross(state.cameraFront, state.cameraUp))
+
+    # Movimento horizontal (sempre roda)
+    if state.keys.get(glfw.KEY_W, False):
+        if state.flyMode:
+            state.cameraPos += state.camera_speed * state.cameraFront
+        else:
+            state.cameraPos += state.camera_speed * state.cameraMoveFront
+
+    if state.keys.get(glfw.KEY_S, False):
+        if state.flyMode:
+            state.cameraPos -= state.camera_speed * state.cameraFront
+        else:
+            state.cameraPos -= state.camera_speed * state.cameraMoveFront
+
+    if state.keys.get(glfw.KEY_A, False):
+        state.cameraPos -= state.camera_speed * right
+
+    if state.keys.get(glfw.KEY_D, False):
+        state.cameraPos += state.camera_speed * right
+
+    if not state.flyMode:
+        state.velocityY += state.gravity * state.deltaTime
+        state.cameraPos.y += state.velocityY * state.deltaTime
+
+        if state.cameraPos.y <= state.groundHeight:
+            state.cameraPos.y = state.groundHeight
+            state.velocityY = 0.0
+            state.isOnGround = True
+
 def draw_scene():
     while not glfw.window_should_close(state.window):
 
+
+        movement()
         currentFrame = glfw.get_time()
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
