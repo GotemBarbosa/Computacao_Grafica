@@ -242,10 +242,21 @@ raw_vertices += snow_v
 raw_texcoords += snow_t
 fim_snow = len(raw_vertices)
 
+
+# Jeep
+jeep_v, jeep_t = load_obj_geometry("./objetos/Jeep/Jeep_Renegade_2016.obj")
+ini_jeep = len(raw_vertices)
+raw_vertices += jeep_v
+raw_texcoords += jeep_t
+fim_jeep = len(raw_vertices)
+
+
 objects_dict = {
     "caixa": {"ini_index": ini_box, "end_index": fim_box},
     "snowTerrain": {"ini_index": ini_snow, "end_index": fim_snow},
+    "jeep": {"ini_index": ini_jeep, "end_index": fim_jeep},
 }
+
 
 allocate_positions_on_gpu(raw_vertices, loc_position)
 allocate_texcoords_on_gpu(raw_texcoords, loc_texture_coord)
@@ -256,6 +267,10 @@ load_texture_from_file(texture_id, "./objetos/caixa/caixa.jpg")
 
 snow_texture_id = glGenTextures(1)
 load_texture_from_file(snow_texture_id, "./objetos/snowTerrain/686.jpg")
+
+jeep_texture_id = glGenTextures(1)
+load_texture_from_file(jeep_texture_id, "./objetos/Jeep/car_jeep_ren.jpg")
+
 
 
 

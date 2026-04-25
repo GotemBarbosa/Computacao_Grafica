@@ -3,7 +3,7 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
-from scene_objects import desenha_caixa, desenha_snow_terrain
+from scene_objects import desenha_caixa, desenha_jeep
 
 def movement():
     state.camera_speed = 10 * state.deltaTime
@@ -63,6 +63,12 @@ def draw_scene():
         #posiciona os objetos
         desenha_caixa(state.obj_angle, 0, 1, 0, 0, 0, -4, 1.2, 1.2, 1.2, state.texture_id)
 
+        desenha_jeep(
+            angle=0,
+            r_x=0, r_y=1, r_z=0,
+            t_x=-4, t_y=-2.5, t_z=-8,
+            s_x=2, s_y=2, s_z=2
+        )
 
 
         glfw.swap_buffers(state.window)
