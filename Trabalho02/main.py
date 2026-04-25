@@ -3,7 +3,32 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
-from scene_objects import desenha_caixa, desenha_jeep
+from scene_objects import desenha_caixa, desenha_jeep, desenha_ground
+
+
+def draw_ground_grid():
+    base_x = -4
+    base_y = -2.5
+    base_z = -8
+    scale_x = 2
+    scale_y = 2
+    scale_z = 2
+
+    # O OBJ do chão mede 5x5; com escala 2, cada peça ocupa 10x10 unidades.
+    tile_size = 10
+    grid_radius = 4
+
+    for offset_x in range(-grid_radius, grid_radius + 1):
+        for offset_z in range(-grid_radius, grid_radius + 1):
+            desenha_ground(
+                angle=0,
+                r_x=0, r_y=1, r_z=0,
+                t_x=base_x + offset_x * tile_size,
+                t_y=base_y,
+                t_z=base_z + offset_z * tile_size,
+                s_x=scale_x, s_y=scale_y, s_z=scale_z
+            )
+
 
 def movement():
     state.camera_speed = 10 * state.deltaTime
@@ -70,6 +95,7 @@ def draw_scene():
             s_x=2, s_y=2, s_z=2
         )
 
+        draw_ground_grid()
 
         glfw.swap_buffers(state.window)
         glfw.poll_events()

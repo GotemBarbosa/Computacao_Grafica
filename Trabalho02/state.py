@@ -250,11 +250,19 @@ raw_vertices += jeep_v
 raw_texcoords += jeep_t
 fim_jeep = len(raw_vertices)
 
+# ground
+ground_v, ground_t = load_obj_geometry("./objetos/ground/ground.obj")
+ini_ground = len(raw_vertices)
+raw_vertices += ground_v
+raw_texcoords += ground_t
+fim_ground = len(raw_vertices)
+
 
 objects_dict = {
     "caixa": {"ini_index": ini_box, "end_index": fim_box},
     "snowTerrain": {"ini_index": ini_snow, "end_index": fim_snow},
     "jeep": {"ini_index": ini_jeep, "end_index": fim_jeep},
+    "ground": {"ini_index": ini_ground, "end_index": fim_ground},
 }
 
 
@@ -271,6 +279,8 @@ load_texture_from_file(snow_texture_id, "./objetos/snowTerrain/686.jpg")
 jeep_texture_id = glGenTextures(1)
 load_texture_from_file(jeep_texture_id, "./objetos/Jeep/car_jeep_ren.jpg")
 
+ground_texture_id = glGenTextures(1)
+load_texture_from_file(ground_texture_id, "./objetos/ground/text_Albedo.png")
 
 
 
