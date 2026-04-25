@@ -5,7 +5,7 @@ from shaders.shaders import Shader
 from matrix_operations import *
 import ctypes
 
-from objetos.obj_loader import load_box_geometry
+from objetos.obj_loader import load_obj_geometry
 
 import glm
 from PIL import Image
@@ -221,22 +221,43 @@ loc_model = glGetUniformLocation(program, "model")
 loc_view = glGetUniformLocation(program, "view")
 loc_projection = glGetUniformLocation(program, "projection")
 loc_sampler = glGetUniformLocation(program, "imagem")
+loc_use_texture = glGetUniformLocation(program, "use_texture")
+loc_base_color = glGetUniformLocation(program, "base_color")
 
-raw_vertices, raw_texcoords = load_box_geometry("./objetos/caixa/caixa.obj")
 
-# Faixa de vértices usada para desenhar cada objeto
+raw_vertices = [] 
+raw_texcoords = []
+
+# caixa
+box_v, box_t = load_obj_geometry("./objetos/caixa/caixa.obj")
+ini_box = len(raw_vertices)
+raw_vertices += box_v
+raw_texcoords += box_t
+fim_box = len(raw_vertices)
+
+# snowTerrain
+snow_v, snow_t = load_obj_geometry("./objetos/snowTerrain/SnowTerrain.obj")
+ini_snow = len(raw_vertices)
+raw_vertices += snow_v
+raw_texcoords += snow_t
+fim_snow = len(raw_vertices)
+
 objects_dict = {
-    "caixa": {
-        "ini_index": 0,
-        "end_index": len(raw_vertices),
-    }
+    "caixa": {"ini_index": ini_box, "end_index": fim_box},
+    "snowTerrain": {"ini_index": ini_snow, "end_index": fim_snow},
 }
 
 allocate_positions_on_gpu(raw_vertices, loc_position)
 allocate_texcoords_on_gpu(raw_texcoords, loc_texture_coord)
 
+# Texturas 
 texture_id = glGenTextures(1)
 load_texture_from_file(texture_id, "./objetos/caixa/caixa.jpg")
+
+snow_texture_id = glGenTextures(1)
+load_texture_from_file(snow_texture_id, "./objetos/snowTerrain/686.jpg")
+
+
 
 # Sampler "imagem" usa a unidade de textura 0
 glActiveTexture(GL_TEXTURE0)

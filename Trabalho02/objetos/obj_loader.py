@@ -33,7 +33,7 @@ def _triangulate_indices(indices):
     return tris
 
 
-def load_box_geometry(obj_path):
+def load_obj_geometry(obj_path):
     model = load_model_from_file(obj_path)
     raw_vertices = []
     raw_texcoords = []
