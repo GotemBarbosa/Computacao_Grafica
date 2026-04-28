@@ -3,7 +3,7 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
-from scene_objects import desenha_caixa, desenha_jeep, desenha_ground
+from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky
 
 
 def draw_ground_grid():
@@ -70,9 +70,7 @@ def draw_scene():
         currentFrame = glfw.get_time()
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
-
-        state.update_move_front_camera()
-
+        state.update_move_front_camera()     
     
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
@@ -86,6 +84,13 @@ def draw_scene():
         glUniformMatrix4fv(state.loc_projection, 1, GL_TRUE, mat_projection)
 
         #posiciona os objetos
+
+        desenha_sky(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=0, t_y=0, t_z=0,
+            s_x=300, s_y=300, s_z=300
+        )
         desenha_caixa(state.obj_angle, 0, 1, 0, 0, 0, -4, 1.2, 1.2, 1.2, state.texture_id)
 
         desenha_jeep(

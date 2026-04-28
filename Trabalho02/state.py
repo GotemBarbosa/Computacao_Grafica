@@ -67,8 +67,8 @@ def view():
 
 def projection():
     # Projeção perspectiva (FOV, aspecto, near/far)
-    largura, altura = 700.0, 700.0
-    p = glm.perspective(glm.radians(fov), largura / altura, 0.1, 100.0)
+    largura, altura = 1920.0, 1080.0
+    p = glm.perspective(glm.radians(fov), largura / altura, 0.1, 1000.0)
     return np.array(p, dtype=np.float32)
 
 
@@ -158,7 +158,7 @@ def create_window():
     glfw.init()
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
 
-    window = glfw.create_window(700, 700, "Trabalho 2", None, None)
+    window = glfw.create_window(1920, 1080, "Trabalho 2", None, None)
 
     if(window == None):
         print("Failed to create GLFW window")
@@ -257,12 +257,20 @@ raw_vertices += ground_v
 raw_texcoords += ground_t
 fim_ground = len(raw_vertices)
 
+# sky
+sky_v, sky_t = load_obj_geometry("./objetos/sky/esfera.obj")
+ini_sky = len(raw_vertices)
+raw_vertices += sky_v
+raw_texcoords += sky_t
+fim_sky = len(raw_vertices)
+
 
 objects_dict = {
     "caixa": {"ini_index": ini_box, "end_index": fim_box},
     "snowTerrain": {"ini_index": ini_snow, "end_index": fim_snow},
     "jeep": {"ini_index": ini_jeep, "end_index": fim_jeep},
     "ground": {"ini_index": ini_ground, "end_index": fim_ground},
+    "sky": {"ini_index": ini_sky, "end_index": fim_sky},
 }
 
 
@@ -281,6 +289,9 @@ load_texture_from_file(jeep_texture_id, "./objetos/Jeep/car_jeep_ren.jpg")
 
 ground_texture_id = glGenTextures(1)
 load_texture_from_file(ground_texture_id, "./objetos/ground/text_Albedo.png")
+
+sky_texture_id = glGenTextures(1)
+load_texture_from_file(sky_texture_id, "./objetos/sky/NightSky4k.jpg")
 
 
 
