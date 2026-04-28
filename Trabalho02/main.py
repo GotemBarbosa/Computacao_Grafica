@@ -3,7 +3,7 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
-from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky
+from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky, desenha_house, desenha_fogueira
 
 
 def draw_ground_grid():
@@ -63,6 +63,7 @@ def movement():
             state.isOnGround = True
 
 def draw_scene():
+    glfw.swap_interval(1)
     while not glfw.window_should_close(state.window):
 
 
@@ -70,6 +71,20 @@ def draw_scene():
         currentFrame = glfw.get_time()
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
+
+
+        # --- CÁLCULO DE FPS AQUI ---
+        state.nb_frames += 1
+        # Se passou 1 segundo (ou mais) desde a última medição...
+        if currentFrame - state.last_time >= 1.0: 
+            fps = state.nb_frames # O número de frames acumulados é o FPS
+            
+            # Atualiza o título da janela
+            glfw.set_window_title(state.window, f"Meu Motor 3D - FPS: {fps}")
+            
+            # Reseta os contadores para o próximo segundo
+            state.nb_frames = 0
+            state.last_time += 1.0
         state.update_move_front_camera()     
     
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -91,13 +106,32 @@ def draw_scene():
             t_x=0, t_y=0, t_z=0,
             s_x=300, s_y=300, s_z=300
         )
-        desenha_caixa(state.obj_angle, 0, 1, 0, 0, 0, -4, 1.2, 1.2, 1.2, state.texture_id)
+
+        desenha_caixa(state.obj_angle, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=-5.5, t_y=-1.7, t_z=-5.5, 
+                      s_x=0.8, s_y=0.8, s_z=0.8, 
+                      texture_id=state.texture_id)
+
+        desenha_house(
+            angle=180,
+            r_x=0, r_y=1, r_z=0,
+            t_x=1, t_y=-3.1, t_z=0,
+            s_x=0.02, s_y=0.02, s_z=0.02
+        )
 
         desenha_jeep(
-            angle=0,
+            angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=-4, t_y=-2.5, t_z=-8,
+            t_x=-8, t_y=-2.5, t_z=0,
             s_x=2, s_y=2, s_z=2
+        )
+
+        desenha_fogueira(
+            angle=180,
+            r_x=0, r_y=1, r_z=0,
+            t_x=0, t_y=-2.2, t_z=-16,
+            s_x=1, s_y=1, s_z=1
         )
 
         draw_ground_grid()
