@@ -5,6 +5,7 @@ import numpy as np
 import glm
 #from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky, desenha_house, desenha_fogueira, desenha_planeta, desenha_moon
 from scene_objects import *
+from utils.coordenates import planet_to_world_coordenates, get_rotation_angle_from_planet
 
 import warnings
 from PIL import Image
@@ -164,26 +165,63 @@ def draw_scene():
                       t_x=-5.5, t_y=-60.7, t_z=-5.5, 
                       s_x=0.8, s_y=0.8, s_z=0.8, 
                       texture_id=state.texture_id)
+        # Casa ======================================
+
+        pos_house = planet_to_world_coordenates(
+            lat=0, 
+            lon=90, 
+            radius=state.planetRadius - 3, 
+            center=state.planetCenter
+        )
+
+        house_rotation_matrix = get_rotation_angle_from_planet(pos_house, state.planetCenter)
 
         desenha_house(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=1, t_y=-3, t_z=0,
-            s_x=0.02, s_y=0.02, s_z=0.02
+            t_x=pos_house.x, t_y=pos_house.y, t_z=pos_house.z,
+            s_x=0.02, s_y=0.02, s_z=0.02,
+            planet_rotation_matrix=house_rotation_matrix
         )
+
+        # JEEP ======================================
+
+        pos_jeep = planet_to_world_coordenates(
+            lat=-62.5, 
+            lon=-8, 
+            radius=state.planetRadius - 2.2, 
+            center=state.planetCenter
+        )
+        
+        jeep_rotation_matrix = get_rotation_angle_from_planet(pos_jeep, state.planetCenter)
+
 
         desenha_jeep(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=-8, t_y=-62.5, t_z=0,
-            s_x=2, s_y=2, s_z=2
+            t_x=pos_jeep.x, t_y=pos_jeep.y, t_z=pos_jeep.z,
+            s_x=2, s_y=2, s_z=2,
+            planet_rotation_matrix=jeep_rotation_matrix
         )
+
+        # FOGUEIRA ======================================
+
+        pos_fogueira = planet_to_world_coordenates(
+            lat=-15, 
+            lon=90, 
+            radius=state.planetRadius-1.8, 
+            center=state.planetCenter
+        )
+
+        fogueira_rotation_matrix = get_rotation_angle_from_planet(pos_fogueira, state.planetCenter)
 
         desenha_fogueira(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=0, t_y=-62.2, t_z=-16,
-            s_x=1, s_y=1, s_z=1
+            t_x=pos_fogueira.x, t_y=pos_fogueira.y, t_z=pos_fogueira.z,
+            s_x=1, s_y=1, s_z=1,
+            planet_rotation_matrix=fogueira_rotation_matrix
+
         )
 
         desenha_planet(
@@ -193,7 +231,7 @@ def draw_scene():
             s_x=46, s_y=46, s_z=46, texture_id=state.moon_texture_id
         )
 
-        draw_ground_grid()
+        #draw_ground_grid()
 
         glfw.swap_buffers(state.window)
         glfw.poll_events()

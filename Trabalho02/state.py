@@ -64,15 +64,22 @@ planetRadius = 48.0
 gravityStrength = 30.0
 
 
-def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
+def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, base_rotation=None):
     # Matriz model (T * R * S) para transformar o objeto no mundo
     angle = glm.radians(angle)
 
-    m = glm.mat4(1.0)
-    m = glm.translate(m, glm.vec3(t_x, t_y, t_z))
+    translation = glm.translate(glm.mat4(1.0), glm.vec3(t_x, t_y, t_z))
+
+    if base_rotation is None:
+        base_rotation = glm.mat4(1.0)
+
+    extra_rotation = glm.mat4(1.0)
     if angle != 0:
-        m = glm.rotate(m, angle, glm.vec3(r_x, r_y, r_z))
-    m = glm.scale(m, glm.vec3(s_x, s_y, s_z))
+        extra_rotation = glm.rotate(extra_rotation, angle, glm.vec3(r_x, r_y, r_z))
+
+    scale = glm.scale(glm.mat4(1.0), glm.vec3(s_x, s_y, s_z))
+
+    m = translation * base_rotation * extra_rotation * scale
 
     return np.array(m, dtype=np.float32)
 
