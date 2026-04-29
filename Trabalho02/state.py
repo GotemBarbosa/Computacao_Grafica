@@ -9,6 +9,9 @@ from objetos.obj_loader import load_obj_geometry
 
 import glm
 from PIL import Image
+import warnings
+
+warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 # =========================
 # Estado global da cena
@@ -29,6 +32,17 @@ cameraFront = glm.vec3(0.0, 0.0, -1.0)
 cameraUp = glm.vec3(0.0, 1.0, 0.0)
 cameraMoveFront = glm.vec3(0.0, 0.0, -1.0)
 
+newPlanetUp = glm.vec3(0.0, 1.0, 0.0)
+planetUp = glm.vec3(0.0, 1.0, 0.0)
+planetFoward = glm.vec3(0.0, 0.0, -1.0)
+planetRight = glm.vec3(1.0, 0.0, 0.0)
+
+
+planetCenter = glm.vec3(0.0, -48, 0.0)
+
+
+planetActivated = False
+
 flyMode = False
 
 
@@ -41,11 +55,13 @@ lastY = 350.0
 fov = 45.0
 
 # parametros de fisica
-velocityY = 0.0
-gravity = -20.0
+gravity = glm.vec3(0.0, -1.0, 0.0)
 jumpForce = 12.0
 isOnGround = True
 groundHeight = 0.0
+velocity = glm.vec3(0.0, 0.0, 0.0)
+planetRadius = 48.0
+gravityStrength = 30.0
 
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
@@ -77,7 +93,8 @@ def projection():
 keys = {} # Mantém o estado de quais teclas estão sendo pressionadas, permite a movimentação na diagonal e deixa o movimento mais fluido
 
 def key_event(window, key, scancode, action, mods):
-    global keys, flyMode, velocityY, isOnGround
+    global keys, flyMode, velocity, isOnGround, planetUp, planetActivated
+    global cameraPos, cameraFront, cameraUp, cameraMoveFront, newPlanetUp, planetFoward, planetRight, gravity, velocity
 
     if action == glfw.PRESS:
         keys[key] = True
@@ -90,16 +107,28 @@ def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_F and action == glfw.PRESS:
         flyMode = not flyMode
 
-    # Pulo → evento único (isso pode ficar aqui)
+    if key == glfw.KEY_P and action == glfw.PRESS:
+        planetActivated = not planetActivated
+        cameraPos = glm.vec3(0.0, 0.0, 0.0)
+        cameraFront = glm.vec3(0.0, 0.0, -1.0)
+        cameraUp = glm.vec3(0.0, 1.0, 0.0)
+        cameraMoveFront = glm.vec3(0.0, 0.0, -1.0)
+        newPlanetUp = glm.vec3(0.0, 1.0, 0.0)
+        planetUp = glm.vec3(0.0, 1.0, 0.0)
+        planetFoward = glm.vec3(0.0, 0.0, -1.0)
+        planetRight = glm.vec3(1.0, 0.0, 0.0)
+        gravity = glm.vec3(0.0, -1.0, 0.0)
+        velocity = glm.vec3(0.0, 0.0, 0.0)
+
     if key == glfw.KEY_SPACE and action == glfw.PRESS:
         if isOnGround:
-            velocityY = jumpForce
+            velocity += planetUp * jumpForce
             isOnGround = False
 
 
 
 def mouse_event(window, xpos, ypos):
-    global firstMouse, yaw, pitch, lastX, lastY, cameraFront
+    global firstMouse, lastX, lastY, cameraFront, planetUp, cameraUp, planetRight, yaw, pitch
 
     # Evita salto inicial de câmera no primeiro evento
     if firstMouse:
@@ -109,7 +138,7 @@ def mouse_event(window, xpos, ypos):
 
     # Offset do mouse desde o último frame
     xoffset = xpos - lastX
-    yoffset = lastY - ypos
+    yoffset = lastY - ypos # Coordenada Y da janela cresce para baixo
     lastX = xpos
     lastY = ypos
 
@@ -117,21 +146,41 @@ def mouse_event(window, xpos, ypos):
     xoffset *= sensitivity
     yoffset *= sensitivity
 
-    # Atualiza orientação da câmera
-    yaw += xoffset
-    pitch += yoffset
+    # Nesse caso é preciso calcular o front com base na posição do planeta que está o jogador
+    if planetActivated:
+        rotationYaw = glm.rotate(glm.mat4(1.0), glm.radians(-xoffset), planetUp)
+        cameraFront = glm.normalize(glm.vec3(rotationYaw * glm.vec4(cameraFront, 0.0)))
+        cameraUp = glm.normalize(glm.vec3(rotationYaw * glm.vec4(cameraUp, 0.0)))
 
-    # Limites do pitch para evitar flip vertical
-    if pitch > 89.0:
-        pitch = 89.0
-    if pitch < -89.0:
-        pitch = -89.0
 
-    front = glm.vec3()
-    front.x = np.cos(glm.radians(yaw)) * np.cos(glm.radians(pitch))
-    front.y = np.sin(glm.radians(pitch))
-    front.z = np.sin(glm.radians(yaw)) * np.cos(glm.radians(pitch))
-    cameraFront = glm.normalize(front)
+        planetRight = glm.normalize(glm.cross(cameraFront, planetUp))
+        rotationPitch = glm.rotate(glm.mat4(1.0), glm.radians(yoffset), planetRight)
+
+        newFront = glm.normalize(glm.vec3(rotationPitch * glm.vec4(cameraFront, 0.0)))
+
+        safe_limit_cos = 0.9998
+        if abs(glm.dot(newFront, planetUp)) < safe_limit_cos:
+            cameraFront = newFront
+            cameraUp = glm.normalize(glm.vec3(rotationPitch * glm.vec4(cameraUp, 0.0)))
+
+        cameraUp = glm.normalize(cameraUp - glm.dot(cameraUp, cameraFront) * cameraFront)
+    
+    else:
+        # Atualiza orientação da câmera
+        yaw += xoffset
+        pitch += yoffset
+
+        # Limites do pitch para evitar flip vertical
+        if pitch > 89.0:
+            pitch = 89.0
+        if pitch < -89.0:
+            pitch = -89.0
+
+        front = glm.vec3()
+        front.x = np.cos(glm.radians(yaw)) * np.cos(glm.radians(pitch))
+        front.y = np.sin(glm.radians(pitch))
+        front.z = np.sin(glm.radians(yaw)) * np.cos(glm.radians(pitch))
+        cameraFront = glm.normalize(front)
 
 def scroll_event(window, xoffset, yoffset):
     global fov
@@ -141,14 +190,42 @@ def scroll_event(window, xoffset, yoffset):
     if fov > 90.0: fov = 90.0
 
 def update_move_front_camera():
-    global cameraFront, cameraUp, cameraMoveFront
-    cameraMoveFront.x = cameraFront.x
-    cameraMoveFront.y = 0
-    cameraMoveFront.z = cameraFront.z
-    if (cameraMoveFront.x == 0 and cameraMoveFront.z == 0):
-        cameraMoveFront = (-1) * cameraUp 
-    cameraMoveFront = glm.normalize(cameraMoveFront)
-    return
+    global cameraFront, cameraUp, planetFoward, planetUp, planetCenter, cameraPos, planetRight, newPlanetUp, planetActivated
+
+
+    if planetActivated:
+        
+        newPlanetUp = glm.normalize(cameraPos - planetCenter)
+        cos_theta = glm.dot(planetUp, newPlanetUp)
+
+        # Se houve movimento perceptível (ângulo mudou)
+        if cos_theta < 0.999999:
+            cos_theta = np.clip(cos_theta, -1.0, 1.0)
+            angle = np.arccos(cos_theta)
+            
+            # Descobre o eixo de rotação da esfera
+            rotationAxis = glm.normalize(glm.cross(planetUp, newPlanetUp))
+            movementRotation = glm.rotate(glm.mat4(1.0), angle, rotationAxis)
+            
+            # Gira os vetores da câmera juntos acompanhando a curvatura da terra
+            cameraFront = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraFront, 0.0)))
+            cameraUp = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraUp, 0.0)))
+        
+        planetUp = newPlanetUp
+        planetRight = glm.normalize(glm.cross(cameraFront, planetUp))
+        planetFoward = glm.normalize(glm.cross(planetUp, planetRight))
+
+        cameraUp = glm.normalize(cameraUp - glm.dot(cameraUp, cameraFront) * cameraFront)
+    
+    else:
+        planetFoward.x = cameraFront.x
+        planetFoward.y = 0
+        planetFoward.z = cameraFront.z
+        if (planetFoward.x == 0 and planetFoward.z == 0):
+            planetFoward = (-1) * cameraUp 
+        planetFoward = glm.normalize(planetFoward)
+
+
 
 
 
@@ -267,7 +344,7 @@ raw_texcoords += sky_t
 fim_sky = len(raw_vertices)
 
 # house
-house_v, house_t = load_obj_geometry("./objetos/house/forester's_house.obj")
+house_v, house_t = load_obj_geometry("./objetos/house/casa.obj")
 ini_house = len(raw_vertices)
 raw_vertices += house_v
 raw_texcoords += house_t
@@ -280,6 +357,13 @@ raw_vertices += campfire_v
 raw_texcoords += campfire_t
 fim_campfire = len(raw_vertices)
 
+# planeta
+planet_v, planet_t = load_obj_geometry("./objetos/planet/planet.obj")
+ini_planet = len(raw_vertices)
+raw_vertices += planet_v
+raw_texcoords += planet_t
+fim_planet = len(raw_vertices)
+
 
 
 objects_dict = {
@@ -290,6 +374,7 @@ objects_dict = {
     "sky": {"ini_index": ini_sky, "end_index": fim_sky},
     "house": {"ini_index": ini_house, "end_index": fim_house},
     "campfire": {"ini_index": ini_campfire, "end_index": fim_campfire},
+    "planet": {"ini_index": ini_planet, "end_index": fim_planet},
 }
 
 
@@ -313,10 +398,19 @@ sky_texture_id = glGenTextures(1)
 load_texture_from_file(sky_texture_id, "./objetos/sky/NightSky4k.jpg")
 
 house_texture_id = glGenTextures(1)
-load_texture_from_file(house_texture_id, "./objetos/house/diffuse_forester's_house.tga")
+load_texture_from_file(house_texture_id, "./objetos/house/casa.tga")
 
 campfire_texture_id = glGenTextures(1)
 load_texture_from_file(campfire_texture_id, "./objetos/campfire/campfire.jpg")
+
+#mars_texture_id = glGenTextures(1)
+#load_texture_from_file(mars_texture_id, "./objetos/planet/mars.jpg")
+
+moon_texture_id = glGenTextures(1)
+load_texture_from_file(moon_texture_id, "./objetos/planet/moon.jpg")
+
+#ceres_texture_id = glGenTextures(1)
+#load_texture_from_file(ceres_texture_id, "./objetos/planet/ceres.png")
 
 
 

@@ -3,12 +3,18 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
-from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky, desenha_house, desenha_fogueira
+#from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky, desenha_house, desenha_fogueira, desenha_planeta, desenha_moon
+from scene_objects import *
+
+import warnings
+from PIL import Image
+
+warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 
 def draw_ground_grid():
     base_x = -4
-    base_y = -2.5
+    base_y = -62.5
     base_z = -8
     scale_x = 2
     scale_y = 2
@@ -34,40 +40,82 @@ def movement():
     state.camera_speed = 10 * state.deltaTime
     right = glm.normalize(glm.cross(state.cameraFront, state.cameraUp))
 
+
+    if state.keys.get(glfw.KEY_LEFT_SHIFT, False):
+        speed_factor = 5
+    else: 
+        speed_factor = 1
+
     # Movimento horizontal (sempre roda)
     if state.keys.get(glfw.KEY_W, False):
         if state.flyMode:
-            state.cameraPos += state.camera_speed * state.cameraFront
+            state.cameraPos += state.camera_speed * speed_factor * state.cameraFront
         else:
-            state.cameraPos += state.camera_speed * state.cameraMoveFront
+            state.cameraPos += state.camera_speed * speed_factor * state.planetFoward
 
     if state.keys.get(glfw.KEY_S, False):
         if state.flyMode:
             state.cameraPos -= state.camera_speed * state.cameraFront
         else:
-            state.cameraPos -= state.camera_speed * state.cameraMoveFront
+            state.cameraPos -= state.camera_speed * state.planetFoward
 
     if state.keys.get(glfw.KEY_A, False):
-        state.cameraPos -= state.camera_speed * right
+        if state.flyMode or not state.planetActivated:
+            state.cameraPos -= state.camera_speed * speed_factor * right
+        else:
+            state.cameraPos -= state.camera_speed * speed_factor * state.planetRight
 
     if state.keys.get(glfw.KEY_D, False):
-        state.cameraPos += state.camera_speed * right
+        if state.flyMode or not state.planetActivated:
+            state.cameraPos += state.camera_speed * speed_factor * right
+        else:
+            state.cameraPos += state.camera_speed * speed_factor * state.planetRight
 
     if not state.flyMode:
-        state.velocityY += state.gravity * state.deltaTime
-        state.cameraPos.y += state.velocityY * state.deltaTime
+        if state.planetActivated:
+            # Calcula a direção da gravidade e atualiza a velocidade/pos do player (pra onde o player anda para baixo)
+            gravityDir = glm.normalize(state.planetCenter - state.cameraPos)
+            state.gravity = gravityDir * state.gravityStrength
+            state.velocity += state.gravity * state.deltaTime
+            state.cameraPos += state.velocity * state.deltaTime
 
-        if state.cameraPos.y <= state.groundHeight:
-            state.cameraPos.y = state.groundHeight
-            state.velocityY = 0.0
-            state.isOnGround = True
+            # verifica se entraria dentro do planeta
+            distanceToCenter = glm.length(state.cameraPos - state.planetCenter)
+            if distanceToCenter <= state.planetRadius:
+                # projeta de volta pra superfície
+                normal = glm.normalize(state.cameraPos - state.planetCenter) # é contrário a gravidade (normal ao planeta)
+                state.cameraPos = state.planetCenter + normal * state.planetRadius # Coloca o player na superficie
+
+                # ajusta a velocidade para zero pois não está mais "caindo"
+                state.velocity = glm.vec3(0.0, 0.0, 0.0)
+                state.isOnGround = True
+
+            # Está no ar caindo, mantém as modificações de posição calculadas
+            else:
+                state.isOnGround = False
+
+
+
+        # Caso o planeta não esteja ativado entra no modo de "mundo plano"
+        else: 
+            state.velocity.y += state.gravity.y * state.gravityStrength * state.deltaTime
+            state.cameraPos.y += state.velocity.y * state.deltaTime
+
+            if state.cameraPos.y <= state.groundHeight:
+                state.cameraPos.y = state.groundHeight
+                state.velocity.y = 0.0
+                state.isOnGround = True
+
+    
 
 def draw_scene():
     glfw.swap_interval(1)
+    state.lastFrame = glfw.get_time()
+
     while not glfw.window_should_close(state.window):
 
 
-        movement()
+        
         currentFrame = glfw.get_time()
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
@@ -85,7 +133,11 @@ def draw_scene():
             # Reseta os contadores para o próximo segundo
             state.nb_frames = 0
             state.last_time += 1.0
+
+
+
         state.update_move_front_camera()     
+        movement()
     
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
@@ -109,29 +161,36 @@ def draw_scene():
 
         desenha_caixa(state.obj_angle, 
                       r_x=0, r_y=1, r_z=0, 
-                      t_x=-5.5, t_y=-1.7, t_z=-5.5, 
+                      t_x=-5.5, t_y=-60.7, t_z=-5.5, 
                       s_x=0.8, s_y=0.8, s_z=0.8, 
                       texture_id=state.texture_id)
 
         desenha_house(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=1, t_y=-3.1, t_z=0,
+            t_x=1, t_y=-3, t_z=0,
             s_x=0.02, s_y=0.02, s_z=0.02
         )
 
         desenha_jeep(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=-8, t_y=-2.5, t_z=0,
+            t_x=-8, t_y=-62.5, t_z=0,
             s_x=2, s_y=2, s_z=2
         )
 
         desenha_fogueira(
             angle=180,
             r_x=0, r_y=1, r_z=0,
-            t_x=0, t_y=-2.2, t_z=-16,
+            t_x=0, t_y=-62.2, t_z=-16,
             s_x=1, s_y=1, s_z=1
+        )
+
+        desenha_planet(
+            angle=180,
+            r_x=0, r_y=1, r_z=0,
+            t_x=0, t_y=-48, t_z=0,
+            s_x=46, s_y=46, s_z=46, texture_id=state.moon_texture_id
         )
 
         draw_ground_grid()
