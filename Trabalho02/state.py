@@ -370,6 +370,12 @@ raw_vertices += pineTree_v
 raw_texcoords += pineTree_t
 fim_pineTree = len(raw_vertices)
 
+rocket_v, rocket_t = load_obj_geometry("./objetos/rocket/rocket.obj")
+ini_rocket = len(raw_vertices)
+raw_vertices += rocket_v
+raw_texcoords += rocket_t
+fim_rocket = len(raw_vertices)
+
 
 
 
@@ -382,6 +388,7 @@ objects_dict = {
     "house": {"ini_index": ini_house, "end_index": fim_house},
     "campfire": {"ini_index": ini_campfire, "end_index": fim_campfire},
     "pineTree": {"ini_index": ini_pineTree, "end_index": fim_pineTree},
+    "rocket": {"ini_index": ini_rocket, "end_index": fim_rocket},
 }
 
 
@@ -421,6 +428,9 @@ load_texture_from_file(moon_texture_id, "./objetos/planet/moon.jpg")
 
 pineTree_texture_id = glGenTextures(1)
 load_texture_from_file(pineTree_texture_id, "./objetos/pineTree/pineTree.png")
+
+rocket_texture_id = glGenTextures(1)
+load_texture_from_file(rocket_texture_id, "./objetos/rocket/rocket.png")
 
 
 

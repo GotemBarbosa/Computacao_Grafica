@@ -240,6 +240,23 @@ def draw_scene():
             planet_rotation_matrix=pineTree_rotation_matrix
         )
 
+        pos_rocket = planet_to_world_coordenates(
+            lat=-25, 
+            lon=120, 
+            radius=state.planetRadius-2.1, 
+            center=state.planetCenter
+        )
+
+        rocket_rotation_matrix = get_rotation_angle_from_planet(pos_rocket, state.planetCenter)
+
+        desenha_rocket(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_rocket.x, t_y=pos_rocket.y, t_z=pos_rocket.z,
+            s_x=3, s_y=3, s_z=3,
+            planet_rotation_matrix=rocket_rotation_matrix
+        )
+
         desenha_planet(
             angle=180,
             r_x=0, r_y=1, r_z=0,
