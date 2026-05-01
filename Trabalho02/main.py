@@ -82,10 +82,15 @@ def movement():
             # A gravidade sempre aponta na direção oposta ao planetUp atual (que pode ser suavizado)
             state.gravity = -state.planetUp * state.gravityStrength
             
-            state.velocity += state.gravity * state.deltaTime
+            # Só aplica essa gravidade se o player não está no chão
+            if not state.isOnGround:
+                state.velocity += state.gravity * state.deltaTime
+
             state.cameraPos += state.velocity * state.deltaTime
 
+            # Todo frames nós assumimos que o player está no ar, se ele bater no chão mudamos pra True
             state.isOnGround = False
+
 
             # ==========================================================
             # 2. COLISÃO COM O PLANETA (Esfera)
@@ -104,8 +109,9 @@ def movement():
             piso_s_x, piso_s_z = 5.0, 8.2
             dx, dy, dz = abs(state.cameraPos.x), abs(state.cameraPos.y), abs(state.cameraPos.z)
             if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
-                # Se caímos abaixo da altura da plataforma
-                if state.cameraPos.y <= state.groundHeight:
+
+                # Verifica se caímos abaixo da altura da plataforma, 0.005 é só uma margem de tolerância
+                if state.cameraPos.y <= state.groundHeight + 0.005:
                     state.cameraPos.y = state.groundHeight
                     state.velocity = glm.vec3(0.0, 0.0, 0.0)
                     state.isOnGround = True
