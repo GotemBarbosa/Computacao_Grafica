@@ -119,6 +119,7 @@ def movement():
                         state.isOnGround = True
         
         if state.masterMode:
+            state.gravity =  glm.vec3(0.0, -1.0, 0.0) * state.gravityStrength
             state.velocity += state.gravity * state.deltaTime
             state.cameraPos += state.velocity * state.deltaTime
             if state.cameraPos.y <= state.groundHeight:

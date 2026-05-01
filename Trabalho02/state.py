@@ -134,8 +134,12 @@ def key_event(window, key, scancode, action, mods):
 
     if key == glfw.KEY_SPACE and action == glfw.PRESS:
         if isOnGround:
-            velocity += planetUp * jumpForce
+            if not masterMode:
+                velocity += planetUp * jumpForce
+            else:
+                velocity += glm.vec3(0.0, 1.0, 0.0) * jumpForce
             isOnGround = False
+
 
 
 
