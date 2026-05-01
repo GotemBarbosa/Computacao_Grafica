@@ -309,7 +309,7 @@ def draw_scene():
             angle=0,
             r_x=0, r_y=0, r_z=0,
             t_x=pos_rocket.x, t_y=pos_rocket.y, t_z=pos_rocket.z,
-            s_x=3, s_y=3, s_z=3,
+            s_x=0.5, s_y=0.5, s_z=0.5,
             planet_rotation_matrix=rocket_rotation_matrix
         )
 

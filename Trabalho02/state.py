@@ -361,7 +361,7 @@ raw_vertices += pineTree_v
 raw_texcoords += pineTree_t
 fim_pineTree = len(raw_vertices)
 
-rocket_v, rocket_t = load_obj_geometry("./objetos/rocket/rocket.obj")
+rocket_v, rocket_t = load_obj_geometry("./objetos/rocket/rocket2.obj")
 ini_rocket = len(raw_vertices)
 raw_vertices += rocket_v
 raw_texcoords += rocket_t
@@ -452,7 +452,7 @@ pineTree_texture_id = glGenTextures(1)
 load_texture_from_file(pineTree_texture_id, "./objetos/pineTree/pineTree.png")
 
 rocket_texture_id = glGenTextures(1)
-load_texture_from_file(rocket_texture_id, "./objetos/rocket/rocket.png")
+load_texture_from_file(rocket_texture_id, "./objetos/rocket/rocket2.png")
 
 table_texture_id = glGenTextures(1)
 load_texture_from_file(table_texture_id, "./objetos/table/table.png")
