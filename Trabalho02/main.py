@@ -399,6 +399,22 @@ def draw_scene():
                       t_x=pos_satelite.x, t_y=pos_satelite.y, t_z=pos_satelite.z, 
                       s_x=1, s_y=1, s_z=1, 
                       planet_rotation_matrix=satelite_rotation_matrix) 
+        
+
+        pos_rockTiles = planet_to_world_coordenates(
+            lat=-20, 
+            lon=90, 
+            radius=state.planetRadius-2, 
+            center=state.planetCenter
+        )
+
+        rockTiles_rotation_matrix = get_rotation_angle_from_planet(pos_rockTiles, state.planetCenter)
+
+        desenha_rockTiles(angle = -90, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=pos_rockTiles.x, t_y=pos_rockTiles.y, t_z=pos_rockTiles.z, 
+                      s_x=1, s_y=1, s_z=1, 
+                      planet_rotation_matrix=rockTiles_rotation_matrix) 
 
 
         # LUA ======================================

@@ -397,6 +397,12 @@ raw_vertices += satelite_v
 raw_texcoords += satelite_t
 fim_satelite = len(raw_vertices)
 
+rockTiles_v, rockTiles_t = load_obj_geometry("./objetos/rockTiles/rockTiles.obj")
+ini_rockTiles = len(raw_vertices)
+raw_vertices += rockTiles_v
+raw_texcoords += rockTiles_t
+fim_rockTiles = len(raw_vertices)
+
 
 
 
@@ -414,6 +420,7 @@ objects_dict = {
     "telescope": {"ini_index": ini_telescope, "end_index": fim_telescope},
     "forge": {"ini_index": ini_forge, "end_index": fim_forge},
     "satelite": {"ini_index": ini_satelite, "end_index": fim_satelite},
+    "rockTiles": {"ini_index": ini_rockTiles, "end_index": fim_rockTiles},
 }
 
 
@@ -471,6 +478,9 @@ load_texture_from_file(forge_texture_id, "./objetos/forge/forge.png")
 
 satelite_texture_id = glGenTextures(1)
 load_texture_from_file(satelite_texture_id, "./objetos/satelite/satelite.png")
+
+rockTiles_texture_id = glGenTextures(1)
+load_texture_from_file(rockTiles_texture_id, "./objetos/rockTiles/rockTiles.png")
 
 
 
