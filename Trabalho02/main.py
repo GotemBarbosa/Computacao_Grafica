@@ -385,6 +385,8 @@ def draw_scene():
                       texture_id=state.woodPlanks_texture_id,
                       planet_rotation_matrix=piso_forja_rotation_matrix) 
 
+
+        # SATELITE ======================================
         pos_satelite = planet_to_world_coordenates(
             lat=-30, 
             lon=45, 
@@ -401,6 +403,7 @@ def draw_scene():
                       planet_rotation_matrix=satelite_rotation_matrix) 
         
 
+        # PEDRINHAS DE ANDAR ======================================
         pos_rockTiles = planet_to_world_coordenates(
             lat=-20, 
             lon=90, 
@@ -415,6 +418,23 @@ def draw_scene():
                       t_x=pos_rockTiles.x, t_y=pos_rockTiles.y, t_z=pos_rockTiles.z, 
                       s_x=1, s_y=1, s_z=1, 
                       planet_rotation_matrix=rockTiles_rotation_matrix) 
+        
+
+        # TRONCO PARA SENTAR ======================================
+        pos_treeStump = planet_to_world_coordenates(
+            lat=-30, 
+            lon=110, 
+            radius=state.planetRadius-2.34, 
+            center=state.planetCenter
+        )
+
+        treeStump_rotation_matrix = get_rotation_angle_from_planet(pos_treeStump, state.planetCenter)
+
+        desenha_treeStump(angle = 0, 
+                      r_x=0, r_y=0, r_z=0, 
+                      t_x=pos_treeStump.x, t_y=pos_treeStump.y, t_z=pos_treeStump.z, 
+                      s_x=0.3, s_y=0.3, s_z=0.3, 
+                      planet_rotation_matrix=treeStump_rotation_matrix) 
 
 
         # LUA ======================================
