@@ -73,7 +73,7 @@ def movement():
             state.cameraPos += state.camera_speed * speed_factor * state.planetRight
 
     if not state.flyMode:
-        if state.planetActivated:
+        if state.planetActivated and not state.masterMode:
             # Calcula a direção da gravidade e atualiza a velocidade/pos do player (pra onde o player anda para baixo)
             gravityDir = glm.normalize(state.planetCenter - state.cameraPos)
             state.gravity = gravityDir * state.gravityStrength
@@ -99,13 +99,15 @@ def movement():
 
         # Caso o planeta não esteja ativado entra no modo de "mundo plano"
         else: 
-            state.velocity.y += state.gravity.y * state.gravityStrength * state.deltaTime
+            state.velocity.y -= state.gravityStrength * state.deltaTime
             state.cameraPos.y += state.velocity.y * state.deltaTime
 
             if state.cameraPos.y <= state.groundHeight:
                 state.cameraPos.y = state.groundHeight
                 state.velocity.y = 0.0
                 state.isOnGround = True
+            else: 
+                state.isOnGround = False
 
     
 
@@ -166,23 +168,37 @@ def draw_scene():
                       s_x=0.8, s_y=0.8, s_z=0.8, 
                       texture_id=state.texture_id)
         # Casa ======================================
-
-        pos_house = planet_to_world_coordenates(
+        pos_cartoonHouse = planet_to_world_coordenates(
             lat=0, 
             lon=90, 
-            radius=state.planetRadius - 3, 
+            radius=state.planetRadius-2.3, 
             center=state.planetCenter
         )
 
-        house_rotation_matrix = get_rotation_angle_from_planet(pos_house, state.planetCenter)
+        cartoonHouse_rotation_matrix = get_rotation_angle_from_planet(pos_cartoonHouse, state.planetCenter)
 
-        desenha_house(
-            angle=180,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_house.x, t_y=pos_house.y, t_z=pos_house.z,
-            s_x=0.02, s_y=0.02, s_z=0.02,
-            planet_rotation_matrix=house_rotation_matrix
+        desenha_cartoonHouse(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_cartoonHouse.x, t_y=pos_cartoonHouse.y, t_z=pos_cartoonHouse.z,
+            s_x=1.3, s_y=1.3, s_z=1.3,
+            planet_rotation_matrix=cartoonHouse_rotation_matrix
         )
+
+        piso_s_x, piso_s_y, piso_s_z = 5.0, 0.8, 8.2
+        #print(state.cameraPos)
+        if not state.masterMode:
+            if ((abs(state.cameraPos.x) < piso_s_x) and (abs(state.cameraPos.z) < piso_s_z)):
+                #print(f"cam.y: {state.cameraPos.y}, g_height: {state.groundHeight}, state: {state.isOnGround}")
+                state.planetActivated = False
+            else: 
+                state.planetActivated = True
+        # PISO ======================================
+        desenha_caixa(state.obj_angle, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=0, t_y=-2.8, t_z=0.5, 
+                      s_x=piso_s_x, s_y=piso_s_y, s_z=piso_s_z, 
+                      texture_id=state.woodPlanks_texture_id)    
 
         # JEEP ======================================
 
@@ -223,6 +239,7 @@ def draw_scene():
             planet_rotation_matrix=fogueira_rotation_matrix
         )
 
+        # ARVORE ======================================
         pos_pineTree = planet_to_world_coordenates(
             lat=-30, 
             lon=90, 
@@ -240,6 +257,7 @@ def draw_scene():
             planet_rotation_matrix=pineTree_rotation_matrix
         )
 
+        # FOGUETE  ======================================
         pos_rocket = planet_to_world_coordenates(
             lat=-25, 
             lon=120, 
@@ -257,6 +275,27 @@ def draw_scene():
             planet_rotation_matrix=rocket_rotation_matrix
         )
 
+        # MESA ======================================
+        pos_table = planet_to_world_coordenates(
+            lat=-0, 
+            lon=85, 
+            radius=state.planetRadius-1.3, 
+            center=state.planetCenter
+        )
+
+        table_rotation_matrix = get_rotation_angle_from_planet(pos_table, state.planetCenter)
+
+        desenha_table(
+            angle=90,
+            r_x=0, r_y=1, r_z=0,
+            t_x=pos_table.x, t_y=pos_table.y, t_z=pos_table.z,
+            s_x=0.017, s_y=0.017, s_z=0.017,
+            planet_rotation_matrix=table_rotation_matrix
+        )
+
+
+
+        # LUA ======================================
         desenha_planet(
             angle=180,
             r_x=0, r_y=1, r_z=0,
