@@ -119,7 +119,7 @@ def key_event(window, key, scancode, action, mods):
         flyMode = not flyMode
 
     if key == glfw.KEY_P and action == glfw.PRESS:
-        masterMode = True
+        masterMode = not masterMode
         planetActivated = False
         cameraPos = glm.vec3(0.0, 0.0, 0.0)
         cameraFront = glm.vec3(0.0, 0.0, -1.0)
@@ -381,6 +381,12 @@ raw_vertices += telescope_v
 raw_texcoords += telescope_t
 fim_telescope = len(raw_vertices)
 
+forge_v, forge_t = load_obj_geometry("./objetos/forge/forge.obj")
+ini_forge = len(raw_vertices)
+raw_vertices += forge_v
+raw_texcoords += forge_t
+fim_forge = len(raw_vertices)
+
 
 
 
@@ -396,6 +402,7 @@ objects_dict = {
     "table": {"ini_index": ini_table, "end_index": fim_table},
     "cartoonHouse": {"ini_index": ini_cartoonHouse, "end_index": fim_cartoonHouse},
     "telescope": {"ini_index": ini_telescope, "end_index": fim_telescope},
+    "forge": {"ini_index": ini_forge, "end_index": fim_forge},
 }
 
 
@@ -447,6 +454,9 @@ load_texture_from_file(woodPlanks_texture_id, "./objetos/caixa/woodPlanks.bmp")
 
 telescope_texture_id = glGenTextures(1)
 load_texture_from_file(telescope_texture_id, "./objetos/telescope/telescope.png")
+
+forge_texture_id = glGenTextures(1)
+load_texture_from_file(forge_texture_id, "./objetos/forge/forge.png")
 
 
 

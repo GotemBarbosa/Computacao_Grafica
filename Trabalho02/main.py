@@ -95,26 +95,28 @@ def movement():
             # ==========================================================
             # 2. COLISÃO COM O PLANETA (Esfera)
             # ==========================================================
-            distanceToCenter = glm.length(state.cameraPos - state.planetCenter)
-            if distanceToCenter <= state.planetRadius:
-                normal = glm.normalize(state.cameraPos - state.planetCenter)
-                state.cameraPos = state.planetCenter + normal * state.planetRadius
-                state.velocity = glm.vec3(0.0, 0.0, 0.0)
-                state.isOnGround = True
+            if glm.dot(state.velocity, state.planetUp) <= 0.0:
+                distanceToCenter = glm.length(state.cameraPos - state.planetCenter)
+                if distanceToCenter <= state.planetRadius + 0.005:
+                    normal = glm.normalize(state.cameraPos - state.planetCenter)
+                    state.cameraPos = state.planetCenter + normal * state.planetRadius
+                    state.velocity = glm.vec3(0.0, 0.0, 0.0)
+                    state.isOnGround = True
 
 
             # ==========================================================
             # 3. COLISÃO COM A PLATAFORMA (Plano)
             # ==========================================================
-            piso_s_x, piso_s_z = 5.0, 8.2
-            dx, dy, dz = abs(state.cameraPos.x), abs(state.cameraPos.y), abs(state.cameraPos.z)
-            if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
+            if state.velocity.y <= 0.0:
+                piso_s_x, piso_s_z = 5.0, 8.2
+                dx, dy, dz = abs(state.cameraPos.x), abs(state.cameraPos.y), abs(state.cameraPos.z)
+                if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
 
-                # Verifica se caímos abaixo da altura da plataforma, 0.005 é só uma margem de tolerância
-                if state.cameraPos.y <= state.groundHeight + 0.005:
-                    state.cameraPos.y = state.groundHeight
-                    state.velocity = glm.vec3(0.0, 0.0, 0.0)
-                    state.isOnGround = True
+                    # Verifica se caímos abaixo da altura da plataforma, 0.005 é só uma margem de tolerância
+                    if state.cameraPos.y <= state.groundHeight + 0.005:
+                        state.cameraPos.y = state.groundHeight
+                        state.velocity = glm.vec3(0.0, 0.0, 0.0)
+                        state.isOnGround = True
         
         if state.masterMode:
             state.velocity += state.gravity * state.deltaTime
@@ -345,6 +347,42 @@ def draw_scene():
             s_x=0.04, s_y=0.04, s_z=0.04,
             planet_rotation_matrix=telescope_rotation_matrix
         )
+
+        # FORJA ======================================
+        pos_forge = planet_to_world_coordenates(
+            lat=-30, 
+            lon=45, 
+            radius=state.planetRadius-1.8, 
+            center=state.planetCenter
+        )
+
+        forge_rotation_matrix = get_rotation_angle_from_planet(pos_forge, state.planetCenter)
+
+        desenha_forge(
+            angle=-90,
+            r_x=0, r_y=1, r_z=0,
+            t_x=pos_forge.x, t_y=pos_forge.y, t_z=pos_forge.z,
+            s_x=1, s_y=1, s_z=1,
+            planet_rotation_matrix=forge_rotation_matrix
+        )
+
+
+        pos_piso_forja = planet_to_world_coordenates(
+            lat=-30, 
+            lon=45, 
+            radius=state.planetRadius-6, 
+            center=state.planetCenter
+        )
+
+        piso_forja_rotation_matrix = get_rotation_angle_from_planet(pos_piso_forja, state.planetCenter)
+
+        # PISO FORJA ======================================
+        desenha_caixa(angle = -90, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=pos_piso_forja.x+3, t_y=pos_piso_forja.y, t_z=pos_piso_forja.z-3, 
+                      s_x=4.5, s_y=0.8, s_z=6, 
+                      texture_id=state.woodPlanks_texture_id,
+                      planet_rotation_matrix=piso_forja_rotation_matrix) 
 
 
 
