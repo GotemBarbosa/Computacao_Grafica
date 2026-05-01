@@ -367,7 +367,7 @@ def draw_scene():
             planet_rotation_matrix=forge_rotation_matrix
         )
 
-
+        # PISO FORJA ======================================
         pos_piso_forja = planet_to_world_coordenates(
             lat=-30, 
             lon=45, 
@@ -377,7 +377,7 @@ def draw_scene():
 
         piso_forja_rotation_matrix = get_rotation_angle_from_planet(pos_piso_forja, state.planetCenter)
 
-        # PISO FORJA ======================================
+        
         desenha_caixa(angle = -90, 
                       r_x=0, r_y=1, r_z=0, 
                       t_x=pos_piso_forja.x+3, t_y=pos_piso_forja.y, t_z=pos_piso_forja.z-3, 
@@ -385,6 +385,20 @@ def draw_scene():
                       texture_id=state.woodPlanks_texture_id,
                       planet_rotation_matrix=piso_forja_rotation_matrix) 
 
+        pos_satelite = planet_to_world_coordenates(
+            lat=-30, 
+            lon=45, 
+            radius=state.planetRadius+30, 
+            center=state.planetCenter
+        )
+
+        satelite_rotation_matrix = get_rotation_angle_from_planet(pos_satelite, state.planetCenter)
+
+        desenha_satelite(angle = -90, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=pos_satelite.x, t_y=pos_satelite.y, t_z=pos_satelite.z, 
+                      s_x=1, s_y=1, s_z=1, 
+                      planet_rotation_matrix=satelite_rotation_matrix) 
 
 
         # LUA ======================================
