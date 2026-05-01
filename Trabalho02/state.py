@@ -344,13 +344,6 @@ raw_vertices += sky_v
 raw_texcoords += sky_t
 fim_sky = len(raw_vertices)
 
-# house
-house_v, house_t = load_obj_geometry("./objetos/house/casa.obj")
-ini_house = len(raw_vertices)
-raw_vertices += house_v
-raw_texcoords += house_t
-fim_house = len(raw_vertices)
-
 # campfire
 campfire_v, campfire_t = load_obj_geometry("./objetos/campfire/campfire.obj")
 ini_campfire = len(raw_vertices)
@@ -382,6 +375,12 @@ raw_vertices += cartoonHouse_v
 raw_texcoords += cartoonHouse_t
 fim_cartoonHouse = len(raw_vertices)
 
+telescope_v, telescope_t = load_obj_geometry("./objetos/telescope/telescope.obj")
+ini_telescope = len(raw_vertices)
+raw_vertices += telescope_v
+raw_texcoords += telescope_t
+fim_telescope = len(raw_vertices)
+
 
 
 
@@ -391,12 +390,12 @@ objects_dict = {
     "jeep": {"ini_index": ini_jeep, "end_index": fim_jeep},
     "ground": {"ini_index": ini_ground, "end_index": fim_ground},
     "sky": {"ini_index": ini_sky, "end_index": fim_sky},
-    "house": {"ini_index": ini_house, "end_index": fim_house},
     "campfire": {"ini_index": ini_campfire, "end_index": fim_campfire},
     "pineTree": {"ini_index": ini_pineTree, "end_index": fim_pineTree},
     "rocket": {"ini_index": ini_rocket, "end_index": fim_rocket},
     "table": {"ini_index": ini_table, "end_index": fim_table},
     "cartoonHouse": {"ini_index": ini_cartoonHouse, "end_index": fim_cartoonHouse},
+    "telescope": {"ini_index": ini_telescope, "end_index": fim_telescope},
 }
 
 
@@ -418,9 +417,6 @@ load_texture_from_file(ground_texture_id, "./objetos/ground/text_Albedo.png")
 
 sky_texture_id = glGenTextures(1)
 load_texture_from_file(sky_texture_id, "./objetos/sky/NightSky4k.jpg")
-
-house_texture_id = glGenTextures(1)
-load_texture_from_file(house_texture_id, "./objetos/house/casa.tga")
 
 campfire_texture_id = glGenTextures(1)
 load_texture_from_file(campfire_texture_id, "./objetos/campfire/campfire.jpg")
@@ -448,6 +444,9 @@ load_texture_from_file(cartoonHouse_texture_id, "./objetos/cartoonHouse/cartoonH
 
 woodPlanks_texture_id = glGenTextures(1)
 load_texture_from_file(woodPlanks_texture_id, "./objetos/caixa/woodPlanks.bmp")
+
+telescope_texture_id = glGenTextures(1)
+load_texture_from_file(telescope_texture_id, "./objetos/telescope/telescope.png")
 
 
 

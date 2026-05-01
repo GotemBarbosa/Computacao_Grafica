@@ -322,6 +322,24 @@ def draw_scene():
             planet_rotation_matrix=table_rotation_matrix
         )
 
+        # TELESCÓPIO ======================================
+        pos_telescope = planet_to_world_coordenates(
+            lat=-30, 
+            lon=105, 
+            radius=state.planetRadius-2.1, 
+            center=state.planetCenter
+        )
+
+        telescope_rotation_matrix = get_rotation_angle_from_planet(pos_telescope, state.planetCenter)
+
+        desenha_telescope(
+            angle=190,
+            r_x=0, r_y=1, r_z=0,
+            t_x=pos_telescope.x, t_y=pos_telescope.y, t_z=pos_telescope.z,
+            s_x=0.04, s_y=0.04, s_z=0.04,
+            planet_rotation_matrix=telescope_rotation_matrix
+        )
+
 
 
         # LUA ======================================
