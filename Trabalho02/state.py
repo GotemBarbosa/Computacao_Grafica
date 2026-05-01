@@ -64,6 +64,9 @@ velocity = glm.vec3(0.0, 0.0, 0.0)
 planetRadius = 48.0
 gravityStrength = 30.0
 
+# começa no piso
+gravity_weight = 1.0
+
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, base_rotation=None):
     # Matriz model (T * R * S) para transformar o objeto no mundo
@@ -178,34 +181,50 @@ def scroll_event(window, xoffset, yoffset):
     if fov > 90.0: fov = 90.0
 
 def update_move_front_camera():
-    global cameraFront, cameraUp, planetFoward, planetUp, planetCenter, cameraPos, planetRight, newPlanetUp, planetActivated
+    global cameraFront, cameraUp, planetFoward, planetUp, planetCenter, cameraPos, planetRight, newPlanetUp, gravity_weight, masterMode
 
-    # 1. Decide quem manda na gravidade atual
-    if planetActivated:
-        newPlanetUp = glm.normalize(cameraPos - planetCenter)
-    else:
-        # Se está no piso plano, a gravidade puxa reto para baixo. Logo, o "Cima" é global:
-        newPlanetUp = glm.vec3(0.0, 1.0, 0.0)
+    # 1. Calcula o "Cima" dos dois tipos de gravidade (planeta e piso inicial)
+    purePlanetUp = glm.normalize(cameraPos - planetCenter)
+    pureFlatUp = glm.vec3(0.0, 1.0, 0.0)
 
-    # 2. Compensa a transição (seja andando na esfera ou subindo no piso)
-    cos_theta = glm.dot(planetUp, newPlanetUp)
 
-    if cos_theta < 0.999999:
-        cos_theta = np.clip(cos_theta, -1.0, 1.0)
-        angle = np.arccos(cos_theta)
+    # 2. MISTURA (Interpola) os dois vetores suavemente (com base na função Smoothstep da main.py)
+    # ===================
+    # essa função "mix" cria uma interpolação (suavização) entre esses 3 vetores com base em uma porcentagem
+    # quanto mais perto de 0 estiver o gravity_weight, mais perto estará de pureFlatUp
+    # quanto mais perto de 1 estiver o gravity_weight, mais perto estará de purePlanetUp
+    # ===================
+    if not masterMode:
+        newPlanetUp = glm.normalize(glm.mix(pureFlatUp, purePlanetUp, gravity_weight))
+
         
-        rotationAxis = glm.normalize(glm.cross(planetUp, newPlanetUp))
-        movementRotation = glm.rotate(glm.mat4(1.0), angle, rotationAxis)
+        # ===================
+        # verificação para rodar a camera ao longo do planeta com base no quanto voce se moveu
+        # a ideia é pegar os vetores normais ao planeta (planetsUps) anterior e novo, e comparar se 
+        # o angulo entre eles bate um minimo, se sim, queremos rodar a camera ao redor do planeta 
+        # essa mesma quantidade
+        # ===================
+        cos_theta = glm.dot(planetUp, newPlanetUp)
+
+        if cos_theta < 0.999999:
+            cos_theta = np.clip(cos_theta, -1.0, 1.0)
+            angle = np.arccos(cos_theta)
+            
+            # rotationAxis --> é o eixo de rotação que a camera precisa rodar
+            # movementRotation --> é a matriz de rotação para rotacionar a camera
+            rotationAxis = glm.normalize(glm.cross(planetUp, newPlanetUp))
+            movementRotation = glm.rotate(glm.mat4(1.0), angle, rotationAxis)
+            
+            # rotaciona a camera
+            cameraFront = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraFront, 0.0)))
+            cameraUp = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraUp, 0.0)))
         
-        cameraFront = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraFront, 0.0)))
-        cameraUp = glm.normalize(glm.vec3(movementRotation * glm.vec4(cameraUp, 0.0)))
-    
-    # 3. Atualiza os eixos de movimentação para o WASD
+        # atualiza os valores que ditam como se movimentar ao longo do planeta
+        # exemplo: ao apertar W você deve sempre ir em direção ao planetFoward, não ao que você enxerga
     planetUp = newPlanetUp
     planetRight = glm.normalize(glm.cross(cameraFront, planetUp))
     planetFoward = glm.normalize(glm.cross(planetUp, planetRight))
 
-    # Ortogonalização final
     cameraUp = glm.normalize(cameraUp - glm.dot(cameraUp, cameraFront) * cameraFront)
 
 

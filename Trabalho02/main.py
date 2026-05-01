@@ -73,41 +73,50 @@ def movement():
             state.cameraPos += state.camera_speed * speed_factor * state.planetRight
 
     if not state.flyMode:
-        if state.planetActivated and not state.masterMode:
-            # Calcula a direção da gravidade e atualiza a velocidade/pos do player (pra onde o player anda para baixo)
-            gravityDir = glm.normalize(state.planetCenter - state.cameraPos)
-            state.gravity = gravityDir * state.gravityStrength
+
+
+        if not state.masterMode:
+            # ==========================================================
+            # 1. GRAVIDADE UNIFICADA MISTURADA
+            # ==========================================================
+            # A gravidade sempre aponta na direção oposta ao planetUp atual (que pode ser suavizado)
+            state.gravity = -state.planetUp * state.gravityStrength
+            
             state.velocity += state.gravity * state.deltaTime
             state.cameraPos += state.velocity * state.deltaTime
 
-            # verifica se entraria dentro do planeta
+            state.isOnGround = False
+
+            # ==========================================================
+            # 2. COLISÃO COM O PLANETA (Esfera)
+            # ==========================================================
             distanceToCenter = glm.length(state.cameraPos - state.planetCenter)
             if distanceToCenter <= state.planetRadius:
-                # projeta de volta pra superfície
-                normal = glm.normalize(state.cameraPos - state.planetCenter) # é contrário a gravidade (normal ao planeta)
-                state.cameraPos = state.planetCenter + normal * state.planetRadius # Coloca o player na superficie
-
-                # ajusta a velocidade para zero pois não está mais "caindo"
+                normal = glm.normalize(state.cameraPos - state.planetCenter)
+                state.cameraPos = state.planetCenter + normal * state.planetRadius
                 state.velocity = glm.vec3(0.0, 0.0, 0.0)
                 state.isOnGround = True
 
-            # Está no ar caindo, mantém as modificações de posição calculadas
-            else:
-                state.isOnGround = False
 
-
-
-        # Caso o planeta não esteja ativado entra no modo de "mundo plano"
-        else: 
-            state.velocity.y -= state.gravityStrength * state.deltaTime
-            state.cameraPos.y += state.velocity.y * state.deltaTime
-
+            # ==========================================================
+            # 3. COLISÃO COM A PLATAFORMA (Plano)
+            # ==========================================================
+            piso_s_x, piso_s_z = 5.0, 8.2
+            dx, dy, dz = abs(state.cameraPos.x), abs(state.cameraPos.y), abs(state.cameraPos.z)
+            if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
+                # Se caímos abaixo da altura da plataforma
+                if state.cameraPos.y <= state.groundHeight:
+                    state.cameraPos.y = state.groundHeight
+                    state.velocity = glm.vec3(0.0, 0.0, 0.0)
+                    state.isOnGround = True
+        
+        if state.masterMode:
+            state.velocity += state.gravity * state.deltaTime
+            state.cameraPos += state.velocity * state.deltaTime
             if state.cameraPos.y <= state.groundHeight:
                 state.cameraPos.y = state.groundHeight
-                state.velocity.y = 0.0
-                state.isOnGround = True
-            else: 
-                state.isOnGround = False
+                state.velocity = glm.vec3(0.0, 0.0, 0.0)
+                state.isOnGround = True 
 
     
 
@@ -118,7 +127,6 @@ def draw_scene():
     while not glfw.window_should_close(state.window):
 
 
-        
         currentFrame = glfw.get_time()
         state.deltaTime = currentFrame - state.lastFrame
         state.lastFrame = currentFrame
@@ -186,13 +194,34 @@ def draw_scene():
         )
 
         piso_s_x, piso_s_y, piso_s_z = 5.0, 0.8, 8.2
+        margin = 4.0
         #print(state.cameraPos)
         if not state.masterMode:
-            if ((abs(state.cameraPos.x) < piso_s_x) and (abs(state.cameraPos.z) < piso_s_z)):
+            dx = abs(state.cameraPos.x)
+            dy = abs(state.cameraPos.y)
+            dz = abs(state.cameraPos.z)
+
+            if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
+                state.gravity_weight = 0.0
                 #print(f"cam.y: {state.cameraPos.y}, g_height: {state.groundHeight}, state: {state.isOnGround}")
-                state.planetActivated = False
-            else: 
-                state.planetActivated = True
+
+            # saindo da area de suavização de gravidades
+            elif (dx > (piso_s_x + margin) or dz > (piso_s_z + margin) or dy > 5):
+                state.gravity_weight = 1.0
+
+            # zona de suavização da transição de gravidades.
+            # Ele irá fazer uma "mistura" da gravidade do piso com a gravidade do planeta (0.0 a 1.0)
+            else:
+                weight_x = (dx - piso_s_x) / margin if dx > piso_s_x else 0.0
+                weight_z = (dz - piso_s_z) / margin if dz > piso_s_z else 0.0
+                raw_weight = max(weight_x, weight_z) # 0.0 a 1.0 --> Fala o quão longe estamos do piso
+            
+                # Aplica uma curva "Smoothstep" para a transição ficar suave
+                # --> Essa curva smoothstep parece ser padrão para suavizar movimentos em jogos (muito melhor que liner)
+                # 3x^2 - 2x^3
+                state.gravity_weight = raw_weight * raw_weight * (3.0 - 2.0 * raw_weight)
+
+
         # PISO ======================================
         desenha_caixa(state.obj_angle, 
                       r_x=0, r_y=1, r_z=0, 
