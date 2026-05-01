@@ -3,6 +3,7 @@ from OpenGL.GL import *
 import state
 import numpy as np
 import glm
+import random
 #from scene_objects import desenha_caixa, desenha_jeep, desenha_ground, desenha_sky, desenha_house, desenha_fogueira, desenha_planeta, desenha_moon
 from scene_objects import *
 from utils.coordenates import planet_to_world_coordenates, get_rotation_angle_from_planet
@@ -129,6 +130,212 @@ def movement():
 
     
 
+forest_positions = [
+            # anel interno (lat 78) — 6 árvores
+            (78,   0, 1.0),
+            (78,  60, 1.1),
+            (78, 120, 0.9),
+            (78, 180, 1.0),
+            (78, 240, 1.1),
+            (78, 300, 0.9),
+
+            # anel do meio (lat 72) — 8 árvores, deslocadas
+            (72,  30, 1.2),
+            (72,  75, 0.8),
+            (72, 120, 1.0),
+            (72, 165, 1.1),
+            (72, 210, 0.9),
+            (72, 255, 1.2),
+            (72, 300, 1.0),
+            (72, 345, 0.85),
+
+            # anel externo (lat 66) — 6 árvores
+            (66,  15, 1.0),
+            (66,  75, 1.1),
+            (66, 135, 0.9),
+            (66, 195, 1.05),
+            (66, 255, 1.0),
+            (66, 315, 1.1),
+        ]
+
+
+def trilha_forja():
+    # TRILHA FOGUEIRA -> FORJA ======================================
+    import math
+    n_tiles = 30
+    lat_ini, lon_ini = -15, 90   
+    lat_fim, lon_fim = -30, 45  
+
+    for i in range(n_tiles):
+        t = i / (n_tiles - 1)
+
+        # caminho base interpolado
+        lat_base = lat_ini + t * (lat_fim - lat_ini)
+        lon_base = lon_ini + t * (lon_fim - lon_ini)
+
+        # dispersão (zig-zag suave + variação secundária)
+        offset_lat = 2.5 * math.sin(i * 0.9) + 1.2 * math.cos(i * 2.1)
+        offset_lon = 3.5 * math.cos(i * 0.7) + 1.5 * math.sin(i * 1.8)
+
+        lat_p = lat_base + offset_lat
+        lon_p = lon_base + offset_lon
+
+        pos_p = planet_to_world_coordenates(
+            lat=lat_p,
+            lon=lon_p,
+            radius=state.planetRadius - 2.1,
+            center=state.planetCenter
+        )
+        tile_rot = get_rotation_angle_from_planet(pos_p, state.planetCenter)
+
+        desenha_rockTiles(
+            angle=-60,
+            r_x=0, r_y=1, r_z=0,
+            t_x=pos_p.x, t_y=pos_p.y, t_z=pos_p.z,
+            s_x=0.7, s_y=0.7, s_z=0.7,
+            planet_rotation_matrix=tile_rot
+        )
+
+
+arvores_planeta_positions = [
+    # (lat, lon, escala) — espalhadas pelo planeta, evitando polos, casa, forja e trilha
+    ( 40,  10, 1.0),
+    ( -30, 70, 1.0),
+    ( 30, 200, 0.9),
+    ( 20, 270, 1.1),
+    ( 10, 330, 1.0),
+    (  5, 150, 0.85),
+    (-10, 250, 1.05),
+    (-20, 180, 1.0),
+    (-35, 300, 0.95),
+    (-45,  20, 1.1),
+    (-50, 130, 0.9),
+    (-60, 220, 1.0),
+    (-25,   0, 0.95),
+]
+
+
+def arvores_planeta():
+    # ARVORES ESPALHADAS ======================================
+    for lat, lon, escala in arvores_planeta_positions:
+        pos_tree = planet_to_world_coordenates(
+            lat=lat,
+            lon=lon,
+            radius=state.planetRadius - 2.3,
+            center=state.planetCenter
+        )
+        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
+
+        desenha_pineTree(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_tree.x, t_y=pos_tree.y, t_z=pos_tree.z,
+            s_x=escala, s_y=escala, s_z=escala,
+            planet_rotation_matrix=tree_rot
+        )
+
+
+def floresta():
+    # FLORESTA DE PINHEIROS ======================================
+
+    for lat, lon, escala in forest_positions:
+        pos_tree = planet_to_world_coordenates(
+            lat=lat,
+            lon=lon,
+            radius=state.planetRadius - 2.3,
+            center=state.planetCenter
+        )
+        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
+
+        desenha_pineTree(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_tree.x, t_y=pos_tree.y, t_z=pos_tree.z,
+            s_x=escala, s_y=escala, s_z=escala,
+            planet_rotation_matrix=tree_rot
+        )
+
+    # FOGUEIRA NO CENTRO DA FLORESTA
+    pos_fogueira_polo = planet_to_world_coordenates(
+        lat=90,
+        lon=0,
+        radius=state.planetRadius - 1.8,
+        center=state.planetCenter
+    )
+    fogueira_polo_rot = get_rotation_angle_from_planet(pos_fogueira_polo, state.planetCenter)
+
+    desenha_fogueira(
+        angle=0,
+        r_x=0, r_y=1, r_z=0,
+        t_x=pos_fogueira_polo.x, t_y=pos_fogueira_polo.y, t_z=pos_fogueira_polo.z,
+        s_x=1, s_y=1, s_z=1,
+        planet_rotation_matrix=fogueira_polo_rot
+    )
+
+    # TRONCOS AO REDOR DA FOGUEIRA 
+    troncos_polo = [
+        (86,   0),
+        (86, 120),
+        (86, 240),
+    ]
+    for lat_t, lon_t in troncos_polo:
+        pos_t = planet_to_world_coordenates(
+            lat=lat_t,
+            lon=lon_t,
+            radius=state.planetRadius - 2.34,
+            center=state.planetCenter
+        )
+        tronco_rot = get_rotation_angle_from_planet(pos_t, state.planetCenter)
+
+        desenha_treeStump(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_t.x, t_y=pos_t.y, t_z=pos_t.z,
+            s_x=0.3, s_y=0.3, s_z=0.3,
+            planet_rotation_matrix=tronco_rot
+        )
+
+def fogueira_casa():
+    pos_fogueira_casa = planet_to_world_coordenates(
+        lat=-15,
+        lon=100,
+        radius=state.planetRadius - 1.8,
+        center=state.planetCenter
+    )
+    fogueira_casa_rot = get_rotation_angle_from_planet(pos_fogueira_casa, state.planetCenter)
+
+    desenha_fogueira(
+        angle=0,
+        r_x=0, r_y=1, r_z=0,
+        t_x=pos_fogueira_casa.x, t_y=pos_fogueira_casa.y, t_z=pos_fogueira_casa.z,
+        s_x=1, s_y=1, s_z=1,
+        planet_rotation_matrix=fogueira_casa_rot
+    )
+    #troncos em volta
+    troncos_casa = [
+        (-13, 100),
+        (-16, 98),
+        (-16, 102),
+    ]
+    for lat_tc, lon_tc in troncos_casa:
+        pos_tc = planet_to_world_coordenates(
+            lat=lat_tc,
+            lon=lon_tc,
+            radius=state.planetRadius - 2.34,
+            center=state.planetCenter
+        )
+        tronco_casa_rot = get_rotation_angle_from_planet(pos_tc, state.planetCenter)
+
+        desenha_treeStump(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_tc.x, t_y=pos_tc.y, t_z=pos_tc.z,
+            s_x=0.3, s_y=0.3, s_z=0.3,
+            planet_rotation_matrix=tronco_casa_rot
+        )
+
+
+
 def draw_scene():
     glfw.swap_interval(1)
     state.lastFrame = glfw.get_time()
@@ -239,7 +446,6 @@ def draw_scene():
                       texture_id=state.woodPlanks_texture_id)    
 
         # JEEP ======================================
-
         pos_jeep = planet_to_world_coordenates(
             lat=-62.5, 
             lon=-8, 
@@ -258,47 +464,33 @@ def draw_scene():
             planet_rotation_matrix=jeep_rotation_matrix
         )
 
-        # FOGUEIRA ======================================
+        # ORGANIZANDO ITENS DE INTERESSE NO PLANETA
+        trilha_forja()
+        floresta()
+        fogueira_casa()
+        arvores_planeta()
 
-        pos_fogueira = planet_to_world_coordenates(
-            lat=-15, 
-            lon=90, 
-            radius=state.planetRadius-1.8, 
-            center=state.planetCenter
-        )
-
-        fogueira_rotation_matrix = get_rotation_angle_from_planet(pos_fogueira, state.planetCenter)
-
-        desenha_fogueira(
-            angle=180,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_fogueira.x, t_y=pos_fogueira.y, t_z=pos_fogueira.z,
-            s_x=1, s_y=1, s_z=1,
-            planet_rotation_matrix=fogueira_rotation_matrix
-        )
 
         # ARVORE ======================================
-        pos_pineTree = planet_to_world_coordenates(
-            lat=-30, 
-            lon=90, 
-            radius=state.planetRadius-2.3, 
-            center=state.planetCenter
-        )
-
-        pineTree_rotation_matrix = get_rotation_angle_from_planet(pos_pineTree, state.planetCenter)
-
-        desenha_pineTree(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
-            t_x=pos_pineTree.x, t_y=pos_pineTree.y, t_z=pos_pineTree.z,
-            s_x=1, s_y=1, s_z=1,
-            planet_rotation_matrix=pineTree_rotation_matrix
-        )
+        #pos_pineTree = planet_to_world_coordenates(
+        #    lat=-30, 
+        #    lon=90, 
+        #    radius=state.planetRadius-2.3, 
+        #    center=state.planetCenter
+        #)
+        #pineTree_rotation_matrix = get_rotation_angle_from_planet(pos_pineTree, state.planetCenter)
+        #desenha_pineTree(
+        #    angle=0,
+        #    r_x=0, r_y=0, r_z=0,
+        #    t_x=pos_pineTree.x, t_y=pos_pineTree.y, t_z=pos_pineTree.z,
+        #    s_x=1, s_y=1, s_z=1,
+        #    planet_rotation_matrix=pineTree_rotation_matrix
+        #)
 
         # FOGUETE  ======================================
         pos_rocket = planet_to_world_coordenates(
-            lat=-25, 
-            lon=120, 
+            lat=-15, 
+            lon=115, 
             radius=state.planetRadius-2.1, 
             center=state.planetCenter
         )
@@ -334,7 +526,7 @@ def draw_scene():
         # TELESCÓPIO ======================================
         pos_telescope = planet_to_world_coordenates(
             lat=-30, 
-            lon=105, 
+            lon=90, 
             radius=state.planetRadius-2.1, 
             center=state.planetCenter
         )
@@ -404,37 +596,37 @@ def draw_scene():
         
 
         # PEDRINHAS DE ANDAR ======================================
-        pos_rockTiles = planet_to_world_coordenates(
-            lat=-20, 
-            lon=90, 
-            radius=state.planetRadius-2, 
-            center=state.planetCenter
-        )
+        #pos_rockTiles = planet_to_world_coordenates(
+        #    lat=-20, 
+        #    lon=90, 
+        #    radius=state.planetRadius-2, 
+        #    center=state.planetCenter
+        #)
 
-        rockTiles_rotation_matrix = get_rotation_angle_from_planet(pos_rockTiles, state.planetCenter)
+        #rockTiles_rotation_matrix = get_rotation_angle_from_planet(pos_rockTiles, state.planetCenter)
 
-        desenha_rockTiles(angle = -90, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=pos_rockTiles.x, t_y=pos_rockTiles.y, t_z=pos_rockTiles.z, 
-                      s_x=1, s_y=1, s_z=1, 
-                      planet_rotation_matrix=rockTiles_rotation_matrix) 
-        
+        #desenha_rockTiles(angle = -90, 
+        #              r_x=0, r_y=1, r_z=0, 
+        #              t_x=pos_rockTiles.x, t_y=pos_rockTiles.y, t_z=pos_rockTiles.z, 
+        #              s_x=1, s_y=1, s_z=1, 
+        #              planet_rotation_matrix=rockTiles_rotation_matrix) 
+         
 
         # TRONCO PARA SENTAR ======================================
-        pos_treeStump = planet_to_world_coordenates(
-            lat=-30, 
-            lon=110, 
-            radius=state.planetRadius-2.34, 
-            center=state.planetCenter
-        )
+        #pos_treeStump = planet_to_world_coordenates(
+        #    lat=-30, 
+        #    lon=110, 
+        #    radius=state.planetRadius-2.34, 
+        #    center=state.planetCenter
+        #)
 
-        treeStump_rotation_matrix = get_rotation_angle_from_planet(pos_treeStump, state.planetCenter)
+        #treeStump_rotation_matrix = get_rotation_angle_from_planet(pos_treeStump, state.planetCenter)
 
-        desenha_treeStump(angle = 0, 
-                      r_x=0, r_y=0, r_z=0, 
-                      t_x=pos_treeStump.x, t_y=pos_treeStump.y, t_z=pos_treeStump.z, 
-                      s_x=0.3, s_y=0.3, s_z=0.3, 
-                      planet_rotation_matrix=treeStump_rotation_matrix) 
+        #desenha_treeStump(angle = 0, 
+        #              r_x=0, r_y=0, r_z=0, 
+        #              t_x=pos_treeStump.x, t_y=pos_treeStump.y, t_z=pos_treeStump.z, 
+        #              s_x=0.3, s_y=0.3, s_z=0.3, 
+        #              planet_rotation_matrix=treeStump_rotation_matrix) 
 
 
         # LUA ======================================
