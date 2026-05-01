@@ -221,7 +221,23 @@ def draw_scene():
             t_x=pos_fogueira.x, t_y=pos_fogueira.y, t_z=pos_fogueira.z,
             s_x=1, s_y=1, s_z=1,
             planet_rotation_matrix=fogueira_rotation_matrix
+        )
 
+        pos_pineTree = planet_to_world_coordenates(
+            lat=-30, 
+            lon=90, 
+            radius=state.planetRadius-2.3, 
+            center=state.planetCenter
+        )
+
+        pineTree_rotation_matrix = get_rotation_angle_from_planet(pos_pineTree, state.planetCenter)
+
+        desenha_pineTree(
+            angle=0,
+            r_x=0, r_y=0, r_z=0,
+            t_x=pos_pineTree.x, t_y=pos_pineTree.y, t_z=pos_pineTree.z,
+            s_x=1, s_y=1, s_z=1,
+            planet_rotation_matrix=pineTree_rotation_matrix
         )
 
         desenha_planet(

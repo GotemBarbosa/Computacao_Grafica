@@ -364,12 +364,12 @@ raw_vertices += campfire_v
 raw_texcoords += campfire_t
 fim_campfire = len(raw_vertices)
 
-# planeta
-planet_v, planet_t = load_obj_geometry("./objetos/planet/planet.obj")
-ini_planet = len(raw_vertices)
-raw_vertices += planet_v
-raw_texcoords += planet_t
-fim_planet = len(raw_vertices)
+pineTree_v, pineTree_t = load_obj_geometry("./objetos/pineTree/pineTree.obj")
+ini_pineTree = len(raw_vertices)
+raw_vertices += pineTree_v
+raw_texcoords += pineTree_t
+fim_pineTree = len(raw_vertices)
+
 
 
 
@@ -381,7 +381,7 @@ objects_dict = {
     "sky": {"ini_index": ini_sky, "end_index": fim_sky},
     "house": {"ini_index": ini_house, "end_index": fim_house},
     "campfire": {"ini_index": ini_campfire, "end_index": fim_campfire},
-    "planet": {"ini_index": ini_planet, "end_index": fim_planet},
+    "pineTree": {"ini_index": ini_pineTree, "end_index": fim_pineTree},
 }
 
 
@@ -418,6 +418,9 @@ load_texture_from_file(moon_texture_id, "./objetos/planet/moon.jpg")
 
 #ceres_texture_id = glGenTextures(1)
 #load_texture_from_file(ceres_texture_id, "./objetos/planet/ceres.png")
+
+pineTree_texture_id = glGenTextures(1)
+load_texture_from_file(pineTree_texture_id, "./objetos/pineTree/pineTree.png")
 
 
 

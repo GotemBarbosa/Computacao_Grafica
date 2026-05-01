@@ -95,3 +95,14 @@ def desenha_planet(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, texture_i
     fim = state.objects_dict["sky"]["end_index"]
     glDrawArrays(GL_TRIANGLES, ini, fim - ini)
 
+def desenha_pineTree(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.pineTree_texture_id)
+
+    ini = state.objects_dict["pineTree"]["ini_index"]
+    fim = state.objects_dict["pineTree"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
