@@ -335,6 +335,94 @@ def fogueira_casa():
         )
 
 
+def foguete():
+    # FOGUETE — sobe/desce com setas até um limite ============================
+
+    #atualiza o offset vertical com base nas flags setadas em key_event
+    if state.rocket_going_up:
+        state.rocket_offset += state.rocket_speed * state.deltaTime
+    if state.rocket_going_down:
+        state.rocket_offset -= state.rocket_speed * state.deltaTime
+
+    #nunca abaixo do solo, nem acima do limite
+    state.rocket_offset = max(0.0, min(state.rocket_max_height, state.rocket_offset))
+
+    #posição base na superfície do planeta
+    pos_base = planet_to_world_coordenates(
+        lat=-15,
+        lon=115,
+        radius=state.planetRadius - 2.1,
+        center=state.planetCenter
+    )
+
+    #desloca ao longo da normal da superfície (= "pra cima" local)
+    normal = glm.normalize(pos_base - state.planetCenter)
+    pos_rocket = pos_base + normal * state.rocket_offset
+
+    rocket_rot = get_rotation_angle_from_planet(pos_rocket, state.planetCenter)
+
+    #translação entra na matriz model via t_x/t_y/t_z
+    desenha_rocket(
+        angle=0,
+        r_x=0, r_y=0, r_z=0,
+        t_x=pos_rocket.x, t_y=pos_rocket.y, t_z=pos_rocket.z,
+        s_x=0.5, s_y=0.5, s_z=0.5,
+        planet_rotation_matrix=rocket_rot
+    )
+
+
+def telescopio():
+    # TELESCÓPIO — gira em torno do eixo "up" local com setas ==================
+
+    # atualiza yaw com base nas flags setadas em key_event
+    if state.telescope_turning_left:
+        state.telescope_yaw -= state.telescope_yaw_speed * state.deltaTime
+    if state.telescope_turning_right:
+        state.telescope_yaw += state.telescope_yaw_speed * state.deltaTime
+
+    pos_telescope = planet_to_world_coordenates(
+        lat=-30,
+        lon=90,
+        radius=state.planetRadius - 2.1,
+        center=state.planetCenter
+    )
+    telescope_rot = get_rotation_angle_from_planet(pos_telescope, state.planetCenter)
+
+    # ângulo base (190) + yaw controlado pelo usuário, em torno do eixo Y local
+    desenha_telescope(
+        angle=190 + state.telescope_yaw,
+        r_x=0, r_y=1, r_z=0,
+        t_x=pos_telescope.x, t_y=pos_telescope.y, t_z=pos_telescope.z,
+        s_x=0.04, s_y=0.04, s_z=0.04,
+        planet_rotation_matrix=telescope_rot
+    )
+
+
+def satelite():
+    # SATELITE — orbita o planeta variando a longitude com o tempo ================
+
+    # avança o ângulo da órbita
+    state.satelite_orbit_angle += state.satelite_orbit_speed * state.deltaTime
+    state.satelite_orbit_angle %= 360.0
+
+    # posição na órbita: lat fixa (inclinação), lon = ângulo atual
+    pos_satelite = planet_to_world_coordenates(
+        lat=state.satelite_orbit_lat,
+        lon=state.satelite_orbit_angle,
+        radius=state.planetRadius + state.satelite_orbit_radius,
+        center=state.planetCenter
+    )
+
+    satelite_rot = get_rotation_angle_from_planet(pos_satelite, state.planetCenter)
+
+    desenha_satelite(
+        angle=-90,
+        r_x=0, r_y=1, r_z=0,
+        t_x=pos_satelite.x, t_y=pos_satelite.y, t_z=pos_satelite.z,
+        s_x=1, s_y=1, s_z=1,
+        planet_rotation_matrix=satelite_rot
+    )
+
 
 def draw_scene():
     glfw.swap_interval(1)
@@ -488,22 +576,7 @@ def draw_scene():
         #)
 
         # FOGUETE  ======================================
-        pos_rocket = planet_to_world_coordenates(
-            lat=-15, 
-            lon=115, 
-            radius=state.planetRadius-2.1, 
-            center=state.planetCenter
-        )
-
-        rocket_rotation_matrix = get_rotation_angle_from_planet(pos_rocket, state.planetCenter)
-
-        desenha_rocket(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
-            t_x=pos_rocket.x, t_y=pos_rocket.y, t_z=pos_rocket.z,
-            s_x=0.5, s_y=0.5, s_z=0.5,
-            planet_rotation_matrix=rocket_rotation_matrix
-        )
+        foguete()
 
         # MESA ======================================
         pos_table = planet_to_world_coordenates(
@@ -524,22 +597,7 @@ def draw_scene():
         )
 
         # TELESCÓPIO ======================================
-        pos_telescope = planet_to_world_coordenates(
-            lat=-30, 
-            lon=90, 
-            radius=state.planetRadius-2.1, 
-            center=state.planetCenter
-        )
-
-        telescope_rotation_matrix = get_rotation_angle_from_planet(pos_telescope, state.planetCenter)
-
-        desenha_telescope(
-            angle=190,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_telescope.x, t_y=pos_telescope.y, t_z=pos_telescope.z,
-            s_x=0.04, s_y=0.04, s_z=0.04,
-            planet_rotation_matrix=telescope_rotation_matrix
-        )
+        telescopio()
 
         # FORJA ======================================
         pos_forge = planet_to_world_coordenates(
@@ -579,20 +637,7 @@ def draw_scene():
 
 
         # SATELITE ======================================
-        pos_satelite = planet_to_world_coordenates(
-            lat=-30, 
-            lon=45, 
-            radius=state.planetRadius+30, 
-            center=state.planetCenter
-        )
-
-        satelite_rotation_matrix = get_rotation_angle_from_planet(pos_satelite, state.planetCenter)
-
-        desenha_satelite(angle = -90, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=pos_satelite.x, t_y=pos_satelite.y, t_z=pos_satelite.z, 
-                      s_x=1, s_y=1, s_z=1, 
-                      planet_rotation_matrix=satelite_rotation_matrix) 
+        satelite()
         
 
         # PEDRINHAS DE ANDAR ======================================
