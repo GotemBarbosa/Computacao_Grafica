@@ -461,6 +461,12 @@ raw_vertices += outerWilds_v
 raw_texcoords += outerWilds_t
 fim_outerWilds = len(raw_vertices)
 
+wallBox_v, wallBox_t = load_obj_geometry("./objetos/walls/wallBox.obj")
+ini_wallBox = len(raw_vertices)
+raw_vertices += wallBox_v
+raw_texcoords += wallBox_t
+fim_wallBox = len(raw_vertices)
+
 
 
 
@@ -481,6 +487,7 @@ objects_dict = {
     "rockTiles": {"ini_index": ini_rockTiles, "end_index": fim_rockTiles},
     "treeStump": {"ini_index": ini_treeStump, "end_index": fim_treeStump},
     "outerWilds": {"ini_index": ini_outerWilds, "end_index": fim_outerWilds},
+    "wallBox": {"ini_index": ini_wallBox, "end_index": fim_wallBox},
 }
 
 
@@ -528,7 +535,7 @@ cartoonHouse_texture_id = glGenTextures(1)
 load_texture_from_file(cartoonHouse_texture_id, "./objetos/cartoonHouse/cartoonHouse.png")
 
 woodPlanks_texture_id = glGenTextures(1)
-load_texture_from_file(woodPlanks_texture_id, "./objetos/caixa/woodPlanks.bmp")
+load_texture_from_file(woodPlanks_texture_id, "./objetos/caixa/woodPlank.jpeg")
 
 telescope_texture_id = glGenTextures(1)
 load_texture_from_file(telescope_texture_id, "./objetos/telescope/telescope.png")
@@ -547,6 +554,9 @@ load_texture_from_file(treeStump_texture_id, "./objetos/treeStump/treeStump.png"
 
 outerWilds_texture_id = glGenTextures(1)
 load_texture_from_file(outerWilds_texture_id, "./objetos/outerWilds/outerWilds.png")
+
+wallBox_texture_id = glGenTextures(1)
+load_texture_from_file(wallBox_texture_id, "./objetos/walls/wallBox.png")
 
 
 

@@ -109,7 +109,7 @@ def movement():
             # 3. COLISÃO COM A PLATAFORMA (Plano)
             # ==========================================================
             if state.velocity.y <= 0.0:
-                piso_s_x, piso_s_z = 5.0, 8.2
+                piso_s_x, piso_s_z = 6.15, 10.086
                 dx, dy, dz = abs(state.cameraPos.x), abs(state.cameraPos.y), abs(state.cameraPos.z)
                 if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
 
@@ -493,11 +493,11 @@ def draw_scene():
             angle=0,
             r_x=0, r_y=0, r_z=0,
             t_x=pos_cartoonHouse.x, t_y=pos_cartoonHouse.y, t_z=pos_cartoonHouse.z,
-            s_x=1.3, s_y=1.3, s_z=1.3,
+            s_x=1.6, s_y=1.6, s_z=1.6,
             planet_rotation_matrix=cartoonHouse_rotation_matrix
         )
 
-        piso_s_x, piso_s_y, piso_s_z = 5.0, 0.8, 8.2
+        piso_s_x, piso_s_y, piso_s_z = 6.1, 0.8, 10.086
         margin = 4.0
         #print(state.cameraPos)
         if not state.masterMode:
@@ -529,8 +529,14 @@ def draw_scene():
         # PISO ======================================
         desenha_caixa(state.obj_angle, 
                       r_x=0, r_y=1, r_z=0, 
-                      t_x=0, t_y=-2.8, t_z=0.5, 
+                      t_x=0, t_y=-2.75, t_z=0.78, 
                       s_x=piso_s_x, s_y=piso_s_y, s_z=piso_s_z, 
+                      texture_id=state.woodPlanks_texture_id)    
+        
+        desenha_caixa(state.obj_angle, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=0, t_y=-3.5, t_z=0.78, 
+                      s_x=piso_s_x+0.7, s_y=piso_s_y, s_z=piso_s_z+0.7, 
                       texture_id=state.woodPlanks_texture_id)    
 
         # JEEP ======================================
@@ -578,6 +584,7 @@ def draw_scene():
         # FOGUETE  ======================================
         foguete()
 
+        '''
         # MESA ======================================
         pos_table = planet_to_world_coordenates(
             lat=-0, 
@@ -587,7 +594,7 @@ def draw_scene():
         )
 
         table_rotation_matrix = get_rotation_angle_from_planet(pos_table, state.planetCenter)
-
+        
         desenha_table(
             angle=90,
             r_x=0, r_y=1, r_z=0,
@@ -595,7 +602,7 @@ def draw_scene():
             s_x=0.017, s_y=0.017, s_z=0.017,
             planet_rotation_matrix=table_rotation_matrix
         )
-
+        '''
         # TELESCÓPIO ======================================
         telescopio()
 
@@ -688,6 +695,11 @@ def draw_scene():
                       t_x=pos_outerWilds.x, t_y=pos_outerWilds.y, t_z=pos_outerWilds.z, 
                       s_x=2, s_y=2, s_z=2, 
                       planet_rotation_matrix=outerWilds_rotation_matrix) 
+        
+        desenha_wallBox(angle = 90, 
+                      r_x=0, r_y=1, r_z=0, 
+                      t_x=0, t_y=0.35, t_z=7.8, 
+                      s_x=0.46, s_y=0.46, s_z=0.46) 
 
 
         # LUA ======================================
