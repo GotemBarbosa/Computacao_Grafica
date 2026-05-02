@@ -159,38 +159,11 @@ forest_positions = [
         ]
 
 
+
 def trilha_forja():
-    # TRILHA FOGUEIRA -> FORJA ======================================
-    import math
-    n_tiles = 30
-    lat_ini, lon_ini = -15, 90   
-    lat_fim, lon_fim = -30, 45  
-
-    for i in range(n_tiles):
-        t = i / (n_tiles - 1)
-
-        # caminho base interpolado
-        lat_base = lat_ini + t * (lat_fim - lat_ini)
-        lon_base = lon_ini + t * (lon_fim - lon_ini)
-
-        # dispersão (zig-zag suave + variação secundária)
-        offset_lat = 2.5 * math.sin(i * 0.9) + 1.2 * math.cos(i * 2.1)
-        offset_lon = 3.5 * math.cos(i * 0.7) + 1.5 * math.sin(i * 1.8)
-
-        lat_p = lat_base + offset_lat
-        lon_p = lon_base + offset_lon
-
-        pos_p = planet_to_world_coordenates(
-            lat=lat_p,
-            lon=lon_p,
-            radius=state.planetRadius - 2.1,
-            center=state.planetCenter
-        )
-        tile_rot = get_rotation_angle_from_planet(pos_p, state.planetCenter)
-
+    for pos_p, tile_rot in cache_trilha_forja:
         desenha_rockTiles(
-            angle=-60,
-            r_x=0, r_y=1, r_z=0,
+            angle=-60, r_x=0, r_y=1, r_z=0,
             t_x=pos_p.x, t_y=pos_p.y, t_z=pos_p.z,
             s_x=0.7, s_y=0.7, s_z=0.7,
             planet_rotation_matrix=tile_rot
@@ -216,19 +189,10 @@ arvores_planeta_positions = [
 
 
 def arvores_planeta():
-    # ARVORES ESPALHADAS ======================================
-    for lat, lon, escala in arvores_planeta_positions:
-        pos_tree = planet_to_world_coordenates(
-            lat=lat,
-            lon=lon,
-            radius=state.planetRadius - 2.3,
-            center=state.planetCenter
-        )
-        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
-
+    # Agora é instantâneo! Sem trigonometria no frame.
+    for pos_tree, tree_rot, escala in cache_arvores_planeta:
         desenha_pineTree(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
+            angle=0, r_x=0, r_y=0, r_z=0,
             t_x=pos_tree.x, t_y=pos_tree.y, t_z=pos_tree.z,
             s_x=escala, s_y=escala, s_z=escala,
             planet_rotation_matrix=tree_rot
@@ -236,20 +200,9 @@ def arvores_planeta():
 
 
 def floresta():
-    # FLORESTA DE PINHEIROS ======================================
-
-    for lat, lon, escala in forest_positions:
-        pos_tree = planet_to_world_coordenates(
-            lat=lat,
-            lon=lon,
-            radius=state.planetRadius - 2.3,
-            center=state.planetCenter
-        )
-        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
-
+    for pos_tree, tree_rot, escala in cache_floresta_arvores:
         desenha_pineTree(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
+            angle=0, r_x=0, r_y=0, r_z=0,
             t_x=pos_tree.x, t_y=pos_tree.y, t_z=pos_tree.z,
             s_x=escala, s_y=escala, s_z=escala,
             planet_rotation_matrix=tree_rot
@@ -424,10 +377,54 @@ def satelite():
     )
 
 
+
+
+
+# ==========================================================
+# CACHE DE OBJETOS ESTÁTICOS
+# ==========================================================
+cache_arvores_planeta = []
+cache_floresta_arvores = []
+cache_trilha_forja = []
+
+def init_objetos_estaticos():
+    global cache_arvores_planeta, cache_floresta_arvores, cache_trilha_forja
+    import math
+
+    # 1. Pré-calcula Árvores do Planeta
+    for lat, lon, escala in arvores_planeta_positions:
+        pos_tree = planet_to_world_coordenates(lat, lon, state.planetRadius - 2.3, state.planetCenter)
+        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
+        # Guarda a posição e a matriz pronta numa tupla
+        cache_arvores_planeta.append((pos_tree, tree_rot, escala))
+
+    # 2. Pré-calcula Floresta
+    for lat, lon, escala in forest_positions:
+        pos_tree = planet_to_world_coordenates(lat, lon, state.planetRadius - 2.3, state.planetCenter)
+        tree_rot = get_rotation_angle_from_planet(pos_tree, state.planetCenter)
+        cache_floresta_arvores.append((pos_tree, tree_rot, escala))
+
+    # 3. Pré-calcula Trilha da Forja
+    n_tiles = 30
+    lat_ini, lon_ini = -15, 90   
+    lat_fim, lon_fim = -30, 45  
+    for i in range(n_tiles):
+        t = i / (n_tiles - 1)
+        lat_base = lat_ini + t * (lat_fim - lat_ini)
+        lon_base = lon_ini + t * (lon_fim - lon_ini)
+        offset_lat = 2.5 * math.sin(i * 0.9) + 1.2 * math.cos(i * 2.1)
+        offset_lon = 3.5 * math.cos(i * 0.7) + 1.5 * math.sin(i * 1.8)
+        
+        pos_p = planet_to_world_coordenates(lat_base + offset_lat, lon_base + offset_lon, state.planetRadius - 2.1, state.planetCenter)
+        tile_rot = get_rotation_angle_from_planet(pos_p, state.planetCenter)
+        cache_trilha_forja.append((pos_p, tile_rot))
+
+
 def draw_scene():
     glfw.swap_interval(1)
     state.lastFrame = glfw.get_time()
 
+    init_objetos_estaticos()
     while not glfw.window_should_close(state.window):
 
 
