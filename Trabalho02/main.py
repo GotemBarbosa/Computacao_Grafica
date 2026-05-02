@@ -435,6 +435,22 @@ def draw_scene():
                       t_x=pos_treeStump.x, t_y=pos_treeStump.y, t_z=pos_treeStump.z, 
                       s_x=0.3, s_y=0.3, s_z=0.3, 
                       planet_rotation_matrix=treeStump_rotation_matrix) 
+        
+        # NAVE DO OUTER WILDS ======================================
+        pos_outerWilds = planet_to_world_coordenates(
+            lat=-60, 
+            lon=110, 
+            radius=state.planetRadius+0.5, 
+            center=state.planetCenter
+        )
+
+        outerWilds_rotation_matrix = get_rotation_angle_from_planet(pos_outerWilds, state.planetCenter)
+
+        desenha_outerWilds(angle = 0, 
+                      r_x=0, r_y=0, r_z=0, 
+                      t_x=pos_outerWilds.x, t_y=pos_outerWilds.y, t_z=pos_outerWilds.z, 
+                      s_x=2, s_y=2, s_z=2, 
+                      planet_rotation_matrix=outerWilds_rotation_matrix) 
 
 
         # LUA ======================================

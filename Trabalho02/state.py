@@ -409,6 +409,12 @@ raw_vertices += treeStump_v
 raw_texcoords += treeStump_t
 fim_treeStump = len(raw_vertices)
 
+outerWilds_v, outerWilds_t = load_obj_geometry("./objetos/outerWilds/outerWilds.obj")
+ini_outerWilds = len(raw_vertices)
+raw_vertices += outerWilds_v
+raw_texcoords += outerWilds_t
+fim_outerWilds = len(raw_vertices)
+
 
 
 
@@ -428,6 +434,7 @@ objects_dict = {
     "satelite": {"ini_index": ini_satelite, "end_index": fim_satelite},
     "rockTiles": {"ini_index": ini_rockTiles, "end_index": fim_rockTiles},
     "treeStump": {"ini_index": ini_treeStump, "end_index": fim_treeStump},
+    "outerWilds": {"ini_index": ini_outerWilds, "end_index": fim_outerWilds},
 }
 
 
@@ -491,6 +498,9 @@ load_texture_from_file(rockTiles_texture_id, "./objetos/rockTiles/rockTiles.png"
                        
 treeStump_texture_id = glGenTextures(1)
 load_texture_from_file(treeStump_texture_id, "./objetos/treeStump/treeStump.png")
+
+outerWilds_texture_id = glGenTextures(1)
+load_texture_from_file(outerWilds_texture_id, "./objetos/outerWilds/outerWilds.png")
 
 
 
