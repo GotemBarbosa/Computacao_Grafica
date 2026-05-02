@@ -67,6 +67,27 @@ gravityStrength = 30.0
 # começa no piso
 gravity_weight = 1.0
 
+# foguete
+rocket_offset = 0.0          # quanto o foguete está acima da posição base
+rocket_max_height = 100.0    # limite máximo de subida
+rocket_speed = 15.0          # velocidade de subida/descida (unidades por segundo)
+
+# satelite (orbita)
+satelite_orbit_angle = 0.0   # ângulo atual da órbita (graus)
+satelite_orbit_speed = 30.0  # velocidade angular (graus por segundo)
+satelite_orbit_radius = 30.0 # distância acima da superfície
+satelite_orbit_lat = -30.0   # latitude do plano da órbita (inclinação)
+
+# telescópio (yaw controlável)
+telescope_yaw = 0.0          # rotação acumulada (graus) — somada ao ângulo base
+telescope_yaw_speed = 60.0   # velocidade de rotação (graus por segundo)
+
+# flags de input (setadas em key_event, lidas nas funções de desenho)
+rocket_going_up = False
+rocket_going_down = False
+telescope_turning_left = False
+telescope_turning_right = False
+
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, base_rotation=None):
     # Matriz model (T * R * S) para transformar o objeto no mundo
@@ -106,6 +127,7 @@ keys = {} # Mantém o estado de quais teclas estão sendo pressionadas, permite 
 def key_event(window, key, scancode, action, mods):
     global keys, flyMode, velocity, isOnGround, planetUp, planetActivated, masterMode
     global cameraPos, cameraFront, cameraUp, cameraMoveFront, newPlanetUp, planetFoward, planetRight, gravity, velocity
+    global rocket_going_up, rocket_going_down, telescope_turning_left, telescope_turning_right
 
     if action == glfw.PRESS:
         keys[key] = True
@@ -139,6 +161,22 @@ def key_event(window, key, scancode, action, mods):
             else:
                 velocity += glm.vec3(0.0, 1.0, 0.0) * jumpForce
             isOnGround = False
+
+    # === FOGUETE: sobe/desce ===
+    if key == glfw.KEY_UP:
+        if action == glfw.PRESS:   rocket_going_up = True
+        if action == glfw.RELEASE: rocket_going_up = False
+    if key == glfw.KEY_DOWN:
+        if action == glfw.PRESS:   rocket_going_down = True
+        if action == glfw.RELEASE: rocket_going_down = False
+
+    # === TELESCÓPIO: gira yaw ===
+    if key == glfw.KEY_LEFT:
+        if action == glfw.PRESS:   telescope_turning_left = True
+        if action == glfw.RELEASE: telescope_turning_left = False
+    if key == glfw.KEY_RIGHT:
+        if action == glfw.PRESS:   telescope_turning_right = True
+        if action == glfw.RELEASE: telescope_turning_right = False
 
 
 
