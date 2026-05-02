@@ -88,6 +88,9 @@ rocket_going_down = False
 telescope_turning_left = False
 telescope_turning_right = False
 
+# modos de visualização (toggles)
+wireframe_mode = False       # P: alterna malha poligonal (GL_LINE) ↔ preenchido (GL_FILL)
+
 
 def model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, base_rotation=None):
     # Matriz model (T * R * S) para transformar o objeto no mundo
@@ -128,6 +131,7 @@ def key_event(window, key, scancode, action, mods):
     global keys, flyMode, velocity, isOnGround, planetUp, planetActivated, masterMode
     global cameraPos, cameraFront, cameraUp, cameraMoveFront, newPlanetUp, planetFoward, planetRight, gravity, velocity
     global rocket_going_up, rocket_going_down, telescope_turning_left, telescope_turning_right
+    global wireframe_mode
 
     if action == glfw.PRESS:
         keys[key] = True
@@ -140,7 +144,7 @@ def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_F and action == glfw.PRESS:
         flyMode = not flyMode
 
-    if key == glfw.KEY_P and action == glfw.PRESS:
+    if key == glfw.KEY_O and action == glfw.PRESS:
         masterMode = not masterMode
         planetActivated = False
         cameraPos = glm.vec3(0.0, 0.0, 0.0)
@@ -177,6 +181,10 @@ def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_RIGHT:
         if action == glfw.PRESS:   telescope_turning_right = True
         if action == glfw.RELEASE: telescope_turning_right = False
+
+    # === VISUALIZAÇÃO: malha poligonal ===
+    if key == glfw.KEY_P and action == glfw.PRESS:
+        wireframe_mode = not wireframe_mode
 
 
 

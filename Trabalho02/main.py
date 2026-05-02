@@ -454,6 +454,9 @@ def draw_scene():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
 
+        # malha poligonal (P): GL_LINE = só arestas, GL_FILL = preenchido (default)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE if state.wireframe_mode else GL_FILL)
+
         #carrega view
         mat_view = state.view()
         glUniformMatrix4fv(state.loc_view, 1, GL_TRUE, mat_view)
