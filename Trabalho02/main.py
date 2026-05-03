@@ -698,6 +698,14 @@ def draw_scene():
             s_x=46, s_y=46, s_z=46, texture_id=state.moon_texture_id
         )
 
+        # PLANETA DISTANTE (Marte) ======================================
+        desenha_planet(
+            angle=0,
+            r_x=0, r_y=1, r_z=0,
+            t_x=200, t_y=100, t_z=-250,
+            s_x=80, s_y=80, s_z=80, texture_id=state.mars_texture_id
+        )
+
         #draw_ground_grid()
 
         glfw.swap_buffers(state.window)

@@ -506,8 +506,8 @@ load_texture_from_file(sky_texture_id, "./objetos/sky/NightSky4k.jpg")
 campfire_texture_id = glGenTextures(1)
 load_texture_from_file(campfire_texture_id, "./objetos/campfire/campfire.jpg")
 
-#mars_texture_id = glGenTextures(1)
-#load_texture_from_file(mars_texture_id, "./objetos/planet/mars.jpg")
+mars_texture_id = glGenTextures(1)
+load_texture_from_file(mars_texture_id, "./objetos/planet/mars.jpg")
 
 moon_texture_id = glGenTextures(1)
 load_texture_from_file(moon_texture_id, "./objetos/planet/moon.jpg")
