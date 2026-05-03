@@ -86,13 +86,13 @@ def movement():
         if dist_origem > sky_limit:
             state.cameraPos = glm.normalize(state.cameraPos) * sky_limit
 
+        '''
         # limite inferior (chão / superfície do planeta)
         if state.cameraPos.y < state.groundHeight:
             state.cameraPos.y = state.groundHeight
+        '''
 
     if not state.flyMode:
-
-
         if not state.masterMode:
             # ==========================================================
             # 1. GRAVIDADE UNIFICADA MISTURADA
@@ -542,6 +542,127 @@ def nave_outer_wilds():
         planet_rotation_matrix=rot
     )
 
+def table():
+    desenha_table(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.7, t_y=-1.92, t_z=2.15,
+        s_x=1, s_y=1, s_z=1,
+    )
+
+def chair():
+    desenha_chair(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-1.2, t_y=-1.92, t_z=3.15,
+        s_x=1, s_y=1, s_z=1,
+    )
+
+def mesa_e_decoracoes():
+    table()
+    chair()
+
+def cama():
+    desenha_bed(
+        angle=90, r_x=0, r_y=1, r_z=0,
+        t_x=-1.5, t_y=-1.95, t_z=7.1,
+        s_x=3.5, s_y=3.5, s_z=3.5,
+    )
+
+def shelf():
+    desenha_shelf(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=3.2, t_y=-2, t_z=2.25,
+        s_x=0.2, s_y=0.2, s_z=0.2,
+    )
+
+def door():
+    desenha_door(
+        angle=-90, r_x=0, r_y=1, r_z=0,
+        t_x=-1.6, t_y=-0.3, t_z=-7,
+        s_x=0.6, s_y=0.7, s_z=0.75,
+    )
+
+def shelfWall():
+    '''
+    desenha_shelfWall(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=3.76, t_y=-0.3, t_z=6.45,
+        s_x=0.028, s_y=0.02, s_z=0.024,
+    )
+    '''
+
+    desenha_shelfWall(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=3.67, t_y=0.18, t_z=6.45,
+        s_x=0.028, s_y=0.02, s_z=0.024,
+    )
+
+food_cans_positions = {
+    '1': {
+        'pos': [3.5, -1.9, 8.1],
+        'angle': 100,
+        'axis': [0, 1, 0]
+    },
+    '2': {
+        'pos': [3.5, -1.9, 7.8],
+        'angle': 180,
+        'axis': [0, 1, 0]
+    },
+    '3': {
+        'pos': [3.5, -1.9, 7.5],
+        'angle': 60,
+        'axis': [0, 1, 0]
+    },
+    '4': {
+        'pos': [3.5, -1.9, 7.2],
+        'angle': 75,
+        'axis': [0, 1, 0]
+    },
+    '5': {
+        'pos': [3.5, -1.5, 7.65],
+        'angle': -90,
+        'axis': [0, 1, 0]
+    },
+    '6': {
+        'pos': [3.5, -1.5, 7.95],
+        'angle': 90,
+        'axis': [0, 1, 0]
+    },
+    '7': {
+        'pos': [3.5, -1.1, 7.8],
+        'angle': 105,
+        'axis': [0, 1, 0]
+    },
+    '8': {
+        'pos': [3, -1.8, 7],
+        'angle': 90,
+        'axis': [1, 0, 1]
+    },
+}
+
+def pilha_foodCans_perto_cama():
+    for key, _ in food_cans_positions.items():
+        desenha_foodCan(
+            angle=food_cans_positions[key]['angle'], r_x=food_cans_positions[key]['axis'][0], r_y=food_cans_positions[key]['axis'][1], r_z=food_cans_positions[key]['axis'][2],
+            t_x=food_cans_positions[key]['pos'][0], t_y=food_cans_positions[key]['pos'][1], t_z=food_cans_positions[key]['pos'][2],
+            s_x=3.8, s_y=3.8, s_z=3.8,         
+        )
+    
+
+def barrel():
+    # Barrel da direita (perto da porta)
+    desenha_barrel(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-1.7, t_y=-2, t_z=-6.2,
+        s_x=1.8, s_y=1.8, s_z=1.8,
+    )
+
+    # Barrel da esquerda (meio da parede)
+    desenha_barrel(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.1, t_y=-2, t_z=-5,
+        s_x=1.8, s_y=1.8, s_z=1.8,
+    )
+
 
 # ==========================================================
 # (state que muda por frame, separado do desenho)
@@ -656,26 +777,14 @@ def desenha_objetos_planeta():
     telescopio()          # TELESCÓPIO (←/→) 
     satelite()            # SATELITE (orbita automática)
 
-    '''
-    # MESA ======================================
-    # bloco antigo da mesa, mantido comentado caso queira reativar
-    pos_table = planet_to_world_coordenates(
-        lat=-0,
-        lon=85,
-        radius=state.planetRadius-1.3,
-        center=state.planetCenter
-    )
-
-    table_rotation_matrix = get_rotation_angle_from_planet(pos_table, state.planetCenter)
-
-    desenha_table(
-        angle=90,
-        r_x=0, r_y=1, r_z=0,
-        t_x=pos_table.x, t_y=pos_table.y, t_z=pos_table.z,
-        s_x=0.017, s_y=0.017, s_z=0.017,
-        planet_rotation_matrix=table_rotation_matrix
-    )
-    '''
+def desenha_objetos_casa():
+    mesa_e_decoracoes()
+    door()
+    cama()
+    shelf()
+    shelfWall()
+    pilha_foodCans_perto_cama()
+    barrel()
 
 
 def draw_scene():
@@ -708,6 +817,7 @@ def draw_scene():
         # === DRAW: posiciona os objetos ===
         desenha_cenario_estatico()
         desenha_objetos_planeta()
+        desenha_objetos_casa()
 
         #draw_ground_grid()
 

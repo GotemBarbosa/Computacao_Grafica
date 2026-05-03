@@ -218,3 +218,80 @@ def desenha_wallBox(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_r
     fim = state.objects_dict["wallBox"]["end_index"]
     glDrawArrays(GL_TRIANGLES, ini, fim - ini)
 
+def desenha_bed(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.bed_texture_id)
+
+    ini = state.objects_dict["bed"]["ini_index"]
+    fim = state.objects_dict["bed"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_chair(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.chair_texture_id)
+
+    ini = state.objects_dict["chair"]["ini_index"]
+    fim = state.objects_dict["chair"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_shelf(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.shelf_texture_id)
+
+    ini = state.objects_dict["shelf"]["ini_index"]
+    fim = state.objects_dict["shelf"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_door(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.door_texture_id)
+
+    ini = state.objects_dict["door"]["ini_index"]
+    fim = state.objects_dict["door"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_shelfWall(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.shelfWall_texture_id)
+
+    ini = state.objects_dict["shelfWall"]["ini_index"]
+    fim = state.objects_dict["shelfWall"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_foodCan(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.foodCan_texture_id)
+
+    ini = state.objects_dict["foodCan"]["ini_index"]
+    fim = state.objects_dict["foodCan"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_barrel(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.barrel_texture_id)
+
+    ini = state.objects_dict["barrel"]["ini_index"]
+    fim = state.objects_dict["barrel"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+

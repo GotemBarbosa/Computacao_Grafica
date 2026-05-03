@@ -482,6 +482,48 @@ raw_vertices += wallBox_v
 raw_texcoords += wallBox_t
 fim_wallBox = len(raw_vertices)
 
+bed_v, bed_t = load_obj_geometry("./objetos/bed/bed.obj")
+ini_bed = len(raw_vertices)
+raw_vertices += bed_v
+raw_texcoords += bed_t
+fim_bed = len(raw_vertices)
+
+chair_v, chair_t = load_obj_geometry("./objetos/chair/chair.obj")
+ini_chair = len(raw_vertices)
+raw_vertices += chair_v
+raw_texcoords += chair_t
+fim_chair = len(raw_vertices)
+
+shelf_v, shelf_t = load_obj_geometry("./objetos/shelf/shelf.obj")
+ini_shelf = len(raw_vertices)
+raw_vertices += shelf_v
+raw_texcoords += shelf_t
+fim_shelf = len(raw_vertices)
+
+door_v, door_t = load_obj_geometry("./objetos/door/door.obj")
+ini_door = len(raw_vertices)
+raw_vertices += door_v
+raw_texcoords += door_t
+fim_door = len(raw_vertices)
+
+shelfWall_v, shelfWall_t = load_obj_geometry("./objetos/shelfWall/shelfWall.obj")
+ini_shelfWall = len(raw_vertices)
+raw_vertices += shelfWall_v
+raw_texcoords += shelfWall_t
+fim_shelfWall = len(raw_vertices)
+
+foodCan_v, foodCan_t = load_obj_geometry("./objetos/foodCan/foodCan.obj")
+ini_foodCan = len(raw_vertices)
+raw_vertices += foodCan_v
+raw_texcoords += foodCan_t
+fim_foodCan = len(raw_vertices)
+
+barrel_v, barrel_t = load_obj_geometry("./objetos/barrel/barrel.obj")
+ini_barrel = len(raw_vertices)
+raw_vertices += barrel_v
+raw_texcoords += barrel_t
+fim_barrel = len(raw_vertices)
+
 
 
 
@@ -503,6 +545,13 @@ objects_dict = {
     "treeStump": {"ini_index": ini_treeStump, "end_index": fim_treeStump},
     "outerWilds": {"ini_index": ini_outerWilds, "end_index": fim_outerWilds},
     "wallBox": {"ini_index": ini_wallBox, "end_index": fim_wallBox},
+    "bed": {"ini_index": ini_bed, "end_index": fim_bed},
+    "chair": {"ini_index": ini_chair, "end_index": fim_chair},
+    "shelf": {"ini_index": ini_shelf, "end_index": fim_shelf},
+    "door": {"ini_index": ini_door, "end_index": fim_door},
+    "shelfWall": {"ini_index": ini_shelfWall, "end_index": fim_shelfWall},
+    "foodCan": {"ini_index": ini_foodCan, "end_index": fim_foodCan},
+    "barrel": {"ini_index": ini_barrel, "end_index": fim_barrel},
 }
 
 
@@ -572,6 +621,27 @@ load_texture_from_file(outerWilds_texture_id, "./objetos/outerWilds/outerWilds.p
 
 wallBox_texture_id = glGenTextures(1)
 load_texture_from_file(wallBox_texture_id, "./objetos/walls/wallBox.png")
+
+bed_texture_id = glGenTextures(1)
+load_texture_from_file(bed_texture_id, "./objetos/bed/bed.png")
+
+chair_texture_id = glGenTextures(1)
+load_texture_from_file(chair_texture_id, "./objetos/chair/chair.png")
+
+shelf_texture_id = glGenTextures(1)
+load_texture_from_file(shelf_texture_id, "./objetos/shelf/shelf.png")
+
+door_texture_id = glGenTextures(1)
+load_texture_from_file(door_texture_id, "./objetos/door/door.png")
+
+shelfWall_texture_id = glGenTextures(1)
+load_texture_from_file(shelfWall_texture_id, "./objetos/shelfWall/shelfWall.png")
+
+foodCan_texture_id = glGenTextures(1)
+load_texture_from_file(foodCan_texture_id, "./objetos/foodCan/foodCan.png")
+
+barrel_texture_id = glGenTextures(1)
+load_texture_from_file(barrel_texture_id, "./objetos/barrel/barrel.png")
 
 
 

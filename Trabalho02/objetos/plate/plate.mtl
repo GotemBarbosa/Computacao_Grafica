@@ -1,0 +1,13 @@
+# Blender 5.1.1 MTL File: 'backup.blend'
+# www.blender.org
+
+newmtl medieval_dish
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/textures/wood_table_worn_diff_1k.jpg
+map_Ns /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/03 Prato/wood_table_worn_rough_1k.jpg
+map_Bump -bm 1.000000 /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/03 Prato/wood_table_worn_nor_gl_1k.jpg

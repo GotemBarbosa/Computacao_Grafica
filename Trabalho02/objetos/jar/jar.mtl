@@ -1,0 +1,13 @@
+# Blender 5.1.1 MTL File: 'backup.blend'
+# www.blender.org
+
+newmtl jug_of_wine_and_water
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/textures/Clay002_1K-JPG_Color.jpg
+map_Ns /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/07 Jarras Vinho e Agua/Clay002_1K-JPG_Roughness.jpg
+map_Bump -bm 1.000000 /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/07 Jarras Vinho e Agua/Clay002_1K-JPG_NormalGL.jpg
