@@ -634,6 +634,11 @@ def mesa_e_decoracoes():
     jar()
     bascket_and_fruits()
     knife()
+    desenha_candle(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.1, t_y=-0.62, t_z=4.25,
+        s_x=0.1, s_y=0.1, s_z=0.1,
+    )
 
 def cama():
     desenha_bed(
@@ -649,38 +654,62 @@ def shelf():
         s_x=0.2, s_y=0.2, s_z=0.2,
     )
 
-def pileOfBooks():
-    desenha_pileOfBooks(
-        angle=-30, r_x=0, r_y=1, r_z=0,
-        t_x=3.05, t_y=-0.55, t_z=3.4,
-        s_x=0.6, s_y=0.6, s_z=0.6,
+def globe():
+    desenha_globe(
+        angle=90, r_x=0, r_y=1, r_z=0,
+        t_x=3.05, t_y=-0.65, t_z=1.7,
+        s_x=0.25, s_y=0.25, s_z=0.25,
+    )  
+
+def map():
+    desenha_map(
+        angle=-105, r_x=0, r_y=1, r_z=0,
+        t_x=2.92, t_y=-0.6, t_z=2.8,
+        s_x=0.18, s_y=0.18, s_z=0.18,
     )  
 
 def shelf_e_decoracoes():
     shelf()
-    pileOfBooks()
+    globe()
+    map()
+    desenha_lantern(
+        angle=45, r_x=0, r_y=1, r_z=0,
+        t_x=2.92, t_y=-0.6, t_z=3.7,
+        s_x=1, s_y=1, s_z=1,
+    )  
 
 def door():
     desenha_door(
-        angle=-90, r_x=0, r_y=1, r_z=0,
-        t_x=-1.6, t_y=-0.3, t_z=-7,
-        s_x=0.6, s_y=0.7, s_z=0.75,
+        angle=0, r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=-1.95, t_z=-7,
+        s_x=2.5, s_y=3.1, s_z=2,
     )
 
 def shelfWall():
-    '''
-    desenha_shelfWall(
-        angle=0, r_x=0, r_y=0, r_z=0,
-        t_x=3.76, t_y=-0.3, t_z=6.45,
-        s_x=0.028, s_y=0.02, s_z=0.024,
-    )
-    '''
-
     desenha_shelfWall(
         angle=0, r_x=0, r_y=0, r_z=0,
         t_x=3.67, t_y=0.18, t_z=6.45,
         s_x=0.028, s_y=0.02, s_z=0.024,
     )
+
+def candle():
+    desenha_candle(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=3.4, t_y=0.48, t_z=5.5,
+        s_x=0.1, s_y=0.1, s_z=0.1,
+    )
+
+def pileOfBooks():
+    desenha_pileOfBooks(
+        angle=150, r_x=0, r_y=1, r_z=0,
+        t_x=3.4, t_y=0.53, t_z=7.5,
+        s_x=0.5, s_y=0.5, s_z=0.5,
+    )  
+
+def shelfWall_e_decoracoes():
+    shelfWall()
+    candle()
+    pileOfBooks()
 
 food_cans_positions = {
     '1': {
@@ -766,11 +795,56 @@ def gun():
         s_x=2, s_y=2, s_z=2,
     )
 
+def lantern():
+    desenha_lantern(
+        angle=45, r_x=0, r_y=1, r_z=0,
+        t_x=-2.1, t_y=-0.42, t_z=-5,
+        s_x=1, s_y=1, s_z=1,
+    ) 
+
 def barrel_e_arredores():
     barrels()
     axe()
     hammer()
     gun()
+    lantern()
+
+def painting():
+    desenha_painting(
+        angle=180, r_x=0, r_y=1, r_z=0,
+        t_x=2.7, t_y=0.7, t_z=-3.9,
+        s_x=0.2, s_y=0.2, s_z=0.2,
+    )
+
+def oxygen():
+    desenha_oxygen(
+        angle=-15, r_x=0, r_y=0, r_z=1,
+        t_x=2.48, t_y=-1.28, t_z=-6.2,
+        s_x=0.2, s_y=0.2, s_z=0.2,
+    )
+    desenha_oxygen(
+        angle=-15, r_x=0, r_y=0, r_z=1,
+        t_x=2.48, t_y=-1.28, t_z=-5.7,
+        s_x=0.2, s_y=0.2, s_z=0.2,
+    )
+    desenha_oxygen(
+        angle=-15, r_x=1, r_y=0, r_z=0,
+        t_x=1.8, t_y=-1.28, t_z=-6.6,
+        s_x=0.2, s_y=0.2, s_z=0.2,
+    )
+
+
+def painting_e_arredores():
+    painting()
+    oxygen()
+
+
+def chandelier():
+    desenha_chandelier(
+        angle=180, r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=5, t_z=4,
+        s_x=1, s_y=1, s_z=1,
+    )
 
 
 # ==========================================================
@@ -890,10 +964,12 @@ def desenha_objetos_casa():
     mesa_e_decoracoes()
     door()
     cama()
+    #chandelier()
     shelf_e_decoracoes()
-    shelfWall()
+    shelfWall_e_decoracoes()
     pilha_foodCans_perto_cama()
     barrel_e_arredores()
+    painting_e_arredores()
 
 
 def draw_scene():

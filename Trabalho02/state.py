@@ -590,6 +590,48 @@ raw_vertices += apple_v
 raw_texcoords += apple_t
 fim_apple = len(raw_vertices)
 
+candle_v, candle_t = load_obj_geometry("./objetos/candle/candle.obj")
+ini_candle = len(raw_vertices)
+raw_vertices += candle_v
+raw_texcoords += candle_t
+fim_candle = len(raw_vertices)
+
+globe_v, globe_t = load_obj_geometry("./objetos/globe/globe.obj")
+ini_globe = len(raw_vertices)
+raw_vertices += globe_v
+raw_texcoords += globe_t
+fim_globe = len(raw_vertices)
+
+map_v, map_t = load_obj_geometry("./objetos/map/map.obj")
+ini_map = len(raw_vertices)
+raw_vertices += map_v
+raw_texcoords += map_t
+fim_map = len(raw_vertices)
+
+painting_v, painting_t = load_obj_geometry("./objetos/painting/painting.obj")
+ini_painting = len(raw_vertices)
+raw_vertices += painting_v
+raw_texcoords += painting_t
+fim_painting = len(raw_vertices)
+
+oxygen_v, oxygen_t = load_obj_geometry("./objetos/oxygen/oxygen.obj")
+ini_oxygen = len(raw_vertices)
+raw_vertices += oxygen_v
+raw_texcoords += oxygen_t
+fim_oxygen = len(raw_vertices)
+
+lantern_v, lantern_t = load_obj_geometry("./objetos/lantern/lantern.obj")
+ini_lantern = len(raw_vertices)
+raw_vertices += lantern_v
+raw_texcoords += lantern_t
+fim_lantern = len(raw_vertices)
+
+chandelier_v, chandelier_t = load_obj_geometry("./objetos/chandelier/chandelier.obj")
+ini_chandelier = len(raw_vertices)
+raw_vertices += chandelier_v
+raw_texcoords += chandelier_t
+fim_chandelier = len(raw_vertices)
+
 
 
 
@@ -629,6 +671,13 @@ objects_dict = {
     "knife": {"ini_index": ini_knife, "end_index": fim_knife},
     "pear": {"ini_index": ini_pear, "end_index": fim_pear},
     "apple": {"ini_index": ini_apple, "end_index": fim_apple},
+    "candle": {"ini_index": ini_candle, "end_index": fim_candle},
+    "globe": {"ini_index": ini_globe, "end_index": fim_globe},
+    "map": {"ini_index": ini_map, "end_index": fim_map},
+    "painting": {"ini_index": ini_painting, "end_index": fim_painting},
+    "oxygen": {"ini_index": ini_oxygen, "end_index": fim_oxygen},
+    "lantern": {"ini_index": ini_lantern, "end_index": fim_lantern},
+    "chandelier": {"ini_index": ini_chandelier, "end_index": fim_chandelier},
 
 }
 
@@ -753,6 +802,27 @@ load_texture_from_file(pear_texture_id, "./objetos/pear/pear.png")
 
 apple_texture_id = glGenTextures(1)
 load_texture_from_file(apple_texture_id, "./objetos/apple/apple.png")
+
+candle_texture_id = glGenTextures(1)
+load_texture_from_file(candle_texture_id, "./objetos/candle/candle.png")
+
+globe_texture_id = glGenTextures(1)
+load_texture_from_file(globe_texture_id, "./objetos/globe/globe.png")
+
+map_texture_id = glGenTextures(1)
+load_texture_from_file(map_texture_id, "./objetos/map/map.png")
+
+painting_texture_id = glGenTextures(1)
+load_texture_from_file(painting_texture_id, "./objetos/painting/painting.png")
+
+oxygen_texture_id = glGenTextures(1)
+load_texture_from_file(oxygen_texture_id, "./objetos/oxygen/oxygen.png")
+
+lantern_texture_id = glGenTextures(1)
+load_texture_from_file(lantern_texture_id, "./objetos/lantern/lantern.png")
+
+chandelier_texture_id = glGenTextures(1)
+load_texture_from_file(chandelier_texture_id, "./objetos/chandelier/chandelier.png")
 
 
 # Sampler "imagem" usa a unidade de textura 0

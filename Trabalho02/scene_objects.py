@@ -415,3 +415,80 @@ def desenha_plate(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rot
     ini = state.objects_dict["plate"]["ini_index"]
     fim = state.objects_dict["plate"]["end_index"]
     glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_candle(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.candle_texture_id)
+
+    ini = state.objects_dict["candle"]["ini_index"]
+    fim = state.objects_dict["candle"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_globe(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.globe_texture_id)
+
+    ini = state.objects_dict["globe"]["ini_index"]
+    fim = state.objects_dict["globe"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_map(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.map_texture_id)
+
+    ini = state.objects_dict["map"]["ini_index"]
+    fim = state.objects_dict["map"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_painting(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.painting_texture_id)
+
+    ini = state.objects_dict["painting"]["ini_index"]
+    fim = state.objects_dict["painting"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_chandelier(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.chandelier_texture_id)
+
+    ini = state.objects_dict["chandelier"]["ini_index"]
+    fim = state.objects_dict["chandelier"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_lantern(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.lantern_texture_id)
+
+    ini = state.objects_dict["lantern"]["ini_index"]
+    fim = state.objects_dict["lantern"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_oxygen(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.oxygen_texture_id)
+
+    ini = state.objects_dict["oxygen"]["ini_index"]
+    fim = state.objects_dict["oxygen"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
