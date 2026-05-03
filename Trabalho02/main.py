@@ -426,6 +426,169 @@ def satelite():
 
 
 # ==========================================================
+# HELPERS DE CENÁRIO (objetos estáticos sem lógica especial)
+# ==========================================================
+
+def ceu():
+    desenha_sky(
+        angle=0,
+        r_x=0, r_y=0, r_z=0,
+        t_x=0, t_y=0, t_z=0,
+        s_x=300, s_y=300, s_z=300
+    )
+
+
+def lua():
+    desenha_planet(
+        angle=180,
+        r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=-48, t_z=0,
+        s_x=46, s_y=46, s_z=46,
+        texture_id=state.moon_texture_id
+    )
+
+
+def caixa_central():
+    desenha_caixa(
+        state.obj_angle,
+        r_x=0, r_y=1, r_z=0,
+        t_x=-5.5, t_y=-60.7, t_z=-5.5,
+        s_x=0.8, s_y=0.8, s_z=0.8,
+        texture_id=state.texture_id
+    )
+
+
+PISO_S = (6.1, 0.8, 10.086)  # x, y, z da plataforma — também usado no peso da gravidade
+
+
+def plataforma():
+    px, py, pz = PISO_S
+    desenha_caixa(
+        state.obj_angle,
+        r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=-2.75, t_z=0.78,
+        s_x=px, s_y=py, s_z=pz,
+        texture_id=state.woodPlanks_texture_id
+    )
+    desenha_caixa(
+        state.obj_angle,
+        r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=-3.5, t_z=0.78,
+        s_x=px + 0.7, s_y=py, s_z=pz + 0.7,
+        texture_id=state.woodPlanks_texture_id
+    )
+
+
+def wall_box():
+    desenha_wallBox(
+        angle=90,
+        r_x=0, r_y=1, r_z=0,
+        t_x=0, t_y=0.35, t_z=7.8,
+        s_x=0.46, s_y=0.46, s_z=0.46
+    )
+
+
+def casa():
+    pos = planet_to_world_coordenates(lat=0, lon=90, radius=state.planetRadius - 2.3, center=state.planetCenter)
+    rot = get_rotation_angle_from_planet(pos, state.planetCenter)
+    desenha_cartoonHouse(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=pos.x, t_y=pos.y, t_z=pos.z,
+        s_x=1.6, s_y=1.6, s_z=1.6,
+        planet_rotation_matrix=rot
+    )
+
+
+def jipe():
+    pos = planet_to_world_coordenates(lat=-62.5, lon=-8, radius=state.planetRadius - 2.2, center=state.planetCenter)
+    rot = get_rotation_angle_from_planet(pos, state.planetCenter)
+    desenha_jeep(
+        angle=180, r_x=0, r_y=1, r_z=0,
+        t_x=pos.x, t_y=pos.y, t_z=pos.z,
+        s_x=2, s_y=2, s_z=2,
+        planet_rotation_matrix=rot
+    )
+
+
+def forja():
+    pos = planet_to_world_coordenates(lat=-30, lon=45, radius=state.planetRadius - 1.8, center=state.planetCenter)
+    rot = get_rotation_angle_from_planet(pos, state.planetCenter)
+    desenha_forge(
+        angle=-90, r_x=0, r_y=1, r_z=0,
+        t_x=pos.x, t_y=pos.y, t_z=pos.z,
+        s_x=1, s_y=1, s_z=1,
+        planet_rotation_matrix=rot
+    )
+
+    # piso da forja
+    pos_piso = planet_to_world_coordenates(lat=-30, lon=45, radius=state.planetRadius - 6, center=state.planetCenter)
+    rot_piso = get_rotation_angle_from_planet(pos_piso, state.planetCenter)
+    desenha_caixa(
+        angle=-90, r_x=0, r_y=1, r_z=0,
+        t_x=pos_piso.x + 3, t_y=pos_piso.y, t_z=pos_piso.z - 3,
+        s_x=4.5, s_y=0.8, s_z=6,
+        texture_id=state.woodPlanks_texture_id,
+        planet_rotation_matrix=rot_piso
+    )
+
+
+def nave_outer_wilds():
+    pos = planet_to_world_coordenates(lat=-60, lon=110, radius=state.planetRadius + 0.5, center=state.planetCenter)
+    rot = get_rotation_angle_from_planet(pos, state.planetCenter)
+    desenha_outerWilds(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=pos.x, t_y=pos.y, t_z=pos.z,
+        s_x=2, s_y=2, s_z=2,
+        planet_rotation_matrix=rot
+    )
+
+
+# ==========================================================
+# (state que muda por frame, separado do desenho)
+# ==========================================================
+
+def atualiza_tempo_e_fps():
+    """Atualiza state.deltaTime, state.lastFrame e o título com FPS."""
+    currentFrame = glfw.get_time()
+    state.deltaTime = currentFrame - state.lastFrame
+    state.lastFrame = currentFrame
+
+    state.nb_frames += 1
+    if currentFrame - state.last_time >= 1.0:
+        glfw.set_window_title(state.window, f"Meu Motor 3D - FPS: {state.nb_frames}")
+        state.nb_frames = 0
+        state.last_time += 1.0
+
+
+def atualiza_gravity_weight():
+    """Suaviza a transição entre gravidade do piso e gravidade do planeta."""
+    if state.masterMode:
+        return
+
+    piso_s_x, _, piso_s_z = PISO_S
+    margin = 4.0
+    dx = abs(state.cameraPos.x)
+    dy = abs(state.cameraPos.y)
+    dz = abs(state.cameraPos.z)
+
+    # dentro da plataforma
+    if (dx < piso_s_x) and (dz < piso_s_z) and (dy < 5):
+        state.gravity_weight = 0.0
+        return
+
+    # totalmente fora da zona de transição
+    if dx > (piso_s_x + margin) or dz > (piso_s_z + margin) or dy > 5:
+        state.gravity_weight = 1.0
+        return
+
+    # zona de transição — smoothstep entre as duas gravidades
+    weight_x = (dx - piso_s_x) / margin if dx > piso_s_x else 0.0
+    weight_z = (dz - piso_s_z) / margin if dz > piso_s_z else 0.0
+    raw = max(weight_x, weight_z)
+    state.gravity_weight = raw * raw * (3.0 - 2.0 * raw)
+
+
+# ==========================================================
 # CACHE DE OBJETOS ESTÁTICOS
 # ==========================================================
 cache_arvores_planeta = []
@@ -465,37 +628,69 @@ def init_objetos_estaticos():
         cache_trilha_forja.append((pos_p, tile_rot))
 
 
+def desenha_cenario_estatico():
+    """Cenário fixo (céu, plataforma central, paredes, lua, marte)."""
+    ceu()
+    caixa_central()      # caixinha de referência no centro do mapa
+    plataforma()         # piso central de madeira (PISO)
+    wall_box()           # parede ao redor do piso
+    lua()                # esfera grande embaixo do planeta (LUA)
+    marte()              # planeta distante, escala controlada por Q/E (PLANETA DISTANTE)
+
+
+def desenha_objetos_planeta():
+    """Objetos posicionados na superfície do planeta (incluindo os animados/controláveis)."""
+    casa()                # Casa 
+    #jipe()                # JEEP
+    forja()               # FORJA + PISO FORJA 
+    nave_outer_wilds()    # NAVE DO OUTER WILDS 
+
+    # ORGANIZANDO ITENS DE INTERESSE NO PLANETA
+    trilha_forja()
+    floresta()
+    fogueira_casa()
+    arvores_planeta()
+
+    # objetos com movimento/controle por teclado
+    foguete()             # FOGUETE  (↑/↓)
+    telescopio()          # TELESCÓPIO (←/→) 
+    satelite()            # SATELITE (orbita automática)
+
+    '''
+    # MESA ======================================
+    # bloco antigo da mesa, mantido comentado caso queira reativar
+    pos_table = planet_to_world_coordenates(
+        lat=-0,
+        lon=85,
+        radius=state.planetRadius-1.3,
+        center=state.planetCenter
+    )
+
+    table_rotation_matrix = get_rotation_angle_from_planet(pos_table, state.planetCenter)
+
+    desenha_table(
+        angle=90,
+        r_x=0, r_y=1, r_z=0,
+        t_x=pos_table.x, t_y=pos_table.y, t_z=pos_table.z,
+        s_x=0.017, s_y=0.017, s_z=0.017,
+        planet_rotation_matrix=table_rotation_matrix
+    )
+    '''
+
+
 def draw_scene():
     glfw.swap_interval(1)
     state.lastFrame = glfw.get_time()
-
     init_objetos_estaticos()
+
     while not glfw.window_should_close(state.window):
-
-
-        currentFrame = glfw.get_time()
-        state.deltaTime = currentFrame - state.lastFrame
-        state.lastFrame = currentFrame
-
-
-        # --- CÁLCULO DE FPS AQUI ---
-        state.nb_frames += 1
-        # Se passou 1 segundo (ou mais) desde a última medição...
-        if currentFrame - state.last_time >= 1.0: 
-            fps = state.nb_frames # O número de frames acumulados é o FPS
-            
-            # Atualiza o título da janela
-            glfw.set_window_title(state.window, f"Meu Motor 3D - FPS: {fps}")
-            
-            # Reseta os contadores para o próximo segundo
-            state.nb_frames = 0
-            state.last_time += 1.0
-
-
-
-        state.update_move_front_camera()     
+        # === UPDATE: tempo, FPS, câmera, física ===
+        atualiza_tempo_e_fps()
+        state.update_move_front_camera()
         movement()
-    
+        atualiza_gravity_weight()
+
+        # === SETUP DO FRAME ===
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(0.15, 0.15, 0.2, 1.0)
 
@@ -510,203 +705,9 @@ def draw_scene():
         mat_projection = state.projection()
         glUniformMatrix4fv(state.loc_projection, 1, GL_TRUE, mat_projection)
 
-        #posiciona os objetos
-
-        desenha_sky(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
-            t_x=0, t_y=0, t_z=0,
-            s_x=300, s_y=300, s_z=300
-        )
-
-        desenha_caixa(state.obj_angle, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=-5.5, t_y=-60.7, t_z=-5.5, 
-                      s_x=0.8, s_y=0.8, s_z=0.8, 
-                      texture_id=state.texture_id)
-        # Casa ======================================
-        pos_cartoonHouse = planet_to_world_coordenates(
-            lat=0, 
-            lon=90, 
-            radius=state.planetRadius-2.3, 
-            center=state.planetCenter
-        )
-
-        cartoonHouse_rotation_matrix = get_rotation_angle_from_planet(pos_cartoonHouse, state.planetCenter)
-
-        desenha_cartoonHouse(
-            angle=0,
-            r_x=0, r_y=0, r_z=0,
-            t_x=pos_cartoonHouse.x, t_y=pos_cartoonHouse.y, t_z=pos_cartoonHouse.z,
-            s_x=1.6, s_y=1.6, s_z=1.6,
-            planet_rotation_matrix=cartoonHouse_rotation_matrix
-        )
-
-        piso_s_x, piso_s_y, piso_s_z = 6.1, 0.8, 10.086
-        margin = 4.0
-        #print(state.cameraPos)
-        if not state.masterMode:
-            dx = abs(state.cameraPos.x)
-            dy = abs(state.cameraPos.y)
-            dz = abs(state.cameraPos.z)
-
-            if ((dx < piso_s_x) and (dz < piso_s_z) and (dy < 5)):
-                state.gravity_weight = 0.0
-                #print(f"cam.y: {state.cameraPos.y}, g_height: {state.groundHeight}, state: {state.isOnGround}")
-
-            # saindo da area de suavização de gravidades
-            elif (dx > (piso_s_x + margin) or dz > (piso_s_z + margin) or dy > 5):
-                state.gravity_weight = 1.0
-
-            # zona de suavização da transição de gravidades.
-            # Ele irá fazer uma "mistura" da gravidade do piso com a gravidade do planeta (0.0 a 1.0)
-            else:
-                weight_x = (dx - piso_s_x) / margin if dx > piso_s_x else 0.0
-                weight_z = (dz - piso_s_z) / margin if dz > piso_s_z else 0.0
-                raw_weight = max(weight_x, weight_z) # 0.0 a 1.0 --> Fala o quão longe estamos do piso
-            
-                # Aplica uma curva "Smoothstep" para a transição ficar suave
-                # --> Essa curva smoothstep parece ser padrão para suavizar movimentos em jogos (muito melhor que liner)
-                # 3x^2 - 2x^3
-                state.gravity_weight = raw_weight * raw_weight * (3.0 - 2.0 * raw_weight)
-
-
-        # PISO ======================================
-        desenha_caixa(state.obj_angle, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=0, t_y=-2.75, t_z=0.78, 
-                      s_x=piso_s_x, s_y=piso_s_y, s_z=piso_s_z, 
-                      texture_id=state.woodPlanks_texture_id)    
-        
-        desenha_caixa(state.obj_angle, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=0, t_y=-3.5, t_z=0.78, 
-                      s_x=piso_s_x+0.7, s_y=piso_s_y, s_z=piso_s_z+0.7, 
-                      texture_id=state.woodPlanks_texture_id)    
-
-        # JEEP ======================================
-        pos_jeep = planet_to_world_coordenates(
-            lat=-62.5, 
-            lon=-8, 
-            radius=state.planetRadius - 2.2, 
-            center=state.planetCenter
-        )
-        
-        jeep_rotation_matrix = get_rotation_angle_from_planet(pos_jeep, state.planetCenter)
-
-
-        desenha_jeep(
-            angle=180,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_jeep.x, t_y=pos_jeep.y, t_z=pos_jeep.z,
-            s_x=2, s_y=2, s_z=2,
-            planet_rotation_matrix=jeep_rotation_matrix
-        )
-
-        # ORGANIZANDO ITENS DE INTERESSE NO PLANETA
-        trilha_forja()
-        floresta()
-        fogueira_casa()
-        arvores_planeta()
-
-
-        # FOGUETE  ======================================
-        foguete()
-
-        '''
-        # MESA ======================================
-        pos_table = planet_to_world_coordenates(
-            lat=-0, 
-            lon=85, 
-            radius=state.planetRadius-1.3, 
-            center=state.planetCenter
-        )
-
-        table_rotation_matrix = get_rotation_angle_from_planet(pos_table, state.planetCenter)
-        
-        desenha_table(
-            angle=90,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_table.x, t_y=pos_table.y, t_z=pos_table.z,
-            s_x=0.017, s_y=0.017, s_z=0.017,
-            planet_rotation_matrix=table_rotation_matrix
-        )
-        '''
-        # TELESCÓPIO ======================================
-        telescopio()
-
-        # FORJA ======================================
-        pos_forge = planet_to_world_coordenates(
-            lat=-30, 
-            lon=45, 
-            radius=state.planetRadius-1.8, 
-            center=state.planetCenter
-        )
-
-        forge_rotation_matrix = get_rotation_angle_from_planet(pos_forge, state.planetCenter)
-
-        desenha_forge(
-            angle=-90,
-            r_x=0, r_y=1, r_z=0,
-            t_x=pos_forge.x, t_y=pos_forge.y, t_z=pos_forge.z,
-            s_x=1, s_y=1, s_z=1,
-            planet_rotation_matrix=forge_rotation_matrix
-        )
-
-        # PISO FORJA ======================================
-        pos_piso_forja = planet_to_world_coordenates(
-            lat=-30, 
-            lon=45, 
-            radius=state.planetRadius-6, 
-            center=state.planetCenter
-        )
-
-        piso_forja_rotation_matrix = get_rotation_angle_from_planet(pos_piso_forja, state.planetCenter)
-
-        
-        desenha_caixa(angle = -90, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=pos_piso_forja.x+3, t_y=pos_piso_forja.y, t_z=pos_piso_forja.z-3, 
-                      s_x=4.5, s_y=0.8, s_z=6, 
-                      texture_id=state.woodPlanks_texture_id,
-                      planet_rotation_matrix=piso_forja_rotation_matrix) 
-
-
-        # SATELITE ======================================
-        satelite() 
-        
-        # NAVE DO OUTER WILDS ======================================
-        pos_outerWilds = planet_to_world_coordenates(
-            lat=-60, 
-            lon=110, 
-            radius=state.planetRadius+0.5, 
-            center=state.planetCenter
-        )
-
-        outerWilds_rotation_matrix = get_rotation_angle_from_planet(pos_outerWilds, state.planetCenter)
-
-        desenha_outerWilds(angle = 0, 
-                      r_x=0, r_y=0, r_z=0, 
-                      t_x=pos_outerWilds.x, t_y=pos_outerWilds.y, t_z=pos_outerWilds.z, 
-                      s_x=2, s_y=2, s_z=2, 
-                      planet_rotation_matrix=outerWilds_rotation_matrix) 
-        
-        desenha_wallBox(angle = 90, 
-                      r_x=0, r_y=1, r_z=0, 
-                      t_x=0, t_y=0.35, t_z=7.8, 
-                      s_x=0.46, s_y=0.46, s_z=0.46) 
-
-
-        # LUA ======================================
-        desenha_planet(
-            angle=180,
-            r_x=0, r_y=1, r_z=0,
-            t_x=0, t_y=-48, t_z=0,
-            s_x=46, s_y=46, s_z=46, texture_id=state.moon_texture_id
-        )
-
-        # PLANETA DISTANTE (Marte) ======================================
-        marte()
+        # === DRAW: posiciona os objetos ===
+        desenha_cenario_estatico()
+        desenha_objetos_planeta()
 
         #draw_ground_grid()
 
