@@ -207,3 +207,14 @@ def desenha_outerWilds(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, plane
     fim = state.objects_dict["outerWilds"]["end_index"]
     glDrawArrays(GL_TRIANGLES, ini, fim - ini)
 
+def desenha_wallBox(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.wallBox_texture_id)
+
+    ini = state.objects_dict["wallBox"]["ini_index"]
+    fim = state.objects_dict["wallBox"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
