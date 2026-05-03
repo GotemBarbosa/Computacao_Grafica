@@ -39,12 +39,12 @@ def draw_ground_grid():
 
 
 def movement():
-    state.camera_speed = 7 * state.deltaTime
+    state.camera_speed = 9 * state.deltaTime
     right = glm.normalize(glm.cross(state.cameraFront, state.cameraUp))
 
 
     if state.keys.get(glfw.KEY_LEFT_SHIFT, False):
-        speed_factor = 2
+        speed_factor = 2.5
     else: 
         speed_factor = 1
 
