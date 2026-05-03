@@ -73,6 +73,23 @@ def movement():
         else:
             state.cameraPos += state.camera_speed * speed_factor * state.planetRight
 
+    if state.flyMode:
+        # ==========================================================
+        # LIMITES DO FLY MODE
+        # - não deixa sair do skybox (sphere escala 300, origem 0,0,0)
+        # - não deixa atravessar o chão / entrar no planeta
+        # ==========================================================
+        sky_limit = 290.0  # margem pra não encostar no skybox
+
+        # limite externo (skybox)
+        dist_origem = glm.length(state.cameraPos)
+        if dist_origem > sky_limit:
+            state.cameraPos = glm.normalize(state.cameraPos) * sky_limit
+
+        # limite inferior (chão / superfície do planeta)
+        if state.cameraPos.y < state.groundHeight:
+            state.cameraPos.y = state.groundHeight
+
     if not state.flyMode:
 
 
@@ -126,7 +143,15 @@ def movement():
             if state.cameraPos.y <= state.groundHeight:
                 state.cameraPos.y = state.groundHeight
                 state.velocity = glm.vec3(0.0, 0.0, 0.0)
-                state.isOnGround = True 
+                state.isOnGround = True
+
+            # mesmos limites do flyMode: skybox e chão
+            sky_limit = 290.0
+            dist_origem = glm.length(state.cameraPos)
+            if dist_origem > sky_limit:
+                state.cameraPos = glm.normalize(state.cameraPos) * sky_limit
+            if state.cameraPos.y < state.groundHeight:
+                state.cameraPos.y = state.groundHeight
 
     
 
