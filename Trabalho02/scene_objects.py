@@ -295,3 +295,123 @@ def desenha_barrel(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_ro
     fim = state.objects_dict["barrel"]["end_index"]
     glDrawArrays(GL_TRIANGLES, ini, fim - ini)
 
+def desenha_axe(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.axe_texture_id)
+
+    ini = state.objects_dict["axe"]["ini_index"]
+    fim = state.objects_dict["axe"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_apple(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.apple_texture_id)
+
+    ini = state.objects_dict["apple"]["ini_index"]
+    fim = state.objects_dict["apple"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_bascket(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.bascket_texture_id)
+
+    ini = state.objects_dict["bascket"]["ini_index"]
+    fim = state.objects_dict["bascket"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_gun(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.gun_texture_id)
+
+    ini = state.objects_dict["gun"]["ini_index"]
+    fim = state.objects_dict["gun"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_hammer(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.hammer_texture_id)
+
+    ini = state.objects_dict["hammer"]["ini_index"]
+    fim = state.objects_dict["hammer"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_jar(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.jar_texture_id)
+
+    ini = state.objects_dict["jar"]["ini_index"]
+    fim = state.objects_dict["jar"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_knife(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.knife_texture_id)
+
+    ini = state.objects_dict["knife"]["ini_index"]
+    fim = state.objects_dict["knife"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_mug(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.mug_texture_id)
+
+    ini = state.objects_dict["mug"]["ini_index"]
+    fim = state.objects_dict["mug"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_pear(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.pear_texture_id)
+
+    ini = state.objects_dict["pear"]["ini_index"]
+    fim = state.objects_dict["pear"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_pileOfBooks(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.pileOfBooks_texture_id)
+
+    ini = state.objects_dict["pileOfBooks"]["ini_index"]
+    fim = state.objects_dict["pileOfBooks"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+def desenha_plate(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix = None):
+    mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix)
+    glUniformMatrix4fv(state.loc_model, 1, GL_TRUE, mat_model)
+
+    glUniform1i(state.loc_use_texture, 1)
+    glBindTexture(GL_TEXTURE_2D, state.plate_texture_id)
+
+    ini = state.objects_dict["plate"]["ini_index"]
+    fim = state.objects_dict["plate"]["end_index"]
+    glDrawArrays(GL_TRIANGLES, ini, fim - ini)

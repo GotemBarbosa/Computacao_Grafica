@@ -231,7 +231,7 @@ def mouse_event(window, xpos, ypos):
 
     newFront = glm.normalize(glm.vec3(rotationPitch * glm.vec4(cameraFront, 0.0)))
 
-    safe_limit_cos = 0.9998
+    safe_limit_cos = 0.97
     if abs(glm.dot(newFront, planetUp)) < safe_limit_cos:
         cameraFront = newFront
         cameraUp = glm.normalize(glm.vec3(rotationPitch * glm.vec4(cameraUp, 0.0)))
@@ -524,6 +524,72 @@ raw_vertices += barrel_v
 raw_texcoords += barrel_t
 fim_barrel = len(raw_vertices)
 
+axe_v, axe_t = load_obj_geometry("./objetos/axe/axe.obj")
+ini_axe = len(raw_vertices)
+raw_vertices += axe_v
+raw_texcoords += axe_t
+fim_axe = len(raw_vertices)
+
+gun_v, gun_t = load_obj_geometry("./objetos/gun/gun.obj")
+ini_gun = len(raw_vertices)
+raw_vertices += gun_v
+raw_texcoords += gun_t
+fim_gun = len(raw_vertices)
+
+hammer_v, hammer_t = load_obj_geometry("./objetos/hammer/hammer.obj")
+ini_hammer = len(raw_vertices)
+raw_vertices += hammer_v
+raw_texcoords += hammer_t
+fim_hammer = len(raw_vertices)
+
+pileOfBooks_v, pileOfBooks_t = load_obj_geometry("./objetos/pileOfBooks/pileOfBooks.obj")
+ini_pileOfBooks = len(raw_vertices)
+raw_vertices += pileOfBooks_v
+raw_texcoords += pileOfBooks_t
+fim_pileOfBooks = len(raw_vertices)
+
+bascket_v, bascket_t = load_obj_geometry("./objetos/bascket/bascket.obj")
+ini_bascket = len(raw_vertices)
+raw_vertices += bascket_v
+raw_texcoords += bascket_t
+fim_bascket = len(raw_vertices)
+
+jar_v, jar_t = load_obj_geometry("./objetos/jar/jar.obj")
+ini_jar = len(raw_vertices)
+raw_vertices += jar_v
+raw_texcoords += jar_t
+fim_jar = len(raw_vertices)
+
+plate_v, plate_t = load_obj_geometry("./objetos/plate/plate.obj")
+ini_plate = len(raw_vertices)
+raw_vertices += plate_v
+raw_texcoords += plate_t
+fim_plate = len(raw_vertices)
+
+mug_v, mug_t = load_obj_geometry("./objetos/mug/mug.obj")
+ini_mug = len(raw_vertices)
+raw_vertices += mug_v
+raw_texcoords += mug_t
+fim_mug = len(raw_vertices)
+
+knife_v, knife_t = load_obj_geometry("./objetos/knife/knife.obj")
+ini_knife = len(raw_vertices)
+raw_vertices += knife_v
+raw_texcoords += knife_t
+fim_knife = len(raw_vertices)
+
+pear_v, pear_t = load_obj_geometry("./objetos/pear/pear.obj")
+ini_pear = len(raw_vertices)
+raw_vertices += pear_v
+raw_texcoords += pear_t
+fim_pear = len(raw_vertices)
+
+apple_v, apple_t = load_obj_geometry("./objetos/apple/apple.obj")
+ini_apple = len(raw_vertices)
+raw_vertices += apple_v
+raw_texcoords += apple_t
+fim_apple = len(raw_vertices)
+
 
 
 
@@ -552,6 +618,18 @@ objects_dict = {
     "shelfWall": {"ini_index": ini_shelfWall, "end_index": fim_shelfWall},
     "foodCan": {"ini_index": ini_foodCan, "end_index": fim_foodCan},
     "barrel": {"ini_index": ini_barrel, "end_index": fim_barrel},
+    "axe": {"ini_index": ini_axe, "end_index": fim_axe},
+    "gun": {"ini_index": ini_gun, "end_index": fim_gun},
+    "hammer": {"ini_index": ini_hammer, "end_index": fim_hammer},
+    "pileOfBooks": {"ini_index": ini_pileOfBooks, "end_index": fim_pileOfBooks},
+    "bascket": {"ini_index": ini_bascket, "end_index": fim_bascket},
+    "jar": {"ini_index": ini_jar, "end_index": fim_jar},
+    "plate": {"ini_index": ini_plate, "end_index": fim_plate},
+    "mug": {"ini_index": ini_mug, "end_index": fim_mug},
+    "knife": {"ini_index": ini_knife, "end_index": fim_knife},
+    "pear": {"ini_index": ini_pear, "end_index": fim_pear},
+    "apple": {"ini_index": ini_apple, "end_index": fim_apple},
+
 }
 
 
@@ -643,6 +721,38 @@ load_texture_from_file(foodCan_texture_id, "./objetos/foodCan/foodCan.png")
 barrel_texture_id = glGenTextures(1)
 load_texture_from_file(barrel_texture_id, "./objetos/barrel/barrel.png")
 
+axe_texture_id = glGenTextures(1)
+load_texture_from_file(axe_texture_id, "./objetos/axe/axe.png")
+
+gun_texture_id = glGenTextures(1)
+load_texture_from_file(gun_texture_id, "./objetos/gun/gun.png")
+
+hammer_texture_id = glGenTextures(1)
+load_texture_from_file(hammer_texture_id, "./objetos/hammer/hammer.png")
+
+pileOfBooks_texture_id = glGenTextures(1)
+load_texture_from_file(pileOfBooks_texture_id, "./objetos/pileOfBooks/pileOfBooks.png")
+
+bascket_texture_id = glGenTextures(1)
+load_texture_from_file(bascket_texture_id, "./objetos/bascket/bascket.png")
+
+jar_texture_id = glGenTextures(1)
+load_texture_from_file(jar_texture_id, "./objetos/jar/jar.png")
+
+plate_texture_id = glGenTextures(1)
+load_texture_from_file(plate_texture_id, "./objetos/plate/plate.png")
+
+mug_texture_id = glGenTextures(1)
+load_texture_from_file(mug_texture_id, "./objetos/mug/mug.png")
+
+knife_texture_id = glGenTextures(1)
+load_texture_from_file(knife_texture_id, "./objetos/knife/knife.png")
+
+pear_texture_id = glGenTextures(1)
+load_texture_from_file(pear_texture_id, "./objetos/pear/pear.png")
+
+apple_texture_id = glGenTextures(1)
+load_texture_from_file(apple_texture_id, "./objetos/apple/apple.png")
 
 
 # Sampler "imagem" usa a unidade de textura 0

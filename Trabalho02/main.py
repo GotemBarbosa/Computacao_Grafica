@@ -39,12 +39,12 @@ def draw_ground_grid():
 
 
 def movement():
-    state.camera_speed = 10 * state.deltaTime
+    state.camera_speed = 7 * state.deltaTime
     right = glm.normalize(glm.cross(state.cameraFront, state.cameraUp))
 
 
     if state.keys.get(glfw.KEY_LEFT_SHIFT, False):
-        speed_factor = 5
+        speed_factor = 2
     else: 
         speed_factor = 1
 
@@ -556,9 +556,84 @@ def chair():
         s_x=1, s_y=1, s_z=1,
     )
 
+def mug():
+    desenha_mug(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.65, t_y=-0.62, t_z=1.95,
+        s_x=1, s_y=1.4, s_z=1,
+    )
+
+def plate():
+    desenha_plate(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.35, t_y=-0.62, t_z=2.6,
+        s_x=1, s_y=1, s_z=1,
+    )    
+
+def jar():
+    desenha_jar(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-2.9, t_y=-0.62, t_z=3.2,
+        s_x=1, s_y=1, s_z=1,
+    )  
+
+def bascket():
+    desenha_bascket(
+        angle=0, r_x=0, r_y=0, r_z=0,
+        t_x=-3.1, t_y=-0.62, t_z=4.1,
+        s_x=1, s_y=1, s_z=1,
+    ) 
+
+apples_pos = [
+    [-3.1, -0.55, 3.9],
+    [-2.95, -0.55, 4.02],
+    [-3.25, -0.55, 4.02],
+    [-3.1, -0.55, 4.12],
+    [-3.1, -0.42, 4.02]
+]
+
+def apples():
+    for el in apples_pos:
+        desenha_apple(
+            angle=0, r_x=0, r_y=0, r_z=0,
+            t_x=el[0], t_y=el[1], t_z=el[2],
+            s_x=1, s_y=1, s_z=1,
+        )   
+
+pears_pos = [
+    [-3.1, -0.55, 4.27],
+    [-2.95, -0.55, 4.18],
+    [-3.25, -0.55, 4.18],
+]
+
+def pears():
+    for el in pears_pos:
+        desenha_pear(
+            angle=0, r_x=0, r_y=0, r_z=0,
+            t_x=el[0], t_y=el[1], t_z=el[2],
+            s_x=1, s_y=1, s_z=1,
+        )  
+
+def bascket_and_fruits():
+    bascket()
+    apples()
+    pears()    
+
+def knife():
+    desenha_knife(
+        angle=20, r_x=0, r_y=1, r_z=0,
+        t_x=-2.25, t_y=-0.62, t_z=3.25,
+        s_x=1, s_y=1, s_z=1,
+    )    
+
 def mesa_e_decoracoes():
     table()
     chair()
+    mug()
+    plate()
+    jar()
+    bascket_and_fruits()
+    knife()
 
 def cama():
     desenha_bed(
@@ -573,6 +648,17 @@ def shelf():
         t_x=3.2, t_y=-2, t_z=2.25,
         s_x=0.2, s_y=0.2, s_z=0.2,
     )
+
+def pileOfBooks():
+    desenha_pileOfBooks(
+        angle=-30, r_x=0, r_y=1, r_z=0,
+        t_x=3.05, t_y=-0.55, t_z=3.4,
+        s_x=0.6, s_y=0.6, s_z=0.6,
+    )  
+
+def shelf_e_decoracoes():
+    shelf()
+    pileOfBooks()
 
 def door():
     desenha_door(
@@ -647,21 +733,44 @@ def pilha_foodCans_perto_cama():
             s_x=3.8, s_y=3.8, s_z=3.8,         
         )
     
-
-def barrel():
-    # Barrel da direita (perto da porta)
+def barrels():
     desenha_barrel(
         angle=0, r_x=0, r_y=0, r_z=0,
         t_x=-1.7, t_y=-2, t_z=-6.2,
         s_x=1.8, s_y=1.8, s_z=1.8,
-    )
-
-    # Barrel da esquerda (meio da parede)
+    ) 
     desenha_barrel(
         angle=0, r_x=0, r_y=0, r_z=0,
         t_x=-2.1, t_y=-2, t_z=-5,
         s_x=1.8, s_y=1.8, s_z=1.8,
     )
+
+def axe():
+    desenha_axe(
+        angle=160, r_x=1, r_y=0, r_z=0,
+        t_x=-2.1, t_y=-0.75, t_z=-4.35,
+        s_x=0.8, s_y=0.8, s_z=0.8,
+    )
+
+def hammer():
+    desenha_hammer(
+        angle=90, r_x=0, r_y=1, r_z=0,
+        t_x=-2.6, t_y=-0.75, t_z=-3.4,
+        s_x=0.8, s_y=-0.8, s_z=0.8,
+    )
+
+def gun():
+    desenha_gun(
+        angle=72, r_x=0, r_y=1, r_z=0,
+        t_x=-2.7, t_y=0, t_z=-3.9,
+        s_x=2, s_y=2, s_z=2,
+    )
+
+def barrel_e_arredores():
+    barrels()
+    axe()
+    hammer()
+    gun()
 
 
 # ==========================================================
@@ -781,10 +890,10 @@ def desenha_objetos_casa():
     mesa_e_decoracoes()
     door()
     cama()
-    shelf()
+    shelf_e_decoracoes()
     shelfWall()
     pilha_foodCans_perto_cama()
-    barrel()
+    barrel_e_arredores()
 
 
 def draw_scene():
