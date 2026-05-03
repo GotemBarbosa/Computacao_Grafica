@@ -86,11 +86,11 @@ def movement():
         if dist_origem > sky_limit:
             state.cameraPos = glm.normalize(state.cameraPos) * sky_limit
 
-        '''
+        
         # limite inferior (chão / superfície do planeta)
         if state.cameraPos.y < state.groundHeight:
             state.cameraPos.y = state.groundHeight
-        '''
+        
 
     if not state.flyMode:
         if not state.masterMode:
