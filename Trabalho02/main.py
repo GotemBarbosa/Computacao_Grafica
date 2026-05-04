@@ -533,7 +533,7 @@ def forja():
 
 
 def nave_outer_wilds():
-    pos = planet_to_world_coordenates(lat=-60, lon=110, radius=state.planetRadius + 0.5, center=state.planetCenter)
+    pos = planet_to_world_coordenates(lat=-30, lon=45, radius=state.planetRadius + 0.3, center=state.planetCenter)
     rot = get_rotation_angle_from_planet(pos, state.planetCenter)
     desenha_outerWilds(
         angle=0, r_x=0, r_y=0, r_z=0,
@@ -944,10 +944,10 @@ def desenha_cenario_estatico():
 
 def desenha_objetos_planeta():
     """Objetos posicionados na superfície do planeta (incluindo os animados/controláveis)."""
-    casa()                # Casa 
+    casa()                # Casa
     #jipe()                # JEEP
-    forja()               # FORJA + PISO FORJA 
-    nave_outer_wilds()    # NAVE DO OUTER WILDS 
+    #forja()               # FORJA + PISO FORJA
+    nave_outer_wilds()    # NAVE DO OUTER WILDS (no lugar da forja)
 
     # ORGANIZANDO ITENS DE INTERESSE NO PLANETA
     trilha_forja()
