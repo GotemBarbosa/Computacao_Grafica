@@ -1,0 +1,4 @@
+
+# ignores the jpgs at the planet folder
+objetos/planet/mars.jpg
+objetos/planet/moon.jpg

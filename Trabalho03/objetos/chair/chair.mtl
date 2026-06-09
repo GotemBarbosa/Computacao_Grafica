@@ -1,0 +1,35 @@
+# Blender 5.1.1 MTL File: 'backup.blend'
+# www.blender.org
+
+newmtl chair_detail
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/textures/Wood035_1K-JPG_Color.jpg
+map_Ns /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Suporte Cadeira/Wood035_1K-JPG_Roughness.jpg
+map_Bump -bm 1.000000 /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Suporte Cadeira/Wood035_1K-JPG_NormalGL.jpg
+
+newmtl fabric_01
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/textures/Fabric029_1K-JPG_Color.jpg
+map_Ns /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Pano sofa cadeira/Fabric029_1K-JPG_Roughness.jpg
+map_Bump -bm 1.000000 /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Pano sofa cadeira/Fabric029_1K-JPG_NormalGL.jpg
+
+newmtl tex_chair/_Table
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/textures/dark_wood_diff_1k.jpg
+map_Ns /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Color Mesa.Cadeira/dark_wood_rough_1k.jpg
+map_Bump -bm 1.000000 /home/thzero/Downloads/Modelos/MedievalPack/modular-medieval-table/source/Medieval Table Tex/01 Mesa e Cadeira/Color Mesa.Cadeira/dark_wood_nor_gl_1k.jpg
