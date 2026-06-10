@@ -1,4 +1,5 @@
 import glfw
+import math
 from OpenGL.GL import *
 import numpy as np
 from shaders.shaders import Shader
@@ -114,6 +115,12 @@ sun_color        = glm.vec3(1.8, 1.7, 1.45)       # branco-amarelado, intenso
 candle_pos   = glm.vec3(-2.1, -0.45, 4.25)      # vela em cima da mesa
 candle_color = glm.vec3(1.0, 0.55, 0.10)        # laranja quente
 
+# Flicker: a intensidade oscila no tempo para simular a chama tremulando.
+# candle_intensity (enviada ao shader) = base + amp * ruído(t).
+candle_base_intensity = 3.0    # força central da vela (>1 = bem mais forte de perto)
+candle_flicker_amp    = 0.6    # quanto a chama treme em torno da base
+candle_intensity      = candle_base_intensity  # valor atual (atualizado por frame)
+
 # --- LUMINÁRIA: fonte de luz INTERNA 2 (fria, azul/roxo) ---
 lantern_pos   = glm.vec3(2.92, -0.4, 3.7)       # lanterna na prateleira
 lantern_color = glm.vec3(0.4, 0.3, 1.0)         # azul/roxo
@@ -122,7 +129,8 @@ lantern_color = glm.vec3(0.4, 0.3, 1.0)         # azul/roxo
 # As posições (mundo) são preenchidas em runtime a partir das fogueiras
 # desenhadas no planeta (ver main.py). Ordem: [floresta, casa].
 fire_pos   = [glm.vec3(0.0), glm.vec3(0.0)]
-fire_color = [glm.vec3(1.5, 0.7, 0.2), glm.vec3(1.5, 0.7, 0.2)]   # fogo quente, alaranjado
+fire_color = [glm.vec3(1.5, 0.7, 0.2), glm.vec3(1.5, 0.7, 0.2)]   # fogo quente, alaranjado (tonalidade)
+fire_intensity = 2.5   # força da fogueira, independente da cor (>1 = mais forte)
 
 # --- INTERRUPTORES (cada luz tem o seu) ---
 light_sun_enabled     = True
@@ -135,7 +143,7 @@ light_ambient_enabled = True
 wireframe_enabled = False   # tecla P: mostra só a malha poligonal (arestas)
 
 # --- INTENSIDADES AJUSTÁVEIS POR TECLADO ---
-ambient_intensity  = 0.9   # luz ambiente   [0.0, 1.0]
+ambient_intensity  = 0.4   # luz ambiente   [0.0, 1.0]
 diffuse_intensity  = 1.0     # multiplicador difuso  [0.0, 2.0]
 specular_intensity = 1.0     # multiplicador especular  [0.0, 2.0]
 INTENSITY_STEP     = 0.05
@@ -534,6 +542,7 @@ loc_sun_color         = glGetUniformLocation(program, "sun_color")
 loc_light_candle_enabled = glGetUniformLocation(program, "light_candle_enabled")
 loc_candle_pos           = glGetUniformLocation(program, "candle_pos")
 loc_candle_color         = glGetUniformLocation(program, "candle_color")
+loc_candle_intensity     = glGetUniformLocation(program, "candle_intensity")
 
 loc_light_lantern_enabled = glGetUniformLocation(program, "light_lantern_enabled")
 loc_lantern_pos           = glGetUniformLocation(program, "lantern_pos")
@@ -542,6 +551,7 @@ loc_lantern_color         = glGetUniformLocation(program, "lantern_color")
 loc_light_fire_enabled = glGetUniformLocation(program, "light_fire_enabled")
 loc_fire_pos   = [glGetUniformLocation(program, "fire_pos[%d]"   % i) for i in range(2)]
 loc_fire_color = [glGetUniformLocation(program, "fire_color[%d]" % i) for i in range(2)]
+loc_fire_intensity = glGetUniformLocation(program, "fire_intensity")
 
 
 # =========================================================================
@@ -740,6 +750,16 @@ def compute_light_space_matrix():
 
 def send_light_uniforms():
     """Envia, uma vez por frame, todos os uniforms de iluminação ao shader."""
+    global candle_intensity
+
+    # --- Flicker da vela: soma de senoides em frequências diferentes dá um
+    # tremular orgânico (não periódico ao olho), em torno da intensidade base. ---
+    t = glfw.get_time()
+    flicker = (0.55 * math.sin(t * 5.0) +
+               0.30 * math.sin(t * 3.3 + 1.7) +
+               0.15 * math.sin(t * 8.7 + 4.2))   # ~[-1, 1]
+    candle_intensity = candle_base_intensity + candle_flicker_amp * flicker
+
     glUniform3f(loc_view_pos, cameraPos.x, cameraPos.y, cameraPos.z)
 
     glUniform1i(loc_light_ambient_enabled, int(light_ambient_enabled))
@@ -754,12 +774,14 @@ def send_light_uniforms():
     glUniform1i(loc_light_candle_enabled, int(light_candle_enabled))
     glUniform3f(loc_candle_pos, candle_pos.x, candle_pos.y, candle_pos.z)
     glUniform3f(loc_candle_color, candle_color.x, candle_color.y, candle_color.z)
+    glUniform1f(loc_candle_intensity, candle_intensity)
 
     glUniform1i(loc_light_lantern_enabled, int(light_lantern_enabled))
     glUniform3f(loc_lantern_pos, lantern_pos.x, lantern_pos.y, lantern_pos.z)
     glUniform3f(loc_lantern_color, lantern_color.x, lantern_color.y, lantern_color.z)
 
     glUniform1i(loc_light_fire_enabled, int(light_fire_enabled))
+    glUniform1f(loc_fire_intensity, fire_intensity)
     for i in range(2):
         glUniform3f(loc_fire_pos[i],   fire_pos[i].x,   fire_pos[i].y,   fire_pos[i].z)
         glUniform3f(loc_fire_color[i], fire_color[i].x, fire_color[i].y, fire_color[i].z)

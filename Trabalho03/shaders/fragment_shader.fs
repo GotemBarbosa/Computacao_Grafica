@@ -43,9 +43,10 @@ uniform vec3 sun_pos;
 uniform vec3 sun_color;
 
 // --- Luz interna 1: vela (quente) ---
-uniform int  light_candle_enabled;
-uniform vec3 candle_pos;
-uniform vec3 candle_color;
+uniform int   light_candle_enabled;
+uniform vec3  candle_pos;
+uniform vec3  candle_color;
+uniform float candle_intensity;   // oscila no tempo (flicker) e dá força à vela
 
 // --- Luz interna 2: luminária (fria) ---
 uniform int  light_lantern_enabled;
@@ -53,9 +54,10 @@ uniform vec3 lantern_pos;
 uniform vec3 lantern_color;
 
 // --- Luzes externas: fogueiras (quentes, com atenuação) ---
-uniform int  light_fire_enabled;
-uniform vec3 fire_pos[2];
-uniform vec3 fire_color[2];
+uniform int   light_fire_enabled;
+uniform vec3  fire_pos[2];
+uniform vec3  fire_color[2];
+uniform float fire_intensity;   // força da fogueira (separada da cor)
 
 
 // Fator de sombra do planeta: 1.0 = totalmente na sombra, 0.0 = iluminado.
@@ -121,6 +123,11 @@ vec3 calcPointLight(vec3 lightPos, vec3 lightColor, float litFactor, int useAtte
         // Atenuação forte: fogueira (cai mais rápido com a distância)
         float dist = length(lightPos - fragPos);
         atten = 1.0 / (1.0 + 0.09 * dist + 0.032 * dist * dist);
+    } else if (useAtten == 3) {
+        // Vela: "poça" de luz — intensa bem de perto e caindo logo em seguida,
+        // formando um halo concentrado em torno da chama.
+        float dist = length(lightPos - fragPos);
+        atten = 1.0 / (1.0 + 0.22 * dist + 0.20 * dist * dist);
     }
 
     vec3 diffuse  = Kd * diffuse_intensity  * diff * lightColor;
@@ -163,12 +170,12 @@ void main() {
         // Fogueiras: luzes locais quentes (com atenuação por distância)
         if (light_fire_enabled == 1) {
             for (int i = 0; i < 2; i++)
-                result += calcPointLight(fire_pos[i], fire_color[i], 1.0, 2) * texColor;
+                result += calcPointLight(fire_pos[i], fire_color[i] * fire_intensity, 1.0, 2) * texColor;
         }
     } else {
         // === AMBIENTE INTERNO: vela + luminária (com atenuação, sem sombra) ===
         if (light_candle_enabled == 1)
-            result += calcPointLight(candle_pos, candle_color, 1.0, 1) * texColor;
+            result += calcPointLight(candle_pos, candle_color * candle_intensity, 1.0, 3) * texColor;
         if (light_lantern_enabled == 1)
             result += calcPointLight(lantern_pos, lantern_color, 1.0, 1) * texColor;
     }

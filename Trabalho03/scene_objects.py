@@ -119,15 +119,26 @@ def desenha_marcador_luz_lantern(pos, color, scale=0.02):
     
 
 def desenha_marcador_luz_candle(pos, color, scale=0.02):
-    """Esfera minúscula emissiva (unlit) na posição de uma luz — só p/ depurar.
-
-    Mostra visualmente onde a fonte de luz está no espaço. `pos` e `color`
-    são glm.vec3; `scale` controla o tamanho (bem pequeno por padrão).
+    """Esferinha da chama da vela. A cor acompanha state.candle_intensity:
+    chama fraca -> laranja-vermelho escuro; chama forte -> amarelo brilhante.
     """
+    # Normaliza a intensidade atual dentro da faixa do flicker [base-amp, base+amp]
+    lo = state.candle_base_intensity - state.candle_flicker_amp
+    hi = state.candle_base_intensity + state.candle_flicker_amp
+    t = (state.candle_intensity - lo) / (hi - lo) if hi > lo else 1.0
+    t = max(0.0, min(1.0, t))
+
+    # Interpola entre brasa (fraca) e chama quente (forte) — variação sutil
+    cold = (0.85, 0.45, 0.12)
+    hot  = (1.0, 0.62, 0.22)
+    r = cold[0] + (hot[0] - cold[0]) * t
+    g = cold[1] + (hot[1] - cold[1]) * t
+    b = cold[2] + (hot[2] - cold[2]) * t
+
     _draw("sky", "sol", 0, 0, 0, 0,
           pos.x, pos.y+0.3, pos.z,
           scale, scale, scale,
-          base_color=(color.x, color.y, color.z, 1.0), unlit=False)
+          base_color=(r, g, b, 1.0), unlit=True)
 
 
 def desenha_pineTree(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
@@ -284,7 +295,7 @@ def desenha_plate(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rot
 
 def desenha_candle(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
     _draw("candle", "candle", angle, r_x, r_y, r_z, t_x, t_y, t_z,
-          s_x, s_y, s_z, base_rotation=planet_rotation_matrix, texture_id=state.candle_texture_id, unlit=True)
+          s_x, s_y, s_z, base_rotation=planet_rotation_matrix, texture_id=state.candle_texture_id, unlit=False)
 
 
 def desenha_globe(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
