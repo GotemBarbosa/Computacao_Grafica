@@ -962,8 +962,8 @@ def desenha_sala_interna():
     # DEBUG: marcadores na posição EXATA das luzes pontuais (state.*_pos,
     # as mesmas coords usadas no shader), não na posição dos modelos
     # vela/luminária. Esferas minúsculas emissivas. Remover após conferir.
-    desenha_marcador_luz(state.candle_pos,  state.candle_color)
-    desenha_marcador_luz(state.lantern_pos, state.lantern_color)
+    desenha_marcador_luz_candle(state.candle_pos,  state.candle_color)
+    desenha_marcador_luz_lantern(state.lantern_pos, state.lantern_color)
 
 
 def desenha_objetos_planeta():
