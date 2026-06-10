@@ -86,7 +86,13 @@ vec3 calcPointLight(vec3 lightPos, vec3 lightColor, float litFactor, int useAtte
     vec3  H    = normalize(L + V);
 
     float diff = max(dot(N, L), 0.0);
-    float spec = (diff > 0.0) ? pow(max(dot(N, H), 0.0), shininess) : 0.0;
+    float spec = 0.0;
+
+    // Só ilumina se a normal do fragmento tiver um angulo 0 <= theta <= 90
+    if (diff > 0) {
+        float cos = max(dot(N, H), 0.0);
+        spec = pow(cos, shininess);
+    }
 
     float atten = 1.0;
     if (useAtten == 1) {

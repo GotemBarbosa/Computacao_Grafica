@@ -257,21 +257,21 @@ def key_event(window, key, scancode, action, mods):
         light_ambient_enabled = not light_ambient_enabled  # luz ambiente
 
     # --- LUZ AMBIENTE: incrementa/decrementa  ([ e ]) ---
-    if key == glfw.KEY_LEFT_BRACKET and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_K and action in (glfw.PRESS, glfw.REPEAT):
         ambient_intensity = max(0.0, ambient_intensity - INTENSITY_STEP)
-    if key == glfw.KEY_RIGHT_BRACKET and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_L and action in (glfw.PRESS, glfw.REPEAT):
         ambient_intensity = min(1.0, ambient_intensity + INTENSITY_STEP)
 
     # --- REFLEXÃO DIFUSA: incrementa/decrementa  (; e ') ---
-    if key == glfw.KEY_SEMICOLON and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_H and action in (glfw.PRESS, glfw.REPEAT):
         diffuse_intensity = max(0.0, diffuse_intensity - INTENSITY_STEP)
-    if key == glfw.KEY_APOSTROPHE and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_J and action in (glfw.PRESS, glfw.REPEAT):
         diffuse_intensity = min(2.0, diffuse_intensity + INTENSITY_STEP)
 
     # --- REFLEXÃO ESPECULAR: incrementa/decrementa  (, e .) ---
-    if key == glfw.KEY_COMMA and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_N and action in (glfw.PRESS, glfw.REPEAT):
         specular_intensity = max(0.0, specular_intensity - INTENSITY_STEP)
-    if key == glfw.KEY_PERIOD and action in (glfw.PRESS, glfw.REPEAT):
+    if key == glfw.KEY_M and action in (glfw.PRESS, glfw.REPEAT):
         specular_intensity = min(2.0, specular_intensity + INTENSITY_STEP)
 
 

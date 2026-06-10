@@ -90,6 +90,18 @@ def desenha_sol(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
           s_x, s_y, s_z, base_color=(1.0, 0.95, 0.6, 1.0), unlit=True)
 
 
+def desenha_marcador_luz(pos, color, scale=0.05):
+    """Esfera minúscula emissiva (unlit) na posição de uma luz — só p/ depurar.
+
+    Mostra visualmente onde a fonte de luz está no espaço. `pos` e `color`
+    são glm.vec3; `scale` controla o tamanho (bem pequeno por padrão).
+    """
+    _draw("sky", "sol", 0, 0, 0, 0,
+          pos.x, pos.y, pos.z,
+          scale, scale, scale,
+          base_color=(color.x, color.y, color.z, 1.0), unlit=True)
+
+
 def desenha_pineTree(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
     _draw("pineTree", "pineTree", angle, r_x, r_y, r_z, t_x, t_y, t_z,
           s_x, s_y, s_z, base_rotation=planet_rotation_matrix, texture_id=state.pineTree_texture_id)
