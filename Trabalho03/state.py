@@ -6,6 +6,7 @@ from matrix_operations import *
 import ctypes
 
 from objetos.obj_loader import load_obj_geometry
+from utils.coordenates import planet_to_world_coordenates
 
 import glm
 from PIL import Image
@@ -274,6 +275,33 @@ def key_event(window, key, scancode, action, mods):
         specular_intensity = min(2.0, specular_intensity + INTENSITY_STEP)
 
 
+def update_sun():
+    """Move o sol (luz externa) conforme as setas do teclado e atualiza sun_pos.
+
+    Chamada a cada frame. As setas são teclas de pressão contínua, então são
+    lidas do dicionário `keys` (preenchido por key_event) em vez de tratadas
+    como eventos discretos.
+      ←/→ : longitude    ↑/↓ : latitude (limitada a ±89° p/ não cruzar os polos)
+    """
+    global sun_orbit_angle, sun_orbit_lat, sun_pos
+
+    sun_step = sun_move_speed * deltaTime
+    if keys.get(glfw.KEY_RIGHT, False):
+        sun_orbit_angle += sun_step        # → move em longitude
+    if keys.get(glfw.KEY_LEFT, False):
+        sun_orbit_angle -= sun_step        # ←
+    if keys.get(glfw.KEY_UP, False):
+        sun_orbit_lat += sun_step          # ↑ move em latitude
+    if keys.get(glfw.KEY_DOWN, False):
+        sun_orbit_lat -= sun_step          # ↓
+
+    # não deixa o sol passar pelos polos (evita instabilidade da matriz da luz)
+    sun_orbit_lat = max(-89.0, min(89.0, sun_orbit_lat))
+
+    sun_pos = planet_to_world_coordenates(
+        lat=sun_orbit_lat, lon=sun_orbit_angle,
+        radius=sun_orbit_radius, center=planetCenter
+    )
 
 
 def mouse_event(window, xpos, ypos):
@@ -365,11 +393,6 @@ def update_move_front_camera():
     cameraUp = glm.normalize(cameraUp - glm.dot(cameraUp, cameraFront) * cameraFront)
 
 
-
-
-
-
-
 def create_window():
     # Inicializa GLFW e cria janela/contexto OpenGL
     glfw.init()
@@ -382,6 +405,7 @@ def create_window():
         glfw.terminate()
     glfw.make_context_current(window)
     return window
+
 
 def allocate_positions_on_gpu(raw_vertices, loc_position):
     # Upload de vértices (x,y,z) para VBO e vinculação ao atributo "position"
@@ -426,7 +450,7 @@ def allocate_normals_on_gpu(raw_normals, loc_normal):
 
 
 def load_texture_from_file(texture_id, img_path):
-    # Carrega textura da imagem e envia para a GPU
+    # Configura a textura (já reservada) e envia os pixels da imagem para a GPU
     glBindTexture(GL_TEXTURE_2D, texture_id)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
@@ -436,6 +460,18 @@ def load_texture_from_file(texture_id, img_path):
     img = Image.open(img_path).convert("RGB")
     img_data = img.tobytes("raw", "RGB", 0, -1)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_data)
+
+
+def load_texture(img_path):
+    """Reserva um id de textura, carrega a imagem nele e retorna o id.
+
+    Encapsula o par 'glGenTextures + load_texture_from_file' usado por cada
+    objeto, evitando repetição no carregamento das texturas.
+    """
+    texture_id = glGenTextures(1)
+    load_texture_from_file(texture_id, img_path)
+    return texture_id
+
 
 # =========================
 # OpenGL/Shader
@@ -555,144 +591,52 @@ allocate_positions_on_gpu(raw_vertices, loc_position)
 allocate_texcoords_on_gpu(raw_texcoords, loc_texture_coord)
 allocate_normals_on_gpu(raw_normals, loc_normal)
 
-# Texturas 
-texture_id = glGenTextures(1)
-load_texture_from_file(texture_id, "./objetos/caixa/caixa.jpg")
-
-snow_texture_id = glGenTextures(1)
-load_texture_from_file(snow_texture_id, "./objetos/snowTerrain/686.jpg")
-
-jeep_texture_id = glGenTextures(1)
-load_texture_from_file(jeep_texture_id, "./objetos/Jeep/car_jeep_ren.jpg")
-
-ground_texture_id = glGenTextures(1)
-load_texture_from_file(ground_texture_id, "./objetos/ground/text_Albedo.png")
-
-sky_texture_id = glGenTextures(1)
-load_texture_from_file(sky_texture_id, "./objetos/sky/NightSky4k.jpg")
-
-campfire_texture_id = glGenTextures(1)
-load_texture_from_file(campfire_texture_id, "./objetos/campfire/campfire.jpg")
-
-mars_texture_id = glGenTextures(1)
-load_texture_from_file(mars_texture_id, "./objetos/planet/mars.jpg")
-
-moon_texture_id = glGenTextures(1)
-load_texture_from_file(moon_texture_id, "./objetos/planet/moon.jpg")
-
-#ceres_texture_id = glGenTextures(1)
-#load_texture_from_file(ceres_texture_id, "./objetos/planet/ceres.png")
-
-pineTree_texture_id = glGenTextures(1)
-load_texture_from_file(pineTree_texture_id, "./objetos/pineTree/pineTree.png")
-
-rocket_texture_id = glGenTextures(1)
-load_texture_from_file(rocket_texture_id, "./objetos/rocket/rocket2.png")
-
-table_texture_id = glGenTextures(1)
-load_texture_from_file(table_texture_id, "./objetos/table/table.png")
-
-cartoonHouse_texture_id = glGenTextures(1)
-load_texture_from_file(cartoonHouse_texture_id, "./objetos/cartoonHouse/cartoonHouse.png")
-
-woodPlanks_texture_id = glGenTextures(1)
-load_texture_from_file(woodPlanks_texture_id, "./objetos/caixa/woodPlank.jpeg")
-
-telescope_texture_id = glGenTextures(1)
-load_texture_from_file(telescope_texture_id, "./objetos/telescope/telescope.png")
-
-forge_texture_id = glGenTextures(1)
-load_texture_from_file(forge_texture_id, "./objetos/forge/forge.png")
-
-satelite_texture_id = glGenTextures(1)
-load_texture_from_file(satelite_texture_id, "./objetos/satelite/satelite.png")
-
-rockTiles_texture_id = glGenTextures(1)
-load_texture_from_file(rockTiles_texture_id, "./objetos/rockTiles/rockTiles.png")
-                       
-treeStump_texture_id = glGenTextures(1)
-load_texture_from_file(treeStump_texture_id, "./objetos/treeStump/treeStump.png")
-
-outerWilds_texture_id = glGenTextures(1)
-load_texture_from_file(outerWilds_texture_id, "./objetos/outerWilds/outerWilds.png")
-
-wallBox_texture_id = glGenTextures(1)
-load_texture_from_file(wallBox_texture_id, "./objetos/walls/wallBox.png")
-
-bed_texture_id = glGenTextures(1)
-load_texture_from_file(bed_texture_id, "./objetos/bed/bed.png")
-
-chair_texture_id = glGenTextures(1)
-load_texture_from_file(chair_texture_id, "./objetos/chair/chair.png")
-
-shelf_texture_id = glGenTextures(1)
-load_texture_from_file(shelf_texture_id, "./objetos/shelf/shelf.png")
-
-door_texture_id = glGenTextures(1)
-load_texture_from_file(door_texture_id, "./objetos/door/door.png")
-
-shelfWall_texture_id = glGenTextures(1)
-load_texture_from_file(shelfWall_texture_id, "./objetos/shelfWall/shelfWall.png")
-
-foodCan_texture_id = glGenTextures(1)
-load_texture_from_file(foodCan_texture_id, "./objetos/foodCan/foodCan.png")
-
-barrel_texture_id = glGenTextures(1)
-load_texture_from_file(barrel_texture_id, "./objetos/barrel/barrel.png")
-
-axe_texture_id = glGenTextures(1)
-load_texture_from_file(axe_texture_id, "./objetos/axe/axe.png")
-
-gun_texture_id = glGenTextures(1)
-load_texture_from_file(gun_texture_id, "./objetos/gun/gun.png")
-
-hammer_texture_id = glGenTextures(1)
-load_texture_from_file(hammer_texture_id, "./objetos/hammer/hammer.png")
-
-pileOfBooks_texture_id = glGenTextures(1)
-load_texture_from_file(pileOfBooks_texture_id, "./objetos/pileOfBooks/pileOfBooks.png")
-
-bascket_texture_id = glGenTextures(1)
-load_texture_from_file(bascket_texture_id, "./objetos/bascket/bascket.png")
-
-jar_texture_id = glGenTextures(1)
-load_texture_from_file(jar_texture_id, "./objetos/jar/jar.png")
-
-plate_texture_id = glGenTextures(1)
-load_texture_from_file(plate_texture_id, "./objetos/plate/plate.png")
-
-mug_texture_id = glGenTextures(1)
-load_texture_from_file(mug_texture_id, "./objetos/mug/mug.png")
-
-knife_texture_id = glGenTextures(1)
-load_texture_from_file(knife_texture_id, "./objetos/knife/knife.png")
-
-pear_texture_id = glGenTextures(1)
-load_texture_from_file(pear_texture_id, "./objetos/pear/pear.png")
-
-apple_texture_id = glGenTextures(1)
-load_texture_from_file(apple_texture_id, "./objetos/apple/apple.png")
-
-candle_texture_id = glGenTextures(1)
-load_texture_from_file(candle_texture_id, "./objetos/candle/candle.png")
-
-globe_texture_id = glGenTextures(1)
-load_texture_from_file(globe_texture_id, "./objetos/globe/globe.png")
-
-map_texture_id = glGenTextures(1)
-load_texture_from_file(map_texture_id, "./objetos/map/map.png")
-
-painting_texture_id = glGenTextures(1)
-load_texture_from_file(painting_texture_id, "./objetos/painting/painting.png")
-
-oxygen_texture_id = glGenTextures(1)
-load_texture_from_file(oxygen_texture_id, "./objetos/oxygen/oxygen.png")
-
-lantern_texture_id = glGenTextures(1)
-load_texture_from_file(lantern_texture_id, "./objetos/lantern/lantern.png")
-
-chandelier_texture_id = glGenTextures(1)
-load_texture_from_file(chandelier_texture_id, "./objetos/chandelier/chandelier.png")
+# Texturas — cada id é reservado e carregado por load_texture()
+texture_id              = load_texture("./objetos/caixa/caixa.jpg")
+snow_texture_id         = load_texture("./objetos/snowTerrain/686.jpg")
+jeep_texture_id         = load_texture("./objetos/Jeep/car_jeep_ren.jpg")
+ground_texture_id       = load_texture("./objetos/ground/text_Albedo.png")
+sky_texture_id          = load_texture("./objetos/sky/NightSky4k.jpg")
+campfire_texture_id     = load_texture("./objetos/campfire/campfire.jpg")
+mars_texture_id         = load_texture("./objetos/planet/mars.jpg")
+moon_texture_id         = load_texture("./objetos/planet/moon.jpg")
+pineTree_texture_id     = load_texture("./objetos/pineTree/pineTree.png")
+rocket_texture_id       = load_texture("./objetos/rocket/rocket2.png")
+table_texture_id        = load_texture("./objetos/table/table.png")
+cartoonHouse_texture_id = load_texture("./objetos/cartoonHouse/cartoonHouse.png")
+woodPlanks_texture_id   = load_texture("./objetos/caixa/woodPlank.jpeg")
+telescope_texture_id    = load_texture("./objetos/telescope/telescope.png")
+forge_texture_id        = load_texture("./objetos/forge/forge.png")
+satelite_texture_id     = load_texture("./objetos/satelite/satelite.png")
+rockTiles_texture_id    = load_texture("./objetos/rockTiles/rockTiles.png")
+treeStump_texture_id    = load_texture("./objetos/treeStump/treeStump.png")
+outerWilds_texture_id   = load_texture("./objetos/outerWilds/outerWilds.png")
+wallBox_texture_id      = load_texture("./objetos/walls/wallBox.png")
+bed_texture_id          = load_texture("./objetos/bed/bed.png")
+chair_texture_id        = load_texture("./objetos/chair/chair.png")
+shelf_texture_id        = load_texture("./objetos/shelf/shelf.png")
+door_texture_id         = load_texture("./objetos/door/door.png")
+shelfWall_texture_id    = load_texture("./objetos/shelfWall/shelfWall.png")
+foodCan_texture_id      = load_texture("./objetos/foodCan/foodCan.png")
+barrel_texture_id       = load_texture("./objetos/barrel/barrel.png")
+axe_texture_id          = load_texture("./objetos/axe/axe.png")
+gun_texture_id          = load_texture("./objetos/gun/gun.png")
+hammer_texture_id       = load_texture("./objetos/hammer/hammer.png")
+pileOfBooks_texture_id  = load_texture("./objetos/pileOfBooks/pileOfBooks.png")
+bascket_texture_id      = load_texture("./objetos/bascket/bascket.png")
+jar_texture_id          = load_texture("./objetos/jar/jar.png")
+plate_texture_id        = load_texture("./objetos/plate/plate.png")
+mug_texture_id          = load_texture("./objetos/mug/mug.png")
+knife_texture_id        = load_texture("./objetos/knife/knife.png")
+pear_texture_id         = load_texture("./objetos/pear/pear.png")
+apple_texture_id        = load_texture("./objetos/apple/apple.png")
+candle_texture_id       = load_texture("./objetos/candle/candle.png")
+globe_texture_id        = load_texture("./objetos/globe/globe.png")
+map_texture_id          = load_texture("./objetos/map/map.png")
+painting_texture_id     = load_texture("./objetos/painting/painting.png")
+oxygen_texture_id       = load_texture("./objetos/oxygen/oxygen.png")
+lantern_texture_id      = load_texture("./objetos/lantern/lantern.png")
+chandelier_texture_id   = load_texture("./objetos/chandelier/chandelier.png")
 
 
 # Sampler "imagem" usa a unidade de textura 0

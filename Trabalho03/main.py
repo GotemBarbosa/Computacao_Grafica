@@ -1020,22 +1020,7 @@ def draw_scene():
         atualiza_gravity_weight()
 
         # === SOL (fonte de luz externa) — controlado pelas setas do teclado ===
-        sun_step = state.sun_move_speed * state.deltaTime
-        if state.keys.get(glfw.KEY_RIGHT, False):
-            state.sun_orbit_angle += sun_step        # → move em longitude
-        if state.keys.get(glfw.KEY_LEFT, False):
-            state.sun_orbit_angle -= sun_step        # ←
-        if state.keys.get(glfw.KEY_UP, False):
-            state.sun_orbit_lat += sun_step          # ↑ move em latitude
-        if state.keys.get(glfw.KEY_DOWN, False):
-            state.sun_orbit_lat -= sun_step          # ↓
-        # não deixa o sol passar pelos polos (evita instabilidade da matriz da luz)
-        state.sun_orbit_lat = max(-89.0, min(89.0, state.sun_orbit_lat))
-
-        state.sun_pos = planet_to_world_coordenates(
-            lat=state.sun_orbit_lat, lon=state.sun_orbit_angle,
-            radius=state.sun_orbit_radius, center=state.planetCenter
-        )
+        state.update_sun()
         light_space_mat = state.compute_light_space_matrix()
 
         # ==========================================================
