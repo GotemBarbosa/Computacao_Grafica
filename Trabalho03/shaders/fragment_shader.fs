@@ -65,14 +65,27 @@ float calcShadow() {
         proj.y < 0.0 || proj.y > 1.0)
         return 0.0;
 
-    float closest = texture2D(shadowMap, proj.xy).r;
     float current = proj.z;
 
     // Bias proporcional ao ângulo da superfície com o sol, contra "shadow acne"
     vec3  L    = normalize(sun_pos - fragPos);
     float bias = max(0.0025 * (1.0 - dot(normalize(fragNormal), L)), 0.0008);
 
-    return current - bias > closest ? 1.0 : 0.0;
+    // PCF: amostra um kernel 5x5 ao redor e tira a média dos testes.
+    // Em vez de um "0 ou 1" duro, isso dá um valor contínuo na borda da
+    // sombra (penumbra) → transição suave em vez de serrilhado.
+    // O 'spread' alarga a penumbra (mais texels cobertos por amostra).
+    float texel  = 1.0 / 2048.0;   // = 1 / SHADOW_WIDTH
+    float spread = 2.0;            // aumente para borrar mais
+    float shadow = 0.0;
+    for (int x = -2; x <= 2; x++) {
+        for (int y = -2; y <= 2; y++) {
+            vec2  offset  = vec2(float(x), float(y)) * texel * spread;
+            float closest = texture2D(shadowMap, proj.xy + offset).r;
+            shadow += current - bias > closest ? 1.0 : 0.0;
+        }
+    }
+    return shadow / 25.0;
 }
 
 
