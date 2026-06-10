@@ -135,7 +135,7 @@ light_ambient_enabled = True
 wireframe_enabled = False   # tecla P: mostra só a malha poligonal (arestas)
 
 # --- INTENSIDADES AJUSTÁVEIS POR TECLADO ---
-ambient_intensity  = 0.20    # luz ambiente   [0.0, 1.0]
+ambient_intensity  = 0.9   # luz ambiente   [0.0, 1.0]
 diffuse_intensity  = 1.0     # multiplicador difuso  [0.0, 2.0]
 specular_intensity = 1.0     # multiplicador especular  [0.0, 2.0]
 INTENSITY_STEP     = 0.05
@@ -352,12 +352,14 @@ def mouse_event(window, xpos, ypos):
 
     cameraUp = glm.normalize(cameraUp - glm.dot(cameraUp, cameraFront) * cameraFront)
 
+
 def scroll_event(window, xoffset, yoffset):
     global fov
     # Zoom via FOV
     fov -= yoffset
     if fov < 1.0: fov = 1.0
     if fov > 90.0: fov = 90.0
+
 
 def update_move_front_camera():
     global cameraFront, cameraUp, planetFoward, planetUp, planetCenter, cameraPos, planetRight, newPlanetUp, gravity_weight, masterMode
