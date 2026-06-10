@@ -119,8 +119,11 @@ def desenha_marcador_luz(pos, color, scale=0.05):
 
 
 def desenha_pineTree(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
+    # Folhas são "cards" planos de face única: precisam ser two-sided (sem
+    # culling), senão metade das faces some e a copa fica esburacada.
     _draw("pineTree", "pineTree", angle, r_x, r_y, r_z, t_x, t_y, t_z,
-          s_x, s_y, s_z, base_rotation=planet_rotation_matrix, texture_id=state.pineTree_texture_id)
+          s_x, s_y, s_z, base_rotation=planet_rotation_matrix,
+          texture_id=state.pineTree_texture_id, cull=False)
 
 
 def desenha_rocket(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
