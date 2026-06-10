@@ -52,6 +52,11 @@ uniform int  light_lantern_enabled;
 uniform vec3 lantern_pos;
 uniform vec3 lantern_color;
 
+// --- Luzes externas: fogueiras (quentes, com atenuação) ---
+uniform int  light_fire_enabled;
+uniform vec3 fire_pos[2];
+uniform vec3 fire_color[2];
+
 
 // Fator de sombra do planeta: 1.0 = totalmente na sombra, 0.0 = iluminado.
 // Compara a profundidade do fragmento (vista do sol) com a profundidade
@@ -109,8 +114,13 @@ vec3 calcPointLight(vec3 lightPos, vec3 lightColor, float litFactor, int useAtte
 
     float atten = 1.0;
     if (useAtten == 1) {
+        // Atenuação suave: vela / luminária (alcance maior)
         float dist = length(lightPos - fragPos);
         atten = 1.0 / (1.0 + 0.022 * dist + 0.0019 * dist * dist);
+    } else if (useAtten == 2) {
+        // Atenuação forte: fogueira (cai mais rápido com a distância)
+        float dist = length(lightPos - fragPos);
+        atten = 1.0 / (1.0 + 0.09 * dist + 0.032 * dist * dist);
     }
 
     vec3 diffuse  = Kd * diffuse_intensity  * diff * lightColor;
@@ -145,10 +155,15 @@ void main() {
         result += Ka * ambient_intensity * texColor;
 
     if (is_internal == 0) {
-        // === AMBIENTE EXTERNO: apenas o sol (sem atenuação), com sombra ===
+        // === AMBIENTE EXTERNO: sol (sem atenuação, com sombra) + fogueiras ===
         if (light_sun_enabled == 1) {
             float lit = 1.0 - calcShadow();
             result += calcPointLight(sun_pos, sun_color, lit, 0) * texColor;
+        }
+        // Fogueiras: luzes locais quentes (com atenuação por distância)
+        if (light_fire_enabled == 1) {
+            for (int i = 0; i < 2; i++)
+                result += calcPointLight(fire_pos[i], fire_color[i], 1.0, 2) * texColor;
         }
     } else {
         // === AMBIENTE INTERNO: vela + luminária (com atenuação, sem sombra) ===

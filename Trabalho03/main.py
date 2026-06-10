@@ -242,6 +242,10 @@ def floresta():
     )
     fogueira_polo_rot = get_rotation_angle_from_planet(pos_fogueira_polo, state.planetCenter)
 
+    # Luz da fogueira: um pouco acima da base, na altura da chama
+    up_polo = glm.normalize(pos_fogueira_polo - state.planetCenter)
+    state.fire_pos[0] = pos_fogueira_polo + up_polo * 1.2
+
     desenha_fogueira(
         angle=0,
         r_x=0, r_y=1, r_z=0,
@@ -281,6 +285,10 @@ def fogueira_casa():
         center=state.planetCenter
     )
     fogueira_casa_rot = get_rotation_angle_from_planet(pos_fogueira_casa, state.planetCenter)
+
+    # Luz da fogueira: um pouco acima da base, na altura da chama
+    up_casa = glm.normalize(pos_fogueira_casa - state.planetCenter)
+    state.fire_pos[1] = pos_fogueira_casa + up_casa * 1.2
 
     desenha_fogueira(
         angle=0,
@@ -1054,7 +1062,7 @@ def draw_scene():
         glViewport(0, 0, 1920, 1080)
         glClearColor(0.02, 0.02, 0.05, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE if state.wireframe_enabled else GL_FILL)
 
         # matrizes de câmera + luz
         glUniformMatrix4fv(state.loc_view, 1, GL_TRUE, state.view())
