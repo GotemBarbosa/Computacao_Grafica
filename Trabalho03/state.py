@@ -118,11 +118,21 @@ candle_color = glm.vec3(1.0, 0.55, 0.10)        # laranja quente
 lantern_pos   = glm.vec3(2.92, -0.4, 3.7)       # lanterna na prateleira
 lantern_color = glm.vec3(0.4, 0.3, 1.0)         # azul/roxo
 
+# --- FOGUEIRAS: fontes de luz EXTERNAS (quentes, com atenuação) ---
+# As posições (mundo) são preenchidas em runtime a partir das fogueiras
+# desenhadas no planeta (ver main.py). Ordem: [floresta, casa].
+fire_pos   = [glm.vec3(0.0), glm.vec3(0.0)]
+fire_color = [glm.vec3(1.5, 0.7, 0.2), glm.vec3(1.5, 0.7, 0.2)]   # fogo quente, alaranjado
+
 # --- INTERRUPTORES (cada luz tem o seu) ---
 light_sun_enabled     = True
 light_candle_enabled  = True
 light_lantern_enabled = True
+light_fire_enabled    = True
 light_ambient_enabled = True
+
+# --- MODO DE RENDERIZAÇÃO ---
+wireframe_enabled = False   # tecla P: mostra só a malha poligonal (arestas)
 
 # --- INTENSIDADES AJUSTÁVEIS POR TECLADO ---
 ambient_intensity  = 0.9   # luz ambiente   [0.0, 1.0]
@@ -206,7 +216,7 @@ keys = {} # Mantém o estado de quais teclas estão sendo pressionadas, permite 
 def key_event(window, key, scancode, action, mods):
     global keys, flyMode, velocity, isOnGround, planetUp, planetActivated, masterMode
     global cameraPos, cameraFront, cameraUp, cameraMoveFront, newPlanetUp, planetFoward, planetRight, gravity, velocity
-    global light_sun_enabled, light_candle_enabled, light_lantern_enabled, light_ambient_enabled
+    global light_sun_enabled, light_candle_enabled, light_lantern_enabled, light_ambient_enabled, light_fire_enabled, wireframe_enabled
     global ambient_intensity, diffuse_intensity, specular_intensity
 
     if action == glfw.PRESS:
@@ -255,6 +265,10 @@ def key_event(window, key, scancode, action, mods):
         light_lantern_enabled = not light_lantern_enabled  # luz interna (luminária)
     if key == glfw.KEY_4 and action == glfw.PRESS:
         light_ambient_enabled = not light_ambient_enabled  # luz ambiente
+    if key == glfw.KEY_5 and action == glfw.PRESS:
+        light_fire_enabled = not light_fire_enabled        # luzes das fogueiras
+    if key == glfw.KEY_P and action == glfw.PRESS:
+        wireframe_enabled = not wireframe_enabled          # malha poligonal (wireframe)
 
     # --- LUZ AMBIENTE: incrementa/decrementa  ([ e ]) ---
     if key == glfw.KEY_K and action in (glfw.PRESS, glfw.REPEAT):
@@ -525,6 +539,10 @@ loc_light_lantern_enabled = glGetUniformLocation(program, "light_lantern_enabled
 loc_lantern_pos           = glGetUniformLocation(program, "lantern_pos")
 loc_lantern_color         = glGetUniformLocation(program, "lantern_color")
 
+loc_light_fire_enabled = glGetUniformLocation(program, "light_fire_enabled")
+loc_fire_pos   = [glGetUniformLocation(program, "fire_pos[%d]"   % i) for i in range(2)]
+loc_fire_color = [glGetUniformLocation(program, "fire_color[%d]" % i) for i in range(2)]
+
 
 # =========================================================================
 # Carga de geometria — uma lista (chave, caminho) dirige o carregamento.
@@ -657,6 +675,13 @@ glfw.set_input_mode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 # Renderização 3D com profundidade
 glEnable(GL_DEPTH_TEST)
 
+# Backface culling: descarta as faces traseiras (winding CCW = frente).
+# Economiza fragmentos ao não rasterizar o que está virado pra longe.
+# Objetos vistos "por dentro" (skybox) desativam isso pontualmente no _draw.
+glEnable(GL_CULL_FACE)
+glCullFace(GL_BACK)
+glFrontFace(GL_CCW)
+
 
 # =========================================================================
 # SHADOW MAP — FBO de profundidade visto do sol (Projeto 3)
@@ -733,6 +758,11 @@ def send_light_uniforms():
     glUniform1i(loc_light_lantern_enabled, int(light_lantern_enabled))
     glUniform3f(loc_lantern_pos, lantern_pos.x, lantern_pos.y, lantern_pos.z)
     glUniform3f(loc_lantern_color, lantern_color.x, lantern_color.y, lantern_color.z)
+
+    glUniform1i(loc_light_fire_enabled, int(light_fire_enabled))
+    for i in range(2):
+        glUniform3f(loc_fire_pos[i],   fire_pos[i].x,   fire_pos[i].y,   fire_pos[i].z)
+        glUniform3f(loc_fire_color[i], fire_color[i].x, fire_color[i].y, fire_color[i].z)
 
 
 glfw.show_window(window)

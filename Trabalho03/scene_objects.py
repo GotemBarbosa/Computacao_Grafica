@@ -17,7 +17,7 @@ import state
 # =========================================================================
 def _draw(obj_key, mat_name, angle, r_x, r_y, r_z, t_x, t_y, t_z,
           s_x, s_y, s_z, base_rotation=None, texture_id=None, base_color=None,
-          unlit=False):
+          unlit=False, cull=True, invert_cull=False):
     mat_model = state.model(angle, r_x, r_y, r_z, t_x, t_y, t_z,
                             s_x, s_y, s_z, base_rotation)
     state.upload_model(mat_model)          # model + matriz de normais
@@ -34,7 +34,21 @@ def _draw(obj_key, mat_name, angle, r_x, r_y, r_z, t_x, t_y, t_z,
 
     ini = state.objects_dict[obj_key]["ini_index"]
     fim = state.objects_dict[obj_key]["end_index"]
-    glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+
+    # Skybox (visto por dentro): sem culling, todas as faces precisam aparecer.
+    if unlit or not cull:
+        glDisable(GL_CULL_FACE)
+        glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+        glEnable(GL_CULL_FACE)
+    # Planeta/luas: reaproveitam a esfera "sky" (winding invertido), então a
+    # face externa é "traseira". Cortamos a FRENTE — assim a metade de trás do
+    # planeta ainda é descartada (ganho de culling), mas a visível permanece.
+    elif invert_cull:
+        glCullFace(GL_FRONT)
+        glDrawArrays(GL_TRIANGLES, ini, fim - ini)
+        glCullFace(GL_BACK)
+    else:
+        glDrawArrays(GL_TRIANGLES, ini, fim - ini)
 
 
 # =========================================================================
@@ -79,9 +93,11 @@ def desenha_fogueira(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_
 
 
 def desenha_planet(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, texture_id, mat_name="lua"):
-    # Reaproveita a geometria de esfera ("sky") para luas/planetas.
+    # Reaproveita a geometria de esfera ("sky") para luas/planetas. Como essa
+    # esfera tem winding invertido (feita p/ ser vista por dentro), o planeta
+    # — visto por fora — corta a FACE FRONTAL em vez da traseira.
     _draw("sky", mat_name, angle, r_x, r_y, r_z, t_x, t_y, t_z,
-          s_x, s_y, s_z, texture_id=texture_id)
+          s_x, s_y, s_z, texture_id=texture_id, invert_cull=True)
 
 
 def desenha_sol(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
