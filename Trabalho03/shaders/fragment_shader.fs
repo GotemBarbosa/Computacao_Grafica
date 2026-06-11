@@ -38,9 +38,10 @@ uniform float diffuse_intensity;
 uniform float specular_intensity;
 
 // --- Luz externa: sol ---
-uniform int  light_sun_enabled;
-uniform vec3 sun_pos;
-uniform vec3 sun_color;
+uniform int   light_sun_enabled;
+uniform vec3  sun_pos;
+uniform vec3  sun_color;
+uniform float sun_intensity;   // 1 = sol pleno; 0 = eclipsado por Marte
 
 // --- Luz interna 1: vela (quente) ---
 uniform int   light_candle_enabled;
@@ -82,7 +83,7 @@ float calcShadow() {
     // Em vez de um "0 ou 1" duro, isso dá um valor contínuo na borda da
     // sombra (penumbra) → transição suave em vez de serrilhado.
     // O 'spread' alarga a penumbra (mais texels cobertos por amostra).
-    float texel  = 1.0 / 2048.0;   // = 1 / SHADOW_WIDTH
+    float texel  = 1.0 / 4096.0;   // = 1 / SHADOW_WIDTH (manter em sincronia)
     float spread = 2.0;            // aumente para borrar mais
     float shadow = 0.0;
     for (int x = -2; x <= 2; x++) {
@@ -165,7 +166,7 @@ void main() {
         // === AMBIENTE EXTERNO: sol (sem atenuação, com sombra) + fogueiras ===
         if (light_sun_enabled == 1) {
             float lit = 1.0 - calcShadow();
-            result += calcPointLight(sun_pos, sun_color, lit, 0) * texColor;
+            result += calcPointLight(sun_pos, sun_color * sun_intensity, lit, 0) * texColor;
         }
         // Fogueiras: luzes locais quentes (com atenuação por distância)
         if (light_fire_enabled == 1) {

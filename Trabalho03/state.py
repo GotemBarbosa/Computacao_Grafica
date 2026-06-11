@@ -7,7 +7,6 @@ from matrix_operations import *
 import ctypes
 
 from objetos.obj_loader import load_obj_geometry
-from utils.coordenates import planet_to_world_coordenates
 
 import glm
 from PIL import Image
@@ -93,23 +92,35 @@ telescope_turning_right = False
 # modos de visualização (toggles)
 wireframe_mode = False       # P: alterna malha poligonal (GL_LINE) ↔ preenchido (GL_FILL)
 
-# marte (escala controlável)
+# marte (escala controlável com E = aumenta / Q = diminui)
+mars_pos = glm.vec3(200.0, 100.0, -250.0)   # posição fixa no mundo
 mars_scale = 80.0
 mars_scale_speed = 30.0      # unidades de escala por segundo
-mars_scaling_up = False      # E
-mars_scaling_down = False    # Q
 
 # =========================================================================
 # ILUMINAÇÃO (Projeto 3)
 # =========================================================================
 
-# --- SOL: fonte de luz EXTERNA controlável pelas setas do teclado ---
-sun_orbit_angle  = 45.0                          # longitude do sol (graus) — setas ←/→
-sun_orbit_lat    = 20.0                           # latitude do sol (graus) — setas ↑/↓
-sun_move_speed   = 45.0                           # velocidade de movimento (graus/seg)
-sun_orbit_radius = 200.0                          # distância ao centro do planeta
-sun_pos          = glm.vec3(200.0, -48.0, 0.0)    # posição (atualizada por frame)
+# --- SOL: ponto de luz FIXO numa direção da skybox (calibrado, sun_calibration.json) ---
+# O sol é um ponto fixo na esfera da skybox (centrada na origem, raio 300). As setas
+# giram a skybox + o sol juntos, dando a impressão de que o planeta é que está girando.
+skybox_center    = glm.vec3(0.0, 0.0, 0.0)        # centro da skybox
+sun_orbit_radius = 298.0                          # logo abaixo do shell da skybox (300)
+sun_base_dir     = glm.normalize(glm.vec3(        # direção calibrada do sol na textura
+    -0.7061006426811218, 0.7080808877944946, 0.006576803978532553))
+sun_pos          = skybox_center + sun_orbit_radius * sun_base_dir
 sun_color        = glm.vec3(1.8, 1.7, 1.45)       # branco-amarelado, intenso
+
+# Rotação acumulada da skybox (graus), controlada pelas setas. O sol acompanha.
+sky_yaw          = 0.0     # ←/→  gira em torno do eixo vertical (Y)
+sky_pitch        = 0.0     # ↑/↓  gira em torno do eixo horizontal (X)
+sky_rotate_speed = 45.0    # graus/seg (controle manual pelas setas)
+sky_auto_speed   = 1.5     # graus/seg de rotação automática lenta (planeta girando)
+
+# Eclipse: quando Marte passa na frente do sol (visto do planeta), o planeta
+# inteiro escurece. 0 = sem eclipse (sol pleno), 1 = eclipse total.
+sun_eclipse        = 0.0
+eclipse_penumbra   = 5.0   # graus de transição (penumbra) na borda do eclipse
 
 # --- VELA: fonte de luz INTERNA 1 (quente, alaranjada) ---
 candle_pos   = glm.vec3(-2.1, -0.45, 4.25)      # vela em cima da mesa
@@ -149,8 +160,9 @@ specular_intensity = 1.0     # multiplicador especular  [0.0, 2.0]
 INTENSITY_STEP     = 0.05
 
 # --- Shadow map (preenchido na inicialização do OpenGL, mais abaixo) ---
-SHADOW_WIDTH  = 2048
-SHADOW_HEIGHT = 2048
+# OBS: ao mudar a resolução, atualize também o 'texel' no fragment_shader.fs.
+SHADOW_WIDTH  = 4096
+SHADOW_HEIGHT = 4096
 shadow_fbo = None
 shadow_map = None
 
@@ -297,33 +309,76 @@ def key_event(window, key, scancode, action, mods):
         specular_intensity = min(2.0, specular_intensity + INTENSITY_STEP)
 
 
-def update_sun():
-    """Move o sol (luz externa) conforme as setas do teclado e atualiza sun_pos.
+def sky_rotation_matrix():
+    """Rotação acumulada da skybox (yaw em Y, depois pitch em X).
 
-    Chamada a cada frame. As setas são teclas de pressão contínua, então são
-    lidas do dicionário `keys` (preenchido por key_event) em vez de tratadas
-    como eventos discretos.
-      ←/→ : longitude    ↑/↓ : latitude (limitada a ±89° p/ não cruzar os polos)
+    A MESMA matriz é aplicada à skybox (ao desenhá-la) e à direção do sol, para
+    que o sol continue sobre o texel pintado enquanto o céu gira.
     """
-    global sun_orbit_angle, sun_orbit_lat, sun_pos
+    R = glm.mat4(1.0)
+    R = glm.rotate(R, glm.radians(sky_yaw),   glm.vec3(0.0, 1.0, 0.0))
+    R = glm.rotate(R, glm.radians(sky_pitch), glm.vec3(1.0, 0.0, 0.0))
+    return R
 
-    sun_step = sun_move_speed * deltaTime
+
+def update_sky():
+    """Gira a skybox + o sol conforme as setas, simulando o planeta girando.
+
+    Chamada a cada frame. As setas são teclas de pressão contínua, lidas do
+    dicionário `keys` (preenchido por key_event).
+      ←/→ : gira em torno do eixo vertical    ↑/↓ : gira em torno do horizontal
+    """
+    global sky_yaw, sky_pitch, sun_pos
+
+    # Rotação automática lenta (planeta girando sozinho), sempre ativa.
+    sky_yaw += sky_auto_speed * deltaTime
+
+    step = sky_rotate_speed * deltaTime
     if keys.get(glfw.KEY_RIGHT, False):
-        sun_orbit_angle += sun_step        # → move em longitude
+        sky_yaw += step        # →
     if keys.get(glfw.KEY_LEFT, False):
-        sun_orbit_angle -= sun_step        # ←
+        sky_yaw -= step        # ←
     if keys.get(glfw.KEY_UP, False):
-        sun_orbit_lat += sun_step          # ↑ move em latitude
+        sky_pitch += step      # ↑
     if keys.get(glfw.KEY_DOWN, False):
-        sun_orbit_lat -= sun_step          # ↓
+        sky_pitch -= step      # ↓
 
-    # não deixa o sol passar pelos polos (evita instabilidade da matriz da luz)
-    sun_orbit_lat = max(-89.0, min(89.0, sun_orbit_lat))
+    # O sol acompanha a mesma rotação da skybox (mantém-se sobre o texel do sol).
+    d = glm.mat3(sky_rotation_matrix()) * sun_base_dir
+    sun_pos = skybox_center + sun_orbit_radius * d
 
-    sun_pos = planet_to_world_coordenates(
-        lat=sun_orbit_lat, lon=sun_orbit_angle,
-        radius=sun_orbit_radius, center=planetCenter
-    )
+    update_eclipse()
+
+
+def update_eclipse():
+    """Calcula o quanto Marte está eclipsando o sol, visto do centro do planeta.
+
+    Compara a separação angular entre as direções do sol e de Marte com o raio
+    angular de Marte. Se o sol está dentro do disco de Marte -> eclipse total;
+    numa faixa de penumbra ao redor da borda, transição suave.
+    """
+    global sun_eclipse
+
+    dir_sun = glm.normalize(sun_pos - planetCenter)
+    to_mars = mars_pos - planetCenter
+    dist_mars = glm.length(to_mars)
+    dir_mars = to_mars / dist_mars
+
+    cos_ang = glm.dot(dir_sun, dir_mars)
+    if cos_ang <= 0.0:                 # sol e Marte em hemisférios opostos: sem eclipse
+        sun_eclipse = 0.0
+        return
+
+    ang        = math.acos(min(1.0, cos_ang))            # separação sol<->Marte (rad)
+    theta_mars = math.asin(min(0.999, mars_scale / dist_mars))  # raio angular de Marte
+    penumbra   = math.radians(eclipse_penumbra)
+
+    if ang <= theta_mars:
+        sun_eclipse = 1.0                                # sol totalmente atrás de Marte
+    elif ang <= theta_mars + penumbra:
+        sun_eclipse = (theta_mars + penumbra - ang) / penumbra   # borda: 1 -> 0
+    else:
+        sun_eclipse = 0.0
 
 
 def mouse_event(window, xpos, ypos):
@@ -538,6 +593,7 @@ loc_specular_intensity    = glGetUniformLocation(program, "specular_intensity")
 loc_light_sun_enabled = glGetUniformLocation(program, "light_sun_enabled")
 loc_sun_pos           = glGetUniformLocation(program, "sun_pos")
 loc_sun_color         = glGetUniformLocation(program, "sun_color")
+loc_sun_intensity     = glGetUniformLocation(program, "sun_intensity")
 
 loc_light_candle_enabled = glGetUniformLocation(program, "light_candle_enabled")
 loc_candle_pos           = glGetUniformLocation(program, "candle_pos")
@@ -744,7 +800,13 @@ def compute_light_space_matrix():
 
     light_view = glm.lookAt(sun_pos, planetCenter, up)
     ortho = 130.0
-    light_proj = glm.ortho(-ortho, ortho, -ortho, ortho, 1.0, 500.0)
+    # near/far ajustados em torno da distância luz->planeta. Em vez de [1, 500]
+    # (que joga quase toda a faixa fora dos objetos e piora a precisão), cobrimos
+    # só a região dos casters (~±150 do centro do planeta) -> menos shadow acne.
+    dist = glm.length(sun_pos - planetCenter)
+    near = max(1.0, dist - 150.0)
+    far  = dist + 150.0
+    light_proj = glm.ortho(-ortho, ortho, -ortho, ortho, near, far)
     return np.array(light_proj * light_view, dtype=np.float32)
 
 
@@ -763,13 +825,16 @@ def send_light_uniforms():
     glUniform3f(loc_view_pos, cameraPos.x, cameraPos.y, cameraPos.z)
 
     glUniform1i(loc_light_ambient_enabled, int(light_ambient_enabled))
-    glUniform1f(loc_ambient_intensity, ambient_intensity)
+    # Durante o eclipse a luz ambiente também cai (até 30%), reforçando o escuro.
+    glUniform1f(loc_ambient_intensity, ambient_intensity * (1.0 - 0.7 * sun_eclipse))
     glUniform1f(loc_diffuse_intensity, diffuse_intensity)
     glUniform1f(loc_specular_intensity, specular_intensity)
 
     glUniform1i(loc_light_sun_enabled, int(light_sun_enabled))
     glUniform3f(loc_sun_pos, sun_pos.x, sun_pos.y, sun_pos.z)
     glUniform3f(loc_sun_color, sun_color.x, sun_color.y, sun_color.z)
+    # Eclipse: Marte na frente do sol -> intensidade do sol vai a 0.
+    glUniform1f(loc_sun_intensity, 1.0 - sun_eclipse)
 
     glUniform1i(loc_light_candle_enabled, int(light_candle_enabled))
     glUniform3f(loc_candle_pos, candle_pos.x, candle_pos.y, candle_pos.z)

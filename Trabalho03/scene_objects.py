@@ -76,9 +76,10 @@ def desenha_ground(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_ro
           s_x, s_y, s_z, texture_id=state.ground_texture_id)
 
 
-def desenha_sky(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
+def desenha_sky(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, base_rotation=None):
     _draw("sky", "sky", angle, r_x, r_y, r_z, t_x, t_y, t_z,
-          s_x, s_y, s_z, texture_id=state.sky_texture_id, unlit=True)
+          s_x, s_y, s_z, base_rotation=base_rotation,
+          texture_id=state.sky_texture_id, unlit=True)
 
 
 def desenha_house(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, planet_rotation_matrix=None):
@@ -100,10 +101,11 @@ def desenha_planet(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z, texture_i
           s_x, s_y, s_z, texture_id=texture_id, invert_cull=True)
 
 
-def desenha_sol(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z):
-    # Esfera emissiva amarela representando o sol (fonte de luz externa).
+def desenha_sol(angle, r_x, r_y, r_z, t_x, t_y, t_z, s_x, s_y, s_z,
+                base_color=(1.0, 0.95, 0.6, 1.0)):
+    # Esfera emissiva representando a posição do sol (fonte de luz externa).
     _draw("sky", "sol", angle, r_x, r_y, r_z, t_x, t_y, t_z,
-          s_x, s_y, s_z, base_color=(1.0, 0.95, 0.6, 1.0), unlit=True)
+          s_x, s_y, s_z, base_color=base_color, unlit=True)
 
 
 def desenha_marcador_luz_lantern(pos, color, scale=0.02):

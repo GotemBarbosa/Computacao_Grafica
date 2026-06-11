@@ -360,9 +360,9 @@ def foguete():
 def marte():
     # MARTE — escala controlável com E (aumentar) e Q (diminuir) ==================
 
-    if state.mars_scaling_up:
+    if state.keys.get(glfw.KEY_E, False):
         state.mars_scale += state.mars_scale_speed * state.deltaTime
-    if state.mars_scaling_down:
+    if state.keys.get(glfw.KEY_Q, False):
         state.mars_scale -= state.mars_scale_speed * state.deltaTime
 
     # clamp pra não sumir nem explodir
@@ -371,7 +371,7 @@ def marte():
     desenha_planet(
         angle=0,
         r_x=0, r_y=1, r_z=0,
-        t_x=200, t_y=100, t_z=-250,
+        t_x=state.mars_pos.x, t_y=state.mars_pos.y, t_z=state.mars_pos.z,
         s_x=state.mars_scale, s_y=state.mars_scale, s_z=state.mars_scale,
         texture_id=state.mars_texture_id,
         mat_name="marte"
@@ -439,11 +439,14 @@ def satelite():
 # ==========================================================
 
 def ceu():
+    # A skybox gira conforme as setas (state.sky_rotation_matrix), levando o sol
+    # pintado junto — passa a impressão de que o planeta é que está girando.
     desenha_sky(
         angle=0,
         r_x=0, r_y=0, r_z=0,
         t_x=0, t_y=0, t_z=0,
-        s_x=300, s_y=300, s_z=300
+        s_x=300, s_y=300, s_z=300,
+        base_rotation=state.sky_rotation_matrix()
     )
 
 
@@ -461,12 +464,14 @@ def lua():
 
 
 def sol():
-    # Esfera emissiva representando a fonte de luz EXTERNA que orbita o planeta.
-    # A posição (state.sun_pos) é atualizada a cada frame em draw_scene().
+    # MARCADOR DE CALIBRAÇÃO (Fase 1): esferinha vermelha na posição do ponto
+    # de luz. Serve para você alinhá-la com o sol desenhado na skybox usando as
+    # setas; depois de calibrado e salvo, este marcador some (Fase 2).
     desenha_sol(
         angle=0, r_x=0, r_y=1, r_z=0,
         t_x=state.sun_pos.x, t_y=state.sun_pos.y, t_z=state.sun_pos.z,
-        s_x=10, s_y=10, s_z=10
+        s_x=6, s_y=6, s_z=6,
+        base_color=(1.0, 0.1, 0.1, 1.0)   # vermelho p/ contrastar com o sol da textura
     )
 
 
@@ -1033,8 +1038,8 @@ def draw_scene():
         movement()
         atualiza_gravity_weight()
 
-        # === SOL (fonte de luz externa) — controlado pelas setas do teclado ===
-        state.update_sun()
+        # === SKYBOX + SOL giram com as setas (impressão de planeta girando) ===
+        state.update_sky()
         light_space_mat = state.compute_light_space_matrix()
 
         # ==========================================================
@@ -1077,7 +1082,6 @@ def draw_scene():
         glUniform1i(state.loc_is_internal, 0)
         desenha_cenario_estatico()
         desenha_objetos_planeta()
-        sol()
 
         # --- Objetos INTERNOS (afetados por vela + luminária) ---
         glUniform1i(state.loc_is_internal, 1)
