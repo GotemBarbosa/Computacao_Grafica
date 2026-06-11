@@ -1064,7 +1064,8 @@ def draw_scene():
         glDrawBuffer(GL_BACK)
         glReadBuffer(GL_BACK)
 
-        glViewport(0, 0, 1920, 1080)
+        fb_w, fb_h = glfw.get_framebuffer_size(state.window)
+        glViewport(0, 0, fb_w, fb_h)
         glClearColor(0.02, 0.02, 0.05, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE if state.wireframe_enabled else GL_FILL)

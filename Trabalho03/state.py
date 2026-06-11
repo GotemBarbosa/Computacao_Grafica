@@ -226,7 +226,8 @@ def view():
 
 def projection():
     # Projeção perspectiva (FOV, aspecto, near/far)
-    largura, altura = 1920.0, 1080.0
+    largura, altura = glfw.get_framebuffer_size(window)
+    altura = altura or 1
     p = glm.perspective(glm.radians(fov), largura / altura, 0.1, 1000.0)
     return np.array(p, dtype=np.float32)
 
@@ -477,7 +478,7 @@ def create_window():
     glfw.init()
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
 
-    window = glfw.create_window(1920, 1080, "Trabalho 2", None, None)
+    window = glfw.create_window(1280, 720, "Trabalho 2", None, None)
 
     if(window == None):
         print("Failed to create GLFW window")
